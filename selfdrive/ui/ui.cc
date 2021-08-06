@@ -272,7 +272,7 @@ static void update_state(UIState *s) {
         auto accel2 = sensor.getAcceleration().getV();
         scene.accel_sensor2 = accel2[2];
         if ((scene.accel_sensor2 < -1) && Params().getBool("OpkrSpeedBump")) {
-          Params().put("OpkrSpeedBump", "0", 1);
+          Params().putBool("OpkrSpeedBump", false);
         }
       }
     }
@@ -332,7 +332,7 @@ static void update_params(UIState *s) {
       scene.map_is_running = true;
       scene.map_on_top = true;
       scene.map_on_overlay = false;
-      Params().put("OpkrMapEnable", "1", 1);
+      Params().putBool("OpkrMapEnable", true);
       system("am start com.mnsoft.mappyobn/com.mnsoft.mappy.MainActivity");
     } else if (frame - scene.started_frame > 15*UI_FREQ) {
       scene.navi_on_boot = true;

@@ -108,13 +108,13 @@ void HomeWindow::mousePressEvent(QMouseEvent* e) {
       QUIState::ui_state.scene.map_on_top = true;
       QUIState::ui_state.scene.map_is_running = true;
       QUIState::ui_state.scene.map_on_overlay = false;
-      Params().put("OpkrMapEnable", "1", 1);
+      Params().putBool("OpkrMapEnable", true);
     } else {
       QProcess::execute("pkill com.mnsoft.mappyobn");
       QUIState::ui_state.scene.map_on_top = false;
       QUIState::ui_state.scene.map_on_overlay = false;
       QUIState::ui_state.scene.map_is_running = false;
-      Params().put("OpkrMapEnable", "0", 1); 
+      Params().putBool("OpkrMapEnable", false);
     }
     return;
   }
@@ -161,9 +161,9 @@ void HomeWindow::mousePressEvent(QMouseEvent* e) {
   if (QUIState::ui_state.scene.started && !sidebar->isVisible() && !QUIState::ui_state.scene.map_on_top && monitoring_btn.ptInRect(e->x(), e->y())) {
     QUIState::ui_state.scene.monitoring_mode = !QUIState::ui_state.scene.monitoring_mode;
     if (QUIState::ui_state.scene.monitoring_mode) {
-      Params().put("OpkrMonitoringMode", "1", 1);
+      Params().putBool("OpkrMonitoringMode", true);
     } else {
-      Params().put("OpkrMonitoringMode", "0", 1);
+      Params().putBool("OpkrMonitoringMode", false);
     }
     return;
   }
@@ -171,9 +171,9 @@ void HomeWindow::mousePressEvent(QMouseEvent* e) {
   if (QUIState::ui_state.scene.started && !sidebar->isVisible() && !QUIState::ui_state.scene.map_on_top && stockui_btn.ptInRect(e->x(), e->y())) {
     QUIState::ui_state.scene.comma_stock_ui = !QUIState::ui_state.scene.comma_stock_ui;
     if (QUIState::ui_state.scene.comma_stock_ui) {
-      Params().put("CommaStockUI", "1", 1);
+      Params().putBool("CommaStockUI", true);
     } else {
-      Params().put("CommaStockUI", "0", 1);
+      Params().putBool("CommaStockUI", false);
     }
     return;
   }

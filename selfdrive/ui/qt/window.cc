@@ -44,7 +44,7 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
   });
   QObject::connect(&device, &Device::displayPowerChanged, [=]() {
      if(main_layout->currentWidget() != onboardingWindow) {
-       Params().put("OpkrForceShutdownTrigger", "1", 1);
+       Params().putBool("OpkrForceShutdownTrigger", true);
        closeSettings();
      }
   });
@@ -80,7 +80,7 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event) {
   // wake screen on tap
   if (event->type() == QEvent::MouseButtonPress || event->type() == QEvent::TouchBegin) {
     device.setAwake(true, true);
-    Params().put("OpkrForceShutdownTrigger", "0", 1);
+    Params().putBool("OpkrForceShutdownTrigger", false);
   }
 
 #ifdef QCOM
