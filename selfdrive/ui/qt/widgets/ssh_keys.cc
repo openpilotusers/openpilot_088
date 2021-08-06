@@ -1854,7 +1854,7 @@ void SpeedLimitOffset::refresh() {
   btnplus.setText("＋");
 }
 
-RESChoice::RESChoice() : AbstractControl("자동 RES 옵션", "자동RES옵션을 설정합니다. 1. 일시적 크루즈속도 조정, 2. 설정속도 자체를 조정", "../assets/offroad/icon_shell.png") {
+RESChoice::RESChoice() : AbstractControl("자동RES 옵션", "자동RES옵션을 설정합니다. 1. 일시적 크루즈속도 조정, 2. 설정속도 자체를 조정  ※자동 RES는 조건에 따라 동작이 잘 되지 않을 수도 있으니 참고하시고 사용바랍니다.", "../assets/offroad/icon_shell.png") {
 
   label.setAlignment(Qt::AlignVCenter|Qt::AlignRight);
   label.setStyleSheet("color: #e0e879");
@@ -1913,6 +1913,70 @@ void RESChoice::refresh() {
     label.setText(QString::fromStdString("크루즈속도조정"));
   } else {
     label.setText(QString::fromStdString("설정속도조정"));
+  }
+  btnminus.setText("◀");
+  btnplus.setText("▶");
+}
+
+AutoResCondition::AutoResCondition() : AbstractControl("자동RES 조건", "자동RES조건을 설정합니다. 브레이크해제시 작동/가속페달조작시 작동", "../assets/offroad/icon_shell.png") {
+
+  label.setAlignment(Qt::AlignVCenter|Qt::AlignRight);
+  label.setStyleSheet("color: #e0e879");
+  hlayout->addWidget(&label);
+
+  btnminus.setStyleSheet(R"(
+    padding: 0;
+    border-radius: 50px;
+    font-size: 35px;
+    font-weight: 500;
+    color: #E4E4E4;
+    background-color: #393939;
+  )");
+  btnplus.setStyleSheet(R"(
+    padding: 0;
+    border-radius: 50px;
+    font-size: 35px;
+    font-weight: 500;
+    color: #E4E4E4;
+    background-color: #393939;
+  )");
+  btnminus.setFixedSize(150, 100);
+  btnplus.setFixedSize(150, 100);
+  hlayout->addWidget(&btnminus);
+  hlayout->addWidget(&btnplus);
+
+  QObject::connect(&btnminus, &QPushButton::clicked, [=]() {
+    auto str = QString::fromStdString(params.get("AutoResCondition"));
+    int value = str.toInt();
+    value = value - 1;
+    if (value <= 0 ) {
+      value = 0;
+    }
+    QString values = QString::number(value);
+    params.put("AutoResCondition", values.toStdString());
+    refresh();
+  });
+  
+  QObject::connect(&btnplus, &QPushButton::clicked, [=]() {
+    auto str = QString::fromStdString(params.get("AutoResCondition"));
+    int value = str.toInt();
+    value = value + 1;
+    if (value >= 1 ) {
+      value = 1;
+    }
+    QString values = QString::number(value);
+    params.put("AutoResCondition", values.toStdString());
+    refresh();
+  });
+  refresh();
+}
+
+void AutoResCondition::refresh() {
+  QString option = QString::fromStdString(params.get("AutoResCondition"));
+  if (option == "0") {
+    label.setText(QString::fromStdString("브레이크해제시"));
+  } else {
+    label.setText(QString::fromStdString("가속페달조작시"));
   }
   btnminus.setText("◀");
   btnplus.setText("▶");

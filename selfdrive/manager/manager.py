@@ -125,6 +125,7 @@ def manager_init():
     ("AutoEnable", "1"),
     ("CruiseAutoRes", "0"),
     ("AutoResOption", "0"),
+    ("AutoResCondition", "0"),
     ("SteerWindDown", "0"),
     ("OpkrMonitoringMode", "0"),
     ("OpkrMonitorEyesThreshold", "75"),

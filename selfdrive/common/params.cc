@@ -308,6 +308,7 @@ std::unordered_map<std::string, uint32_t> keys = {
     {"AutoEnable", PERSISTENT},
     {"CruiseAutoRes", PERSISTENT},
     {"AutoResOption", PERSISTENT},
+    {"AutoResCondition", PERSISTENT},
     {"SteerWindDown", PERSISTENT},
     {"OpkrMonitoringMode", PERSISTENT},
     {"OpkrMonitorEyesThreshold", PERSISTENT},

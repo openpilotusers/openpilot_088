@@ -129,6 +129,8 @@ class CarController():
     self.opkr_cruisegap_auto_adj = self.params.get_bool("CruiseGapAdjust")
     self.opkr_cruise_auto_res = self.params.get_bool("CruiseAutoRes")
     self.opkr_cruise_auto_res_option = int(self.params.get("AutoResOption", encoding="utf8"))
+    self.opkr_cruise_auto_res_condition = int(self.params.get("AutoResCondition", encoding="utf8"))
+    self.opkr_cruise_auto_res_condition_ = False
 
     self.opkr_turnsteeringdisable = self.params.get_bool("OpkrTurnSteeringDisable")
     self.steer_wind_down_enabled = self.params.get_bool("SteerWindDown")
@@ -469,8 +471,9 @@ class CarController():
         self.v_cruise_kph_auto_res = 0
         self.res_speed = 0
 
+    self.opkr_cruise_auto_res_condition_ = not self.opkr_cruise_auto_res_condition or CS.out.gasPressed
     if self.model_speed > 95 and self.cancel_counter == 0 and not CS.acc_active and not CS.out.brakeLights and int(CS.VSetDis) > 30 and \
-     (CS.lead_distance < 149 or int(CS.clu_Vanz) > 30) and int(CS.clu_Vanz) >= 3 and self.auto_res_timer <= 0 and self.opkr_cruise_auto_res:
+     (CS.lead_distance < 149 or int(CS.clu_Vanz) > 30) and int(CS.clu_Vanz) >= 3 and self.auto_res_timer <= 0 and self.opkr_cruise_auto_res and self.opkr_cruise_auto_res_condition_:
       if self.opkr_cruise_auto_res_option == 0:
         can_sends.append(create_clu11(self.packer, frame, CS.clu11, Buttons.RES_ACCEL)) if not self.longcontrol \
          else can_sends.append(create_clu11(self.packer, frame, CS.clu11, Buttons.RES_ACCEL, clu11_speed, CS.CP.sccBus))  # auto res
