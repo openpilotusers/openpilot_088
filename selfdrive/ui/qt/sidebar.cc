@@ -2,7 +2,6 @@
 
 #include <QMouseEvent>
 
-#include "selfdrive/ui/qt/qt_window.h"
 #include "selfdrive/common/util.h"
 #include "selfdrive/hardware/hw.h"
 #include "selfdrive/ui/qt/util.h"
@@ -30,7 +29,7 @@ void Sidebar::drawMetric(QPainter &p, const QString &label, const QString &val, 
   p.setPen(QColor(0xff, 0xff, 0xff));
   if (val.isEmpty()) {
     configFont(p, "Open Sans", 35, "Bold");
-    const QRect r = QRect(rect.x() + 35, rect.y(), rect.width() - 50, rect.height());
+    const QRect r = QRect(rect.x() + 30, rect.y(), rect.width() - 40, rect.height());
     p.drawText(r, Qt::AlignCenter, label);
   } else {
     configFont(p, "Open Sans", 58, "Bold");
@@ -46,9 +45,9 @@ Sidebar::Sidebar(QWidget *parent) : QFrame(parent) {
 
   connect(this, &Sidebar::valueChanged, [=] { update(); });
 
+  setAttribute(Qt::WA_OpaquePaintEvent);
+  setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
   setFixedWidth(300);
-  setMinimumHeight(vwp_h);
-  setStyleSheet("background-color: rgb(57, 57, 57);");
 }
 
 void Sidebar::mousePressEvent(QMouseEvent *event) {

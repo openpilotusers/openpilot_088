@@ -437,7 +437,7 @@ struct PandaState @0xa7649e2575e4591e {
     pedal @4;
     uno @5;
     dos @6;
-    red @7;
+    redPanda @7;
   }
 
   enum UsbPowerMode {
@@ -974,7 +974,7 @@ struct LiveLocationKalman {
   angularVelocityDevice @8 : Measurement;
 
   # orientationNEDCalibrated transforms to rot matrix: NED_from_calibrated
-  orientationNEDCalibrated @9 : Measurement;
+  calibratedOrientationNED @9 : Measurement;
 
   # Calibrated frame is simply device frame
   # aligned with the vehicle

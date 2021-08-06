@@ -258,6 +258,8 @@ def standstill_alert(CP, sm, metric):
 EVENTS: Dict[int, Dict[str, Union[Alert, Callable[[Any, messaging.SubMaster, bool], Alert]]]] = {
   # ********** events with no alerts **********
 
+  EventName.stockFcw: {},
+
   # ********** events only containing alerts displayed in all states **********
 
   EventName.modelLongAlert: {
@@ -383,15 +385,6 @@ EVENTS: Dict[int, Dict[str, Union[Alert, Callable[[Any, messaging.SubMaster, boo
     ET.NO_ENTRY: NoEntryAlert("순정 AEB: 추돌 위험"),
   },
 
-  EventName.stockFcw: {
-    ET.PERMANENT: Alert(
-      "브레이크!",
-      "순정 FCW: 추돌 위험",
-      AlertStatus.critical, AlertSize.full,
-      Priority.HIGHEST, VisualAlert.fcw, AudibleAlert.none, 1., 2., 2.),
-    ET.NO_ENTRY: NoEntryAlert("순정 FCW: 추돌 위험"),
-  },
-
   EventName.fcw: {
     ET.PERMANENT: Alert(
       "브레이크!",
@@ -514,33 +507,33 @@ EVENTS: Dict[int, Dict[str, Union[Alert, Callable[[Any, messaging.SubMaster, boo
 
   EventName.preLaneChangeLeft: {
     ET.WARNING: Alert(
-      "차선 변경을 위해 핸들을 좌측으로 살짝 돌리세요",
-      "다른 차량에 주의하세요",
-      AlertStatus.normal, AlertSize.mid,
+      "주변 안전을 확인 후 핸들을 좌측으로 돌리세요",
+      "",
+      AlertStatus.normal, AlertSize.small,
       Priority.LOW, VisualAlert.none, AudibleAlert.none, .0, .1, .1, alert_rate=0.75),
   },
 
   EventName.preLaneChangeRight: {
     ET.WARNING: Alert(
-      "차선 변경을 위해 핸들을 우측으로 살짝 돌리세요",
-      "다른 차량에 주의하세요",
-      AlertStatus.normal, AlertSize.mid,
+      "주변 안전을 확인 후 핸들을 우측으로 돌리세요",
+      "",
+      AlertStatus.normal, AlertSize.small,
       Priority.LOW, VisualAlert.none, AudibleAlert.none, .0, .1, .1, alert_rate=0.75),
   },
 
   EventName.laneChangeBlocked: {
     ET.WARNING: Alert(
       "측면 차량 접근 중",
-      "다른 차량에 주의하세요",
-      AlertStatus.normal, AlertSize.mid,
-      Priority.LOW, VisualAlert.steerRequired, AudibleAlert.none, .0, .1, .1),
+      "",
+      AlertStatus.userPrompt, AlertSize.small,
+      Priority.LOW, VisualAlert.none, AudibleAlert.chimePrompt, .1, .1, .1),
   },
 
   EventName.laneChange: {
     ET.WARNING: Alert(
       "차선 변경 중",
-      "다른 차량에 주의하세요",
-      AlertStatus.normal, AlertSize.mid,
+      "",
+      AlertStatus.normal, AlertSize.small,
       Priority.LOW, VisualAlert.none, AudibleAlert.none, .0, .1, .1),
   },
   
@@ -556,7 +549,7 @@ EVENTS: Dict[int, Dict[str, Union[Alert, Callable[[Any, messaging.SubMaster, boo
     ET.WARNING: Alert(
       "비상등 점멸 중",
       "",
-      AlertStatus.userPrompt, AlertSize.mid,
+      AlertStatus.userPrompt, AlertSize.small,
       Priority.LOW, VisualAlert.none, AudibleAlert.none, .0, .1, .1, alert_rate=0.75),
   },
 
@@ -595,7 +588,7 @@ EVENTS: Dict[int, Dict[str, Union[Alert, Callable[[Any, messaging.SubMaster, boo
   # current GPS position. This alert is thrown when the localizer is reset
   # more often than expected.
   EventName.localizerMalfunction: {
-    ET.PERMANENT: NormalPermanentAlert("로컬라이저 불안정", "서포트에 문의하세요"),
+    ET.PERMANENT: NormalPermanentAlert("센서 오작동", "서포트에 문의하세요"),
   },
 
   EventName.modeChangeOpenpilot: {
