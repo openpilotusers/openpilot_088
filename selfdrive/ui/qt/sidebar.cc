@@ -152,6 +152,7 @@ void Sidebar::paintEvent(QPaintEvent *event) {
   p.setPen(Qt::NoPen);
   p.setRenderHint(QPainter::Antialiasing);
 
+  p.fillRect(rect(), QColor(57, 57, 57));
   // static imgs
   p.setOpacity(0.65);
   p.drawImage(settings_btn.x(), settings_btn.y(), settings_img);
