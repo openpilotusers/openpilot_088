@@ -9,8 +9,7 @@ base_libs = [gpucommon, common, messaging, cereal, visionipc, transformations, '
 maps = True
 
 if arch == 'aarch64':
-  #base_libs += ['log', 'utils', 'gui', 'ui', 'CB', 'gsl', 'adreno_utils', 'cutils', 'uuid']
-  base_libs += ['log', 'utils', 'gui', 'ui', 'CB', 'gsl', 'adreno_utils', 'cutils', 'uuid', 'qmapboxgl']
+  base_libs += ['log', 'utils', 'gui', 'ui', 'CB', 'gsl', 'adreno_utils', 'cutils', 'uuid']
 
 #if maps and arch == 'x86_64':
 if maps:
@@ -34,7 +33,7 @@ qt_env['CPPDEFINES'] = []
 if GetOption('setup'):
   qt_env['CPPDEFINES'] += ["USE_QRC"]
 elif maps:
-  base_libs += ['qmapboxgl']
+  #base_libs += ['qmapboxgl']
   widgets_src += ["qt/maps/map_helpers.cc", "qt/maps/map_settings.cc", "qt/maps/map.cc"]
   qt_env['CPPDEFINES'] += ["ENABLE_MAPS"]
 
