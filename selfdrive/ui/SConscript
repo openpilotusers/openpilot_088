@@ -9,7 +9,8 @@ base_libs = [gpucommon, common, messaging, cereal, visionipc, transformations, '
 maps = True
 
 if arch == 'aarch64':
-  base_libs += ['log', 'utils', 'gui', 'ui', 'CB', 'gsl', 'adreno_utils', 'cutils', 'uuid']
+  #base_libs += ['log', 'utils', 'gui', 'ui', 'CB', 'gsl', 'adreno_utils', 'cutils', 'uuid']
+  base_libs += ['log', 'utils', 'gui', 'ui', 'CB', 'gsl', 'adreno_utils', 'cutils', 'uuid', 'qmapboxgl']
 
 #if maps and arch == 'x86_64':
 if maps:
