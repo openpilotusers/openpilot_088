@@ -133,7 +133,7 @@ DevicePanel::DevicePanel(QWidget* parent) : QWidget(parent) {
   connect(dcamBtn, &ButtonControl::clicked, [=]() { emit showDriverView(); });
 
   QString resetCalibDesc = "오픈파일럿을 사용하려면 장치를 왼쪽 또는 오른쪽으로 4°, 위 또는 아래로 5° 이내에 장착해야 합니다. 오픈파일럿이 지속적으로 보정되고 있으므로 재설정할 필요가 거의 없습니다.";
-  auto resetCalibBtn = new ButtonControl("캘리브레이션정보", "확인", resetCalibDesc);
+  auto resetCalibBtn = new ButtonControl("캘리브레이션 초기화", "실행", resetCalibDesc);
   connect(resetCalibBtn, &ButtonControl::clicked, [=]() {
     if (ConfirmationDialog::confirm("캘리브레이션을 초기화 하시겠습니까? 자동 재부팅됩니다.", this)) {
       Params().remove("CalibrationParams");
@@ -674,6 +674,8 @@ SettingsWindow::SettingsWindow(QWidget *parent) : QFrame(parent) {
     {"사용자설정", new UserPanel(this)},
     {"튜닝", new TuningPanel(this)},
   };
+
+  sidebar_layout->addSpacing(43);
 
 #ifdef ENABLE_MAPS
   auto map_panel = new MapPanel(this);
