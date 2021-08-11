@@ -657,7 +657,7 @@ class Controls:
     self.AM.process_alerts(self.sm.frame, clear_event)
     CC.hudControl.visualAlert = self.AM.visual_alert
 
-    if not self.hyundai_lkas and self.enabled:
+    if not self.hyundai_lkas and self.initialized:
       # send car controls over can
       can_sends = self.CI.apply(CC, self.sm)
       self.pm.send('sendcan', can_list_to_can_capnp(can_sends, msgtype='sendcan', valid=CS.canValid))
@@ -770,7 +770,7 @@ class Controls:
 
     self.update_events(CS)
 
-    if not self.hyundai_lkas:
+    if not self.hyundai_lkas and self.initialized:
       # Update control state
       self.state_transition(CS)
       self.prof.checkpoint("State transition")
@@ -784,7 +784,7 @@ class Controls:
     self.publish_logs(CS, start_time, actuators, lac_log)
     self.prof.checkpoint("Sent")
 
-    if not CS.cruiseState.enabled and not self.hyundai_lkas:
+    if not CS.cruiseState.enabled and not self.hyundai_lkas not self.soft_disable_timer:
       self.hyundai_lkas = True
 
   def controlsd_thread(self):
