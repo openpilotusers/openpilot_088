@@ -5,6 +5,7 @@
 
 #include "selfdrive/hardware/hw.h"
 #include "selfdrive/ui/qt/widgets/controls.h"
+#include "selfdrive/ui/ui.h" // opkr
 
 // SSH enable toggle
 class SshToggle : public ToggleControl {
@@ -457,6 +458,23 @@ public:
     QObject::connect(this, &BattLessToggle::toggleFlipped, [=](int state) {
       char value = state ? '1' : '0';
       Params().put("OpkrBattLess", &value, 1);
+    });
+  }
+};
+
+class LiveCameraOffsetToggle : public ToggleControl {
+  Q_OBJECT
+
+public:
+  LiveCameraOffsetToggle() : ToggleControl("Live Camera Offset", "카메라 오프셋을 실시간으로 조정합니다. 화면에 관련 UI가 표시되며, 실시간 튜닝 혹은 주행중 실시간 적용시 사용하세요.", "../assets/offroad/icon_shell.png", Params().getBool("OpkrLiveCameraOffsetEnable")) {
+    QObject::connect(this, &LiveCameraOffsetToggle::toggleFlipped, [=](int state) {
+      char value = state ? '1' : '0';
+      Params().put("OpkrLiveCameraOffsetEnable", &value, 1);
+      if (state) {
+        QUIState::ui_state.scene.live_camera_offset_enable = true;
+      } else {
+        QUIState::ui_state.scene.live_camera_offset_enable = false;
+      }
     });
   }
 };

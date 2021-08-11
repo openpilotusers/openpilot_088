@@ -177,6 +177,23 @@ void HomeWindow::mousePressEvent(QMouseEvent* e) {
     }
     return;
   }
+  // opkr live camera offset
+  if (QUIState::ui_state.scene.live_camera_offset_enable) {
+    if (QUIState::ui_state.scene.started && !sidebar->isVisible() && !QUIState::ui_state.scene.map_on_top && livecamoffset_left_btn.ptInRect(e->x(), e->y())) {
+      QUIState::ui_state.scene.live_camera_offset = QUIState::ui_state.scene.live_camera_offset - 5;
+      if (QUIState::ui_state.scene.live_camera_offset <= -1000) QUIState::ui_state.scene.live_camera_offset = -1000;
+      QString value = QString::number(QUIState::ui_state.scene.live_camera_offset);
+      Params().put("CameraOffsetAdj", value.toStdString());
+      return;
+    }
+    if (QUIState::ui_state.scene.started && !sidebar->isVisible() && !QUIState::ui_state.scene.map_on_top && livecamoffset_right_btn.ptInRect(e->x(), e->y())) {
+      QUIState::ui_state.scene.live_camera_offset = QUIState::ui_state.scene.live_camera_offset + 5;
+      if (QUIState::ui_state.scene.live_camera_offset >= 1000) QUIState::ui_state.scene.live_camera_offset = 1000;
+      QString value = QString::number(QUIState::ui_state.scene.live_camera_offset);
+      Params().put("CameraOffsetAdj", value.toStdString());
+      return;
+    }
+  }
   // Handle sidebar collapsing
   if (onroad->isVisible() && (!sidebar->isVisible() || e->x() > sidebar->width())) {
 
