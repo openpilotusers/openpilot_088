@@ -80,7 +80,7 @@ void SshControl::getUserKeys(const QString &username) {
   request->sendRequest("https://github.com/" + username + ".keys");
 }
 
-SwitchOpenpilot::SwitchOpenpilot() : ButtonControl("오픈파일럿SW 스위치", "", "다른 오픈파일럿 코드로 변경합니다. 아이디/리포지토리/브랜치를 입력해서 변경 가능합니다.") {
+SwitchOpenpilot::SwitchOpenpilot() : ButtonControl("오픈파일럿SW(리포/브랜치) 변경", "", "다른 오픈파일럿 코드로 변경합니다. 아이디/리포지토리/브랜치를 입력해서 변경 가능합니다.") {
 
   QObject::connect(this, &ButtonControl::clicked, [=]() {
     if (text() == "변경") {
