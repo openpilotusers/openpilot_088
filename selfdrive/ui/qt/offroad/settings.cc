@@ -135,26 +135,12 @@ DevicePanel::DevicePanel(QWidget* parent) : QWidget(parent) {
   QString resetCalibDesc = "오픈파일럿을 사용하려면 장치를 왼쪽 또는 오른쪽으로 4°, 위 또는 아래로 5° 이내에 장착해야 합니다. 오픈파일럿이 지속적으로 보정되고 있으므로 재설정할 필요가 거의 없습니다.";
   auto resetCalibBtn = new ButtonControl("캘리브레이션정보", "확인", resetCalibDesc);
   connect(resetCalibBtn, &ButtonControl::clicked, [=]() {
-    QString desc = "[기준값: L/R 4°및 UP/DN 5°이내]";
-    std::string calib_bytes = Params().get("CalibrationParams");
-    if (!calib_bytes.empty()) {
-      try {
-        AlignedBuffer aligned_buf;
-        capnp::FlatArrayMessageReader cmsg(aligned_buf.align(calib_bytes.data(), calib_bytes.size()));
-        auto calib = cmsg.getRoot<cereal::Event>().getLiveCalibration();
-        if (calib.getCalStatus() != 0) {
-          double pitch = calib.getRpyCalib()[1] * (180 / M_PI);
-          double yaw = calib.getRpyCalib()[2] * (180 / M_PI);
-          desc += QString("\n장치가 %1° %2 그리고 %3° %4 위치해 있습니다.")
-                                .arg(QString::number(std::abs(pitch), 'g', 1), pitch > 0 ? "위로" : "아래로",
-                                     QString::number(std::abs(yaw), 'g', 1), yaw > 0 ? "오른쪽으로" : "왼쪽으로");
-        }
-      } catch (kj::Exception) {
-        qInfo() << "캘리브레이션 파라미터 유효하지 않음";
-      }
-    }
-    if (ConfirmationDialog::alert(desc, this)) {
-      //Params().remove("CalibrationParams");
+    if (ConfirmationDialog::confirm("캘리브레이션을 초기화 하시겠습니까? 자동 재부팅됩니다.", this)) {
+      Params().remove("CalibrationParams");
+      Params().remove("LiveParameters");
+      QTimer::singleShot(1000, []() {
+        Hardware::reboot();
+      });
     }
   });
   connect(resetCalibBtn, &ButtonControl::showDescription, [=]() {
@@ -190,13 +176,6 @@ DevicePanel::DevicePanel(QWidget* parent) : QWidget(parent) {
     });
   }
 
-  auto uninstallBtn = new ButtonControl(getBrand() + " 제거", "제거");
-  connect(uninstallBtn, &ButtonControl::clicked, [=]() {
-    if (ConfirmationDialog::confirm("제거하시겠습니까?", this)) {
-      Params().putBool("DoUninstall", true);
-    }
-  });
-
   ButtonControl *regulatoryBtn = nullptr;
   if (Hardware::TICI()) {
     regulatoryBtn = new ButtonControl("Regulatory", "VIEW", "");
@@ -206,7 +185,7 @@ DevicePanel::DevicePanel(QWidget* parent) : QWidget(parent) {
     });
   }
 
-  for (auto btn : {dcamBtn, resetCalibBtn, retrainingBtn, uninstallBtn, regulatoryBtn}) {
+  for (auto btn : {dcamBtn, retrainingBtn, regulatoryBtn}) {
     if (btn) {
       main_layout->addWidget(horizontal_line());
       connect(parent, SIGNAL(offroadTransition(bool)), btn, SLOT(setEnabled(bool)));
@@ -216,31 +195,92 @@ DevicePanel::DevicePanel(QWidget* parent) : QWidget(parent) {
 
   main_layout->addWidget(horizontal_line());
 
-  // cal reset and param init buttons
-  QHBoxLayout *cal_param_init_layout = new QHBoxLayout();
-  cal_param_init_layout->setSpacing(50);
+  main_layout->addWidget(resetCalibBtn);
 
-  QPushButton *calinit_btn = new QPushButton("캘리브레이션 리셋");
-  calinit_btn->setStyleSheet("height: 120px;border-radius: 15px;background-color: #393939;");
-  cal_param_init_layout->addWidget(calinit_btn);
-  QObject::connect(calinit_btn, &QPushButton::clicked, [=]() {
-    if (ConfirmationDialog::confirm("캘리브레이션을 초기화할까요? 자동 재부팅됩니다.", this)) {
-      Params().remove("CalibrationParams");
-      Params().remove("LiveParameters");
-      QTimer::singleShot(1000, []() {
-        Hardware::reboot();
-      });
+  // power buttons
+  QHBoxLayout *power_layout = new QHBoxLayout();
+  power_layout->setSpacing(30);
+
+  QPushButton *reboot_btn = new QPushButton("재시작");
+  reboot_btn->setObjectName("reboot_btn");
+  power_layout->addWidget(reboot_btn);
+  QObject::connect(reboot_btn, &QPushButton::clicked, [=]() {
+    if (ConfirmationDialog::confirm("재시작하시겠습니까?", this)) {
+      Hardware::reboot();
     }
   });
 
-  QPushButton *paraminit_btn = new QPushButton("파라미터 초기화");
-  paraminit_btn->setStyleSheet("height: 120px;border-radius: 15px;background-color: #393939;");
-  cal_param_init_layout->addWidget(paraminit_btn);
-  QObject::connect(paraminit_btn, &QPushButton::clicked, [=]() {
-    if (ConfirmationDialog::confirm("파라미터를 초기상태로 되돌립니다. 진행하시겠습니까?", this)) {
-      QProcess::execute("/data/openpilot/init_param.sh");
+  QPushButton *poweroff_btn = new QPushButton("전원끄기");
+  poweroff_btn->setObjectName("poweroff_btn");
+  power_layout->addWidget(poweroff_btn);
+  QObject::connect(poweroff_btn, &QPushButton::clicked, [=]() {
+    if (ConfirmationDialog::confirm("전원을 끄시겠습니까?", this)) {
+      Hardware::poweroff();
     }
   });
+
+  setStyleSheet(R"(
+    QPushButton {
+      height: 120px;
+      border-radius: 15px;
+    }
+    #reboot_btn { background-color: #393939; }
+    #reboot_btn:pressed { background-color: #4a4a4a; }
+    #poweroff_btn { background-color: #E22C2C; }
+    #poweroff_btn:pressed { background-color: #FF2424; }
+  )");
+  main_layout->addLayout(power_layout);
+}
+
+SoftwarePanel::SoftwarePanel(QWidget* parent) : QWidget(parent) {
+  gitRemoteLbl = new LabelControl("Git Remote");
+  gitBranchLbl = new LabelControl("Git Branch");
+  gitCommitLbl = new LabelControl("Git Commit");
+  osVersionLbl = new LabelControl("OS Version");
+  versionLbl = new LabelControl("Version");
+  lastUpdateLbl = new LabelControl("최근업데이트 확인", "", "");
+  updateBtn = new ButtonControl("업데이트 체크 및 적용", "");
+  connect(updateBtn, &ButtonControl::clicked, [=]() {
+    if (params.getBool("IsOffroad")) {
+      const QString paramsPath = QString::fromStdString(params.getParamsPath());
+      fs_watch->addPath(paramsPath + "/d/LastUpdateTime");
+      fs_watch->addPath(paramsPath + "/d/UpdateFailedCount");
+    }
+    std::system("/data/openpilot/gitcommit.sh");
+    std::system("date '+%F %T' > /data/params/d/LastUpdateTime");
+    QString desc = "";
+    QString commit_local = QString::fromStdString(Params().get("GitCommit").substr(0, 10));
+    QString commit_remote = QString::fromStdString(Params().get("GitCommitRemote").substr(0, 10));
+    QString empty = "";
+    desc += QString("로    컬: %1\n리모트: %2%3%4\n").arg(commit_local, commit_remote, empty, empty);
+    if (commit_local == commit_remote) {
+      desc += QString("로컬과 리모트가 일치합니다. 업데이트가 필요 없습니다.");
+    } else {
+      desc += QString("업데이트가 있습니다. 적용하려면 확인버튼을 누르세요.");
+    }
+    if (ConfirmationDialog::confirm(desc, this)) {
+      std::system("/data/openpilot/gitpull.sh");
+    }
+  });
+
+  QVBoxLayout *main_layout = new QVBoxLayout(this);
+  QWidget *widgets[] = {versionLbl, gitRemoteLbl, gitBranchLbl, lastUpdateLbl, updateBtn};
+  for (int i = 0; i < std::size(widgets); ++i) {
+    main_layout->addWidget(widgets[i]);
+    main_layout->addWidget(horizontal_line());
+  }
+
+  auto uninstallBtn = new ButtonControl(getBrand() + " 제거", "제거");
+  connect(uninstallBtn, &ButtonControl::clicked, [=]() {
+    if (ConfirmationDialog::confirm("제거하시겠습니까?", this)) {
+      Params().putBool("DoUninstall", true);
+    }
+  });
+  connect(parent, SIGNAL(offroadTransition(bool)), uninstallBtn, SLOT(setEnabled(bool)));
+
+  main_layout->addWidget(new GitHash());
+
+  main_layout->addWidget(horizontal_line());
 
   // preset1 buttons
   QHBoxLayout *presetone_layout = new QHBoxLayout();
@@ -286,81 +326,19 @@ DevicePanel::DevicePanel(QWidget* parent) : QWidget(parent) {
     }
   });
 
-  // power buttons
-  QHBoxLayout *power_layout = new QHBoxLayout();
-  power_layout->setSpacing(50);
-
-  QPushButton *reboot_btn = new QPushButton("재시작");
-  reboot_btn->setStyleSheet("height: 120px;border-radius: 15px; background-color: #393939;");
-  power_layout->addWidget(reboot_btn);
-  QObject::connect(reboot_btn, &QPushButton::clicked, [=]() {
-    if (ConfirmationDialog::confirm("재시작하시겠습니까?", this)) {
-      Hardware::reboot();
+  auto paraminit_btn = new ButtonControl("파라미터 초기화", "실행");
+  QObject::connect(paraminit_btn, &ButtonControl::clicked, [=]() {
+    if (ConfirmationDialog::confirm("파라미터를 초기화 합니다. 이온 메뉴의 각종 변경값들이 최초 설정된 값으로 바뀝니다. 진행하시겠습니까?", this)){
+      QProcess::execute("/data/openpilot/init_param.sh");
     }
   });
-
-  QPushButton *poweroff_btn = new QPushButton("전원끄기");
-  poweroff_btn->setStyleSheet("height: 120px;border-radius: 15px; background-color: #E22C2C;");
-  power_layout->addWidget(poweroff_btn);
-  QObject::connect(poweroff_btn, &QPushButton::clicked, [=]() {
-    if (ConfirmationDialog::confirm("전원을 끄시겠습니까?", this)) {
-      Hardware::poweroff();
-    }
-  });
-
-  main_layout->addLayout(cal_param_init_layout);
-
-  main_layout->addWidget(horizontal_line());
 
   main_layout->addLayout(presetone_layout);
   main_layout->addLayout(presettwo_layout);
 
   main_layout->addWidget(horizontal_line());
 
-  main_layout->addLayout(power_layout);
-}
-
-SoftwarePanel::SoftwarePanel(QWidget* parent) : QWidget(parent) {
-  gitRemoteLbl = new LabelControl("Git Remote");
-  gitBranchLbl = new LabelControl("Git Branch");
-  gitCommitLbl = new LabelControl("Git Commit");
-  osVersionLbl = new LabelControl("OS Version");
-  versionLbl = new LabelControl("Version");
-  lastUpdateLbl = new LabelControl("최근업데이트 확인", "", "");
-  updateBtn = new ButtonControl("업데이트 체크 및 적용", "");
-  connect(updateBtn, &ButtonControl::clicked, [=]() {
-    if (params.getBool("IsOffroad")) {
-      const QString paramsPath = QString::fromStdString(params.getParamsPath());
-      fs_watch->addPath(paramsPath + "/d/LastUpdateTime");
-      fs_watch->addPath(paramsPath + "/d/UpdateFailedCount");
-    }
-    std::system("/data/openpilot/gitcommit.sh");
-    std::system("date '+%F %T' > /data/params/d/LastUpdateTime");
-    QString desc = "";
-    QString commit_local = QString::fromStdString(Params().get("GitCommit").substr(0, 10));
-    QString commit_remote = QString::fromStdString(Params().get("GitCommitRemote").substr(0, 10));
-    QString empty = "";
-    desc += QString("로    컬: %1\n리모트: %2%3%4\n").arg(commit_local, commit_remote, empty, empty);
-    if (commit_local == commit_remote) {
-      desc += QString("로컬과 리모트가 일치합니다. 업데이트가 필요 없습니다.");
-    } else {
-      desc += QString("업데이트가 있습니다. 적용하려면 확인버튼을 누르세요.");
-    }
-    if (ConfirmationDialog::confirm(desc, this)) {
-      std::system("/data/openpilot/gitpull.sh");
-    }
-  });
-
-  QVBoxLayout *main_layout = new QVBoxLayout(this);
-  QWidget *widgets[] = {versionLbl, gitRemoteLbl, gitBranchLbl, lastUpdateLbl, updateBtn};
-  for (int i = 0; i < std::size(widgets); ++i) {
-    main_layout->addWidget(widgets[i]);
-    if (i < std::size(widgets) - 1) {
-      main_layout->addWidget(horizontal_line());
-    }
-  }
-
-  main_layout->addWidget(new GitHash());
+  main_layout->addWidget(paraminit_btn);
 
   main_layout->addWidget(horizontal_line());
 
@@ -399,7 +377,9 @@ SoftwarePanel::SoftwarePanel(QWidget* parent) : QWidget(parent) {
 
   main_layout->addWidget(new SwitchOpenpilot()); // opkr
 
-  setStyleSheet(R"(QLabel {font-size: 50px;})");
+  main_layout->addWidget(horizontal_line());
+
+  main_layout->addWidget(uninstallBtn);
 
   fs_watch = new QFileSystemWatcher(this);
   QObject::connect(fs_watch, &QFileSystemWatcher::fileChanged, [=](const QString path) {
@@ -661,13 +641,16 @@ SettingsWindow::SettingsWindow(QWidget *parent) : QFrame(parent) {
   )");
 
   // close button
-  QPushButton *close_btn = new QPushButton("닫기");
+  QPushButton *close_btn = new QPushButton("×");
   close_btn->setStyleSheet(R"(
-    font-size: 60px;
-    font-weight: bold;
-    border 1px grey solid;
-    border-radius: 100px;
-    background-color: #292929;
+    QPushButton {
+      font-size: 140px;
+      padding-bottom: 20px;
+      font-weight: bold;
+      border 1px grey solid;
+      border-radius: 100px;
+      background-color: #292929;
+      font-weight: 400;
     }
     QPushButton:pressed {
       background-color: #3B3B3B;
@@ -692,13 +675,12 @@ SettingsWindow::SettingsWindow(QWidget *parent) : QFrame(parent) {
     {"튜닝", new TuningPanel(this)},
   };
 
-  sidebar_layout->addSpacing(45);
-
 #ifdef ENABLE_MAPS
   auto map_panel = new MapPanel(this);
   panels.push_back({"Navigation", map_panel});
   QObject::connect(map_panel, &MapPanel::closeSettings, this, &SettingsWindow::closeSettings);
 #endif
+
   const int padding = panels.size() > 3 ? 18 : 28;
 
   nav_btns = new QButtonGroup();
