@@ -137,7 +137,7 @@ void Sidebar::updateState(const UIState &s) {
   setProperty("pandaStatus", pandaStatus);
 
   // opkr
-  QString iPAddress = "--";
+  QString iPAddress = "N/A";
   QString sSID = "---";
   if (network_type[deviceState.getNetworkType()] != "--") {
     std::string m_strip = s.scene.deviceState.getWifiIpAddress();
