@@ -2499,8 +2499,8 @@ CameraOffset::CameraOffset() : AbstractControl("CameraOffset", "CameraOffsetê°’ì
     auto str = QString::fromStdString(params.get("CameraOffsetAdj"));
     int value = str.toInt();
     value = value - 5;
-    if (value <= -300 ) {
-      value = -300;
+    if (value <= -1000 ) {
+      value = -1000;
     }
     QString values = QString::number(value);
     params.put("CameraOffsetAdj", values.toStdString());
@@ -2511,8 +2511,8 @@ CameraOffset::CameraOffset() : AbstractControl("CameraOffset", "CameraOffsetê°’ì
     auto str = QString::fromStdString(params.get("CameraOffsetAdj"));
     int value = str.toInt();
     value = value + 5;
-    if (value >= 300 ) {
-      value = 300;
+    if (value >= 1000 ) {
+      value = 1000;
     }
     QString values = QString::number(value);
     params.put("CameraOffsetAdj", values.toStdString());
