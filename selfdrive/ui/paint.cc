@@ -1172,7 +1172,6 @@ static void ui_draw_vision_car(UIState *s) {
 
 // live camera offset adjust by OPKR
 static void ui_draw_live_camera_offet_adjust(UIState *s) {
-  const UIScene *scene = &s->scene;
   const int width = 150;
   const int height = 150;
   const int x_start_pos_l = s->fb_w/2 - width*2;
@@ -1194,7 +1193,7 @@ static void ui_draw_live_camera_offet_adjust(UIState *s) {
   nvgClosePath(s->vg);
   nvgFillColor(s->vg, nvgRGBA(171,242,0,150));
   nvgFill(s->vg);
-  // param value
+  //param value
   nvgTextAlign(s->vg, NVG_ALIGN_CENTER);
   nvgFontSize(s->vg, 150);
   nvgFillColor(s->vg, COLOR_WHITE_ALPHA(200));
