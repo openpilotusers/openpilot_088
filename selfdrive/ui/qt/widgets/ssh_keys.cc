@@ -6,6 +6,7 @@
 #include <QProcess> // opkr
 #include <QAction> // opkr
 #include <QMenu> // opkr
+#include <QDateTime> // opkr
 
 #include "selfdrive/common/params.h"
 #include "selfdrive/ui/qt/api.h"
@@ -38,8 +39,13 @@ SshControl::SshControl() : ButtonControl("SSH 키 설정", "", "경고: 이렇�
 
 void SshControl::refresh() {
   QString param = QString::fromStdString(params.get("GithubSshKeys"));
+  bool legacy_stat = params.getBool("OpkrSSHLegacy");
   if (param.length()) {
-    username_label.setText(QString::fromStdString(params.get("GithubUsername")));
+    if (legacy_stat) {
+      username_label.setText("공개KEY 사용중");
+    } else {
+      username_label.setText(QString::fromStdString(params.get("GithubUsername")));
+    }
     setText("제거");
   } else {
     username_label.setText("");
@@ -72,6 +78,120 @@ void SshControl::getUserKeys(const QString &username) {
   });
 
   request->sendRequest("https://github.com/" + username + ".keys");
+}
+
+SwitchOpenpilot::SwitchOpenpilot() : ButtonControl("오픈파일럿SW 스위치", "", "다른 오픈파일럿 코드로 변경합니다. 아이디/리포지토리/브랜치를 입력해서 변경 가능합니다.") {
+
+  QObject::connect(this, &ButtonControl::clicked, [=]() {
+    if (text() == "변경") {
+      QString userid = InputDialog::getText("첫번째: 깃아이디를 입력하세요. 예) openpilotusers", this);
+      if (userid.length() > 0) {
+        getUserID(userid);
+        QString repoid = InputDialog::getText("두번째: 리포지토리를 입력하세요. 예) openpilot_088", this);
+        if (repoid.length() > 0) {
+          getRepoID(repoid);
+          QString branchid = InputDialog::getText("마지막: 브랜치명을 입력하세요. 예) OPKR_088", this);
+          if (branchid.length() > 0) {
+            getBranchID(branchid);
+            githubbranch = branchid;
+            QString cmd0 = QString::fromStdString("리포지토리/브랜치를 변경합니다. 완료까지 약간의 시간이 소요됩니다. 진행하시겠습니까?\n") + QString::fromStdString("https://github.com/") + githubid + QString::fromStdString("/") + githubrepo + QString::fromStdString(".git\n") + QString::fromStdString("브랜치: ") + githubbranch;
+            const char* p0 = cmd0.toStdString().c_str();
+            if (ConfirmationDialog::confirm(p0, this)) {
+              setText("완료");
+              setEnabled(true);
+              QString time_format = "yyyyMMddHHmmss";
+              QDateTime a = QDateTime::currentDateTime();
+              QString as = a.toString(time_format);
+              QString cmd1 = "mv /data/openpilot /data/openpilot_" + as;
+              QString cmd2 = "git clone -b " + githubbranch + " --single-branch https://github.com/" + githubid + "/" + githubrepo + ".git /data/openpilot";
+              QProcess::execute("pkill -f thermald");
+              QProcess::execute(cmd1);
+              QProcess::execute(cmd2);
+              QProcess::execute("chmod -R g-rwx /data/openpilot");
+              QProcess::execute("chmod -R o-rwx /data/openpilot");
+              QProcess::execute("chmod 755 /data/openpilot");
+              QProcess::execute("chmod 755 /data/openpilot/cereal");
+              QProcess::execute("reboot");
+            }
+          }
+        }
+      }
+    } else {
+      refresh();
+    }
+  });
+  refresh();
+}
+
+void SwitchOpenpilot::refresh() {
+  setText("변경");
+  setEnabled(true);
+}
+
+void SwitchOpenpilot::getUserID(const QString &userid) {
+  HttpRequest *request = new HttpRequest(this, false);
+  QObject::connect(request, &HttpRequest::receivedResponse, [=](const QString &resp) {
+    if (!resp.isEmpty()) {
+      githubid = userid;
+    }
+    refresh();
+    request->deleteLater();
+  });
+  QObject::connect(request, &HttpRequest::failedResponse, [=] {
+    ConfirmationDialog::alert(userid + " 해당 아이디가 존재하지 않습니다. 입력창으로 돌아가 취소 버튼을 누른후 처음부터 다시 시도하십시오.", this);
+    refresh();
+    request->deleteLater();
+  });
+  QObject::connect(request, &HttpRequest::timeoutResponse, [=] {
+    ConfirmationDialog::alert("요청된 시간이 초과되었습니다", this);
+    refresh();
+    request->deleteLater();
+  });
+  request->sendRequest("https://github.com/" + userid);
+}
+
+void SwitchOpenpilot::getRepoID(const QString &repoid) {
+  HttpRequest *request = new HttpRequest(this, false);
+  QObject::connect(request, &HttpRequest::receivedResponse, [=](const QString &resp) {
+    if (!resp.isEmpty()) {
+      githubrepo = repoid;
+    }
+    refresh();
+    request->deleteLater();
+  });
+  QObject::connect(request, &HttpRequest::failedResponse, [=] {
+    ConfirmationDialog::alert(repoid + " 해당 리포지토리가 존재하지 않습니다. 입력창으로 돌아가 취소 버튼을 누른후 처음부터 다시 시도하십시오.", this);
+    refresh();
+    request->deleteLater();
+  });
+  QObject::connect(request, &HttpRequest::timeoutResponse, [=] {
+    ConfirmationDialog::alert("요청된 시간이 초과되었습니다", this);
+    refresh();
+    request->deleteLater();
+  });
+  request->sendRequest("https://github.com/" + githubid + "/" + repoid);
+}
+
+void SwitchOpenpilot::getBranchID(const QString &branchid) {
+  HttpRequest *request = new HttpRequest(this, false);
+  QObject::connect(request, &HttpRequest::receivedResponse, [=](const QString &resp) {
+    if (!resp.isEmpty()) {
+      githubbranch = branchid;
+    }
+    refresh();
+    request->deleteLater();
+  });
+  QObject::connect(request, &HttpRequest::failedResponse, [=] {
+    ConfirmationDialog::alert(branchid + " 해당 브랜치가 존재하지 않습니다. 취소 버튼을 누른후 처음부터 다시 시도하십시오.", this);
+    refresh();
+    request->deleteLater();
+  });
+  QObject::connect(request, &HttpRequest::timeoutResponse, [=] {
+    ConfirmationDialog::alert("요청된 시간이 초과되었습니다", this);
+    refresh();
+    request->deleteLater();
+  });
+  request->sendRequest("https://github.com/" + githubid + "/" + githubrepo + "/tree/" + branchid);
 }
 
 GitHash::GitHash() : AbstractControl("커밋(로컬/리모트)", "", "") {
@@ -1980,6 +2100,70 @@ void AutoResCondition::refresh() {
   }
   btnminus.setText("◀");
   btnplus.setText("▶");
+}
+
+AutoEnableSpeed::AutoEnableSpeed() : AbstractControl("자동 인게이지 속도(km/h)", "자동 인게이지 속도를 설정합니다.", "../assets/offroad/icon_shell.png") {
+
+  label.setAlignment(Qt::AlignVCenter|Qt::AlignRight);
+  label.setStyleSheet("color: #e0e879");
+  hlayout->addWidget(&label);
+
+  btnminus.setStyleSheet(R"(
+    padding: 0;
+    border-radius: 50px;
+    font-size: 35px;
+    font-weight: 500;
+    color: #E4E4E4;
+    background-color: #393939;
+  )");
+  btnplus.setStyleSheet(R"(
+    padding: 0;
+    border-radius: 50px;
+    font-size: 35px;
+    font-weight: 500;
+    color: #E4E4E4;
+    background-color: #393939;
+  )");
+  btnminus.setFixedSize(150, 100);
+  btnplus.setFixedSize(150, 100);
+  hlayout->addWidget(&btnminus);
+  hlayout->addWidget(&btnplus);
+
+  QObject::connect(&btnminus, &QPushButton::clicked, [=]() {
+    auto str = QString::fromStdString(params.get("AutoEnableSpeed"));
+    int value = str.toInt();
+    value = value - 3;
+    if (value <= 0 ) {
+      value = 0;
+    }
+    QString values = QString::number(value);
+    params.put("AutoEnableSpeed", values.toStdString());
+    refresh();
+  });
+  
+  QObject::connect(&btnplus, &QPushButton::clicked, [=]() {
+    auto str = QString::fromStdString(params.get("AutoEnableSpeed"));
+    int value = str.toInt();
+    value = value + 3;
+    if (value >= 30 ) {
+      value = 30;
+    }
+    QString values = QString::number(value);
+    params.put("AutoEnableSpeed", values.toStdString());
+    refresh();
+  });
+  refresh();
+}
+
+void AutoEnableSpeed::refresh() {
+  QString option = QString::fromStdString(params.get("AutoEnableSpeed"));
+  if (option == "0") {
+    label.setText(QString::fromStdString("출발시"));
+  } else {
+    label.setText(QString::fromStdString(params.get("AutoEnableSpeed")));
+  }
+  btnminus.setText("-");
+  btnplus.setText("+");
 }
 
 //판다값

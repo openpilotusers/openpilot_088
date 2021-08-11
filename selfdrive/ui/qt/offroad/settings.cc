@@ -395,6 +395,10 @@ SoftwarePanel::SoftwarePanel(QWidget* parent) : QWidget(parent) {
   });
   main_layout->addWidget(pandaflashingtbtn);
 
+  main_layout->addWidget(horizontal_line());
+
+  main_layout->addWidget(new SwitchOpenpilot()); // opkr
+
   setStyleSheet(R"(QLabel {font-size: 50px;})");
 
   fs_watch = new QFileSystemWatcher(this);
@@ -531,6 +535,7 @@ UserPanel::UserPanel(QWidget* parent) : QWidget(parent) {
   layout->addWidget(new SpeedLimitOffset());
   layout->addWidget(new CruiseGapAdjustToggle());
   layout->addWidget(new AutoEnabledToggle());
+  layout->addWidget(new AutoEnableSpeed());
   layout->addWidget(new CruiseAutoResToggle());
   layout->addWidget(new RESChoice());
   layout->addWidget(new AutoResCondition());

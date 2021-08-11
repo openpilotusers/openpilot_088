@@ -24,6 +24,7 @@ from common.params import Params
 import common.log as trace1
 import common.CTime1000 as tm
 from random import randint
+from decimal import Decimal
 
 VisualAlert = car.CarControl.HUDControl.VisualAlert
 
@@ -196,6 +197,8 @@ class CarController():
 
     self.variable_steer_max = self.params.get_bool("OpkrVariableSteerMax")
     self.variable_steer_delta = self.params.get_bool("OpkrVariableSteerDelta")
+
+    self.cc_timer = 0
 
     if CP.lateralTuning.which() == 'pid':
       self.str_log2 = 'T={:0.2f}/{:0.3f}/{:0.2f}/{:0.5f}'.format(CP.lateralTuning.pid.kpV[1], CP.lateralTuning.pid.kiV[1], CP.lateralTuning.pid.kdV[0], CP.lateralTuning.pid.kf)
@@ -588,6 +591,22 @@ class CarController():
     else:
       str_log1 = 'M/C={:03.0f}/{:03.0f}  TQ={:03.0f}  ST={:03.0f}/{:01.0f}/{:01.0f}  AQ={:+04.2f}  S={:.0f}/{:.0f}'.format(abs(self.model_speed), self.curve_speed, \
        abs(new_steer), max(self.steerMax, abs(new_steer)), self.steerDeltaUp, self.steerDeltaDown, aq_value, int(CS.is_highway), CS.safety_sign_check)
+
+    self.cc_timer += 1
+    if self.cc_timer > 100:
+      self.cc_timer = 0
+      if self.params.get_bool("OpkrLiveTune"):
+        if CP.lateralTuning.which() == 'pid':
+          self.str_log2 = 'T={:0.2f}/{:0.3f}/{:0.2f}/{:0.5f}'.format(float(Decimal(self.params.get("PidKp", encoding="utf8"))*Decimal('0.01')), \
+           float(Decimal(self.params.get("PidKi", encoding="utf8"))*Decimal('0.001')), float(Decimal(self.params.get("PidKd", encoding="utf8"))*Decimal('0.01')), \
+           float(Decimal(self.params.get("PidKf", encoding="utf8"))*Decimal('0.00001')))
+        elif CP.lateralTuning.which() == 'indi':
+          self.str_log2 = 'T={:03.1f}/{:03.1f}/{:03.1f}/{:03.1f}'.format(float(Decimal(self.params.get("InnerLoopGain", encoding="utf8"))*Decimal('0.1')), \
+           float(Decimal(self.params.get("OuterLoopGain", encoding="utf8"))*Decimal('0.1')), float(Decimal(self.params.get("TimeConstant", encoding="utf8"))*Decimal('0.1')), \
+           float(Decimal(self.params.get("ActuatorEffectiveness", encoding="utf8"))*Decimal('0.1')))
+        elif CP.lateralTuning.which() == 'lqr':
+          self.str_log2 = 'T={:04.0f}/{:05.3f}/{:06.4f}'.format(float(Decimal(self.params.get("Scale", encoding="utf8"))*Decimal('1.0')), \
+           float(Decimal(self.params.get("LqrKi", encoding="utf8"))*Decimal('0.001')), float(Decimal(self.params.get("DcGain", encoding="utf8"))*Decimal('0.0001')))
 
     trace1.printf1('{}  {}'.format(str_log1, self.str_log2))
 

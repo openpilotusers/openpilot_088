@@ -197,9 +197,10 @@ class Controls:
     self.second = 0.0
     self.map_enabled = False
     self.lane_change_delay = int(Params().get("OpkrAutoLaneChangeDelay", encoding="utf8"))
+    self.auto_enable_speed = 1 if int(Params().get("AutoEnableSpeed", encoding="utf8")) == 0 else int(Params().get("AutoEnableSpeed", encoding="utf8"))
 
   def auto_enable(self, CS):
-    if self.state != State.enabled and CS.vEgo >= 3 * CV.KPH_TO_MS and CS.gearShifter == 2 and self.sm['liveCalibration'].calStatus != Calibration.UNCALIBRATED:
+    if self.state != State.enabled and CS.vEgo >= self.auto_enable_speed * CV.KPH_TO_MS and CS.gearShifter == 2 and self.sm['liveCalibration'].calStatus != Calibration.UNCALIBRATED:
       if self.sm.all_alive_and_valid() and self.enabled != self.controlsAllowed:
         self.events.add( EventName.pcmEnable )
 
