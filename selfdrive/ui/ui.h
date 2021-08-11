@@ -90,9 +90,8 @@ const Rect laneless_btn = {1585, 905, 140, 140};
 const Rect monitoring_btn = {50, 830, 140, 140};
 const Rect ml_btn = {1265, 905, 140, 140};
 const Rect stockui_btn = {15, 15, 184, 202};
-
-const Rect livecamoffset_left_btn = {810, 700, 150, 150};
-const Rect livecamoffset_right_btn = {1110, 700, 150, 150};
+const Rect livecamoffset_left_btn = {480, 700, 160, 160};
+const Rect livecamoffset_right_btn = {1280, 700, 160, 160};
 
 const int UI_FREQ = 20;   // Hz
 

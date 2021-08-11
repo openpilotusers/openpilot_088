@@ -1172,15 +1172,15 @@ static void ui_draw_vision_car(UIState *s) {
 
 // live camera offset adjust by OPKR
 static void ui_draw_live_camera_offet_adjust(UIState *s) {
-  const int width = 150;
-  const int height = 150;
+  const int width = 160;
+  const int height = 160;
   const int x_start_pos_l = s->fb_w/2 - width*2;
   const int x_start_pos_r = s->fb_w/2 + width*2;
   const int y_pos = 700;
   //left symbol
   nvgBeginPath(s->vg);
   nvgMoveTo(s->vg, x_start_pos_l, y_pos);
-  nvgLineTo(s->vg, x_start_pos_l - width/2, y_pos + height/2);
+  nvgLineTo(s->vg, x_start_pos_l - width, y_pos + height/2);
   nvgLineTo(s->vg, x_start_pos_l, y_pos + height);
   nvgClosePath(s->vg);
   nvgFillColor(s->vg, nvgRGBA(171,242,0,150));
@@ -1188,13 +1188,13 @@ static void ui_draw_live_camera_offet_adjust(UIState *s) {
   //right symbol
   nvgBeginPath(s->vg);
   nvgMoveTo(s->vg, x_start_pos_r, y_pos);
-  nvgLineTo(s->vg, x_start_pos_r + width/2, y_pos + height/2);
+  nvgLineTo(s->vg, x_start_pos_r + width, y_pos + height/2);
   nvgLineTo(s->vg, x_start_pos_r, y_pos + height);
   nvgClosePath(s->vg);
   nvgFillColor(s->vg, nvgRGBA(171,242,0,150));
   nvgFill(s->vg);
   //param value
-  nvgTextAlign(s->vg, NVG_ALIGN_CENTER);
+  nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_BASELINE);
   nvgFontSize(s->vg, 150);
   nvgFillColor(s->vg, COLOR_WHITE_ALPHA(200));
   ui_print(s, s->fb_w/2, y_pos + height/2, "%+0.3f", s->scene.live_camera_offset*0.001);
