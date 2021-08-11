@@ -137,11 +137,8 @@ void Sidebar::updateState(const UIState &s) {
   setProperty("pandaStatus", pandaStatus);
 
   // opkr
-  wifi_IPAddress = s.scene.deviceState.getWifiIpAddress();
-  wifi_SSID = s.scene.deviceState.getWifiSSID();
-
-  setProperty("wifiIPAddress", wifi_IPAddress);
-  setProperty("wifiSSID", wifi_SSID);
+  setProperty("wifiIPAddress", s.scene.deviceState.getWifiIpAddress());
+  setProperty("wifiSSID", s.scene.deviceState.getWifiSSID());
 
   if (s.sm->updated("deviceState") || s.sm->updated("pandaState")) {
     // atom
