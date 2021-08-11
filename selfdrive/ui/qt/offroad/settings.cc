@@ -197,6 +197,8 @@ DevicePanel::DevicePanel(QWidget* parent) : QWidget(parent) {
 
   main_layout->addWidget(resetCalibBtn);
 
+  main_layout->addWidget(horizontal_line());
+
   // power buttons
   QHBoxLayout *power_layout = new QHBoxLayout();
   power_layout->setSpacing(30);
