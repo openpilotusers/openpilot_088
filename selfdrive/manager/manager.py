@@ -152,7 +152,7 @@ def manager_init():
     ("LCTimingFactorEnable", "1"),
     ("AutoEnableSpeed", "3"),
     ("SafetyCamDecelDistGain", "0"),
-    ("OpkrLiveCameraOffset", "0"),
+    ("OpkrLiveCameraOffsetEnable", "0"),
   ]
   if not PC:
     default_params.append(("LastUpdateTime", datetime.datetime.utcnow().isoformat().encode('utf8')))
