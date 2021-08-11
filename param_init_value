@@ -83,10 +83,12 @@ CruiseGap2:12
 CruiseGap3:15
 CruiseGap4:20
 DynamicTR:2
-LCTimingFactorUD:0
+LCTimingFactorUD:1
 LCTimingFactor30:10
 LCTimingFactor60:20
 LCTimingFactor80:70
-LCTimingFactor110:110
+LCTimingFactor110:100
 OpkrUIBrightnessOff:0
-LCTimingFactorEnable:0
+LCTimingFactorEnable:1
+AutoEnableSpeed:3
+SafetyCamDecelDistGain:0

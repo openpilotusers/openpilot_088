@@ -143,13 +143,15 @@ def manager_init():
     ("CruiseGap4", "20"),
     ("DynamicTR", "2"),
     ("OpkrBattLess", "0"),
-    ("LCTimingFactorUD", "0"),
+    ("LCTimingFactorUD", "1"),
     ("LCTimingFactor30", "10"),
     ("LCTimingFactor60", "20"),
     ("LCTimingFactor80", "70"),
-    ("LCTimingFactor110", "110"),
+    ("LCTimingFactor110", "100"),
     ("OpkrUIBrightnessOff", "0"),
-    ("LCTimingFactorEnable", "0"),
+    ("LCTimingFactorEnable", "1"),
+    ("AutoEnableSpeed", "3"),
+    ("SafetyCamDecelDistGain", "0"),
   ]
   if not PC:
     default_params.append(("LastUpdateTime", datetime.datetime.utcnow().isoformat().encode('utf8')))
