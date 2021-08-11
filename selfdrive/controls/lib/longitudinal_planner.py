@@ -77,6 +77,7 @@ class Planner():
     self.vego = 0
     self.second = 0
     self.map_enabled = False
+    self.safetycam_decel_dist_gain = int(self.params.get("SafetyCamDecelDistGain", encoding="utf8"))
 
   def update(self, sm, CP):
     cur_time = sec_since_boot()
@@ -199,18 +200,19 @@ class Planner():
     if self.map_enabled:
       longitudinalPlan.mapSign = float(self.map_sign)
       cam_distance_calc = 0
-      cam_distance_calc = interp(self.vego*CV.MS_TO_KPH, [30,110], [2.8,4.5])  # 감속 기본 거리
-      consider_speed = interp((self.vego*CV.MS_TO_KPH - self.target_speed_map), [0,40], [1, 2]) # 속도차에 따른 거리 추가
+      cam_distance_calc = interp(self.vego*CV.MS_TO_KPH, [30,110], [2.8,4.0])  # 감속 기본 거리(속도*값 = 거리)
+      consider_speed = interp((self.vego*CV.MS_TO_KPH - self.target_speed_map), [0,50], [1, 2.25]) # 속도차에 따른 거리에 추가로 곱함
+      final_cam_decel_start_dist = cam_distance_calc*consider_speed*self.vego*CV.MS_TO_KPH * (1 + self.safetycam_decel_dist_gain*0.01) # 최종 감속 시작 거리*사용자 거리 팩터 추가
       if self.target_speed_map > 29 and self.target_speed_map_sign:
         longitudinalPlan.targetSpeedCamera = float(self.target_speed_map)
         longitudinalPlan.targetSpeedCameraDist = float(self.target_speed_map_dist)
         longitudinalPlan.onSpeedControl = True
-      elif self.target_speed_map > 29 and self.target_speed_map_dist < cam_distance_calc*consider_speed*self.vego*CV.MS_TO_KPH:
+      elif self.target_speed_map > 29 and self.target_speed_map_dist < final_cam_decel_start_dist:
         longitudinalPlan.targetSpeedCamera = float(self.target_speed_map)
         longitudinalPlan.targetSpeedCameraDist = float(self.target_speed_map_dist)
         longitudinalPlan.onSpeedControl = True
         self.target_speed_map_sign = True
-      elif self.target_speed_map > 29 and self.target_speed_map_dist >= cam_distance_calc*consider_speed*self.vego*CV.MS_TO_KPH and self.target_speed_map_block:
+      elif self.target_speed_map > 29 and self.target_speed_map_dist >= final_cam_decel_start_dist and self.target_speed_map_block:
         longitudinalPlan.targetSpeedCamera = float(self.target_speed_map)
         longitudinalPlan.targetSpeedCameraDist = float(self.target_speed_map_dist)
         longitudinalPlan.onSpeedControl = True

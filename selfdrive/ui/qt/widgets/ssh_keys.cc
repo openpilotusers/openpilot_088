@@ -2166,6 +2166,70 @@ void AutoEnableSpeed::refresh() {
   btnplus.setText("+");
 }
 
+CamDecelDistAdd::CamDecelDistAdd() : AbstractControl("안전구간감속 거리 늘림(%)", "안전구간 감속시 감속시작 거리를 늘립니다.", "../assets/offroad/icon_shell.png") {
+
+  label.setAlignment(Qt::AlignVCenter|Qt::AlignRight);
+  label.setStyleSheet("color: #e0e879");
+  hlayout->addWidget(&label);
+
+  btnminus.setStyleSheet(R"(
+    padding: 0;
+    border-radius: 50px;
+    font-size: 35px;
+    font-weight: 500;
+    color: #E4E4E4;
+    background-color: #393939;
+  )");
+  btnplus.setStyleSheet(R"(
+    padding: 0;
+    border-radius: 50px;
+    font-size: 35px;
+    font-weight: 500;
+    color: #E4E4E4;
+    background-color: #393939;
+  )");
+  btnminus.setFixedSize(150, 100);
+  btnplus.setFixedSize(150, 100);
+  hlayout->addWidget(&btnminus);
+  hlayout->addWidget(&btnplus);
+
+  QObject::connect(&btnminus, &QPushButton::clicked, [=]() {
+    auto str = QString::fromStdString(params.get("SafetyCamDecelDistGain"));
+    int value = str.toInt();
+    value = value - 5;
+    if (value <= 0 ) {
+      value = 0;
+    }
+    QString values = QString::number(value);
+    params.put("SafetyCamDecelDistGain", values.toStdString());
+    refresh();
+  });
+  
+  QObject::connect(&btnplus, &QPushButton::clicked, [=]() {
+    auto str = QString::fromStdString(params.get("SafetyCamDecelDistGain"));
+    int value = str.toInt();
+    value = value + 5;
+    if (value >= 100 ) {
+      value = 100;
+    }
+    QString values = QString::number(value);
+    params.put("SafetyCamDecelDistGain", values.toStdString());
+    refresh();
+  });
+  refresh();
+}
+
+void CamDecelDistAdd::refresh() {
+  QString option = QString::fromStdString(params.get("SafetyCamDecelDistGain"));
+  if (option == "0") {
+    label.setText(QString::fromStdString("기본값"));
+  } else {
+    label.setText(QString::fromStdString(params.get("SafetyCamDecelDistGain")));
+  }
+  btnminus.setText("-");
+  btnplus.setText("+");
+}
+
 //판다값
 MaxSteer::MaxSteer() : AbstractControl("MAX_STEER", "판다 MAX_STEER 값을 수정합니다. 적용하려면 아래 실행 버튼을 누르세요.", "../assets/offroad/icon_shell.png") {
 

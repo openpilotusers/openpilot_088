@@ -1497,3 +1497,18 @@ private:
   
   void refresh();
 };
+
+class CamDecelDistAdd : public AbstractControl {
+  Q_OBJECT
+
+public:
+  CamDecelDistAdd();
+
+private:
+  QPushButton btnplus;
+  QPushButton btnminus;
+  QLabel label;
+  Params params;
+  
+  void refresh();
+};
