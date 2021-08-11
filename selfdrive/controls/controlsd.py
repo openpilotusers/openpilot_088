@@ -784,7 +784,7 @@ class Controls:
     self.publish_logs(CS, start_time, actuators, lac_log)
     self.prof.checkpoint("Sent")
 
-    if not CS.cruiseState.enabled and not self.hyundai_lkas and not self.soft_disable_timer:
+    if not CS.cruiseState.enabled and not self.hyundai_lkas:
       self.hyundai_lkas = True
 
   def controlsd_thread(self):

@@ -136,13 +136,17 @@ void Sidebar::updateState(const UIState &s) {
   setProperty("pandaStr", pandaStr);
   setProperty("pandaStatus", pandaStatus);
 
+  // opkr
+  wifi_IPAddress = s.scene.deviceState.getWifiIpAddress();
+  wifi_SSID = s.scene.deviceState.getWifiSSID();
+
+  setProperty("wifiIPAddress", wifi_IPAddress);
+  setProperty("wifiSSID", wifi_SSID);
+
   if (s.sm->updated("deviceState") || s.sm->updated("pandaState")) {
     // atom
     m_battery_img = s.scene.deviceState.getBatteryStatus() == "Charging" ? 1 : 0;
     m_batteryPercent = s.scene.deviceState.getBatteryPercent();
-    m_strip = s.scene.deviceState.getWifiIpAddress();
-    // opkr
-    m_strssid = s.scene.deviceState.getWifiSSID();
     repaint();
   }
 }
@@ -180,18 +184,16 @@ void Sidebar::paintEvent(QPaintEvent *event) {
 
   // atom - ip
   if( m_batteryPercent <= 1) return;
-  QString  strip = m_strip.c_str();
   const QRect r2 = QRect(35, 295, 230, 50);
   configFont(p, "Open Sans", 28, "Bold");
   p.setPen(Qt::yellow);
-  p.drawText(r2, Qt::AlignHCenter, strip);
+  p.drawText(r2, Qt::AlignHCenter, wifi_IPAddress);
 
   // opkr - ssid
-  QString strssid = m_strssid.c_str();
   const QRect r3 = QRect(35, 335, 230, 45);
   configFont(p, "Open Sans", 25, "Bold");
   p.setPen(Qt::white);
-  p.drawText(r3, Qt::AlignHCenter, strssid);
+  p.drawText(r3, Qt::AlignHCenter, wifi_SSID);
 
   // atom - battery
   QRect  rect(160, 247, 76, 36);

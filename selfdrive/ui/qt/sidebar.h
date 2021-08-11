@@ -15,6 +15,8 @@ class Sidebar : public QFrame {
   Q_PROPERTY(QColor tempStatus MEMBER temp_status NOTIFY valueChanged);
   Q_PROPERTY(QString netType MEMBER net_type NOTIFY valueChanged);
   Q_PROPERTY(int netStrength MEMBER net_strength NOTIFY valueChanged);
+  Q_PROPERTY(QString wifiIPAddress MEMBER wifi_IPAddress NOTIFY valueChanged);
+  Q_PROPERTY(QString wifiSSID MEMBER wifi_SSID NOTIFY valueChanged);
 
 public:
   explicit Sidebar(QWidget* parent = 0);
@@ -59,6 +61,9 @@ private:
   QColor temp_status = warning_color;
   QString net_type;
   int net_strength = 0;
+  // opkr
+  QString wifi_IPAddress = "--";
+  QString wifi_SSID = "---";
 
   // atom
   const QMap<int, QImage> battery_imgs = {
@@ -68,6 +73,4 @@ private:
 
   int    m_batteryPercent = 0;
   int    m_battery_img;  
-  std::string m_strip;
-  std::string m_strssid;
 };
