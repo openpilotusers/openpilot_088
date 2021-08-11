@@ -339,6 +339,7 @@ std::unordered_map<std::string, uint32_t> keys = {
     {"OpkrUIBrightnessOff", PERSISTENT},
     {"LCTimingFactorEnable", PERSISTENT},
     {"SafetyCamDecelDistGain", PERSISTENT},
+    {"OpkrLiveCameraOffsetEnable", PERSISTENT},
 };
 
 } // namespace

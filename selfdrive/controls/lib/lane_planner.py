@@ -13,7 +13,7 @@ TRAJECTORY_SIZE = 33
 # camera offset is meters from center car to camera
 if EON:
   CAMERA_OFFSET = float(Decimal(Params().get("CameraOffsetAdj", encoding="utf8")) * Decimal('0.001'))  # m from center car to camera
-  CAMERA_OFFSET_A = float((Decimal(Params().get("CameraOffsetAdj", encoding="utf8")) * Decimal('0.001')) - Decimal('0.1'))
+  CAMERA_OFFSET_A = CAMERA_OFFSET - 0.1
   PATH_OFFSET = 0.0
 elif TICI:
   CAMERA_OFFSET = -0.04
@@ -49,6 +49,8 @@ class LanePlanner:
     self.left_curv_offset = int(Params().get("LeftCurvOffsetAdj", encoding="utf8"))
     self.right_curv_offset = int(Params().get("RightCurvOffsetAdj", encoding="utf8"))
 
+    self.lp_timer = 0
+
   def parse_model(self, md, sm, v_ego):
     curvature = sm['controlsState'].curvature
     mode_select = sm['carState'].cruiseState.modeSel
@@ -81,6 +83,12 @@ class LanePlanner:
         lean_offset = -round(abs(self.right_curv_offset) * lane_differ * 0.05, 3) # move to right
       else:
         lean_offset = 0
+
+    self.lp_timer += 1
+    if self.lp_timer > 100:
+      self.lp_timer = 0
+      if Params().get_bool("OpkrLiveCameraOffset"):
+        self.camera_offset = float(Decimal(Params().get("CameraOffsetAdj", encoding="utf8")) * Decimal('0.001'))
 
     if len(md.laneLines) == 4 and len(md.laneLines[0].t) == TRAJECTORY_SIZE:
       self.ll_t = (np.array(md.laneLines[1].t) + np.array(md.laneLines[2].t))/2

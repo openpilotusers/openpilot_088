@@ -417,6 +417,8 @@ static void update_status(UIState *s) {
       s->scene.scr.nVolumeBoost = std::stoi(Params().get("OpkrUIVolumeBoost"));
       s->scene.scr.autoScreenOff = std::stoi(Params().get("OpkrAutoScreenOff"));
       s->scene.brightness_off = std::stoi(Params().get("OpkrUIBrightnessOff"));
+      s->scene.live_camera_offset = std::stoi(Params().get("CameraOffsetAdj"));
+      s->scene.live_camera_offset_enable = Params().getBool("OpkrLiveCameraOffsetEnable");
       if (s->scene.scr.autoScreenOff > 0) {
         s->scene.scr.nTime = s->scene.scr.autoScreenOff * 60 * UI_FREQ;
       } else if (s->scene.scr.autoScreenOff == 0) {

@@ -92,3 +92,4 @@ OpkrUIBrightnessOff:0
 LCTimingFactorEnable:1
 AutoEnableSpeed:3
 SafetyCamDecelDistGain:0
+OpkrLiveCameraOffsetEnable:0
