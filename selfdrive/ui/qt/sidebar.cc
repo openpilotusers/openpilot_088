@@ -137,8 +137,13 @@ void Sidebar::updateState(const UIState &s) {
   setProperty("pandaStatus", pandaStatus);
 
   // opkr
-  setProperty("iPAddress", s.scene.deviceState.getWifiIpAddress());
-  setProperty("sSID", s.scene.deviceState.getWifiSSID());
+  std::string m_strip = s.scene.deviceState.getWifiIpAddress();
+  std::string m_strssid = s.scene.deviceState.getWifiSSID();
+  QString iPAddress = QString::fromUtf8(m_strip.c_str());
+  QString sSID = QString::fromUtf8(m_strssid.c_str());
+
+  setProperty("iPAddress", iPAddress);
+  setProperty("sSID", sSID);
 
   if (s.sm->updated("deviceState") || s.sm->updated("pandaState")) {
     // atom

@@ -62,8 +62,8 @@ private:
   QString net_type;
   int net_strength = 0;
   // opkr
-  std::string wifi_IPAddress;
-  std::strin wifi_SSID;
+  QString wifi_IPAddress = "N/A";
+  QString wifi_SSID = "---";
 
   // atom
   const QMap<int, QImage> battery_imgs = {
