@@ -60,6 +60,8 @@ class LatControlINDI():
 
     self.reset()
 
+    self.li_timer = 0
+
   def reset(self):
     self.steer_filter.x = 0.
     self.output_steer = 0.
@@ -100,6 +102,10 @@ class LatControlINDI():
     self.outer_loop_gain = interp(self.speed, self._outer_loop_gain[0], self._outer_loop_gain[1])
     self.inner_loop_gain = interp(self.speed, self._inner_loop_gain[0], self._inner_loop_gain[1])
 
+    self.li_timer += 1
+    if self.li_timer > 100:
+      self.li_timer = 0
+      self.live_tune_enabled = self.params.get_bool("OpkrLiveTune")
     if self.live_tune_enabled:
       self.live_tune(CP)
 

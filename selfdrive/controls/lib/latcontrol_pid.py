@@ -21,6 +21,8 @@ class LatControlPID():
     self.live_tune_enabled = self.params.get_bool("OpkrLiveTune")
     self.dead_zone = float(Decimal(self.params.get("IgnoreZone", encoding="utf8")) * Decimal('0.1'))
 
+    self.lp_timer = 0
+
   def reset(self):
     self.pid.reset()
 
@@ -39,6 +41,10 @@ class LatControlPID():
       self.mpc_frame = 0
 
   def update(self, active, CS, CP, VM, params, desired_curvature, desired_curvature_rate):
+    self.lp_timer += 1
+    if self.lp_timer > 100:
+      self.lp_timer = 0
+      self.live_tune_enabled = self.params.get_bool("OpkrLiveTune")
     if self.live_tune_enabled:
       self.live_tune(CP)
 

@@ -466,7 +466,7 @@ class LiveCameraOffsetToggle : public ToggleControl {
   Q_OBJECT
 
 public:
-  LiveCameraOffsetToggle() : ToggleControl("Live Camera Offset", "카메라 오프셋을 실시간으로 조정합니다. 화면에 관련 UI가 표시되며, 실시간 튜닝 혹은 주행중 실시간 적용시 사용하세요.", "../assets/offroad/icon_shell.png", Params().getBool("OpkrLiveCameraOffsetEnable")) {
+  LiveCameraOffsetToggle() : ToggleControl("Live CameraOffset", "카메라오프셋을 실시간으로 조정합니다. 화면에 관련 UI가 표시되며, 실시간 튜닝 혹은 주행중 실시간 적용시 사용하세요.", "../assets/offroad/icon_shell.png", Params().getBool("OpkrLiveCameraOffsetEnable")) {
     QObject::connect(this, &LiveCameraOffsetToggle::toggleFlipped, [=](int state) {
       char value = state ? '1' : '0';
       Params().put("OpkrLiveCameraOffsetEnable", &value, 1);

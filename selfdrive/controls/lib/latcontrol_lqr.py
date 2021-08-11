@@ -34,6 +34,8 @@ class LatControlLQR():
 
     self.reset()
 
+    self.ll_timer = 0
+
   def reset(self):
     self.i_lqr = 0.0
     self.sat_count = 0.0
@@ -63,6 +65,10 @@ class LatControlLQR():
     return self.sat_count > self.sat_limit
 
   def update(self, active, CS, CP, VM, params, desired_curvature, desired_curvature_rate):
+    self.ll_timer += 1
+    if self.ll_timer > 100:
+      self.ll_timer = 0
+      self.live_tune_enabled = self.params.get_bool("OpkrLiveTune")
     if self.live_tune_enabled:
       self.live_tune(CP)
 
