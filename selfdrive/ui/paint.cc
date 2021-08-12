@@ -1401,10 +1401,9 @@ void ui_resize(UIState *s, int width, int height) {
 
   float zoom = ZOOM / intrinsic_matrix.v[0];
 
-  // if (s->wide_camera) {
-  //   zoom *= 0.5;
-  // }
-  zoom *= 0.5;
+  if (s->wide_camera) {
+    zoom *= 0.5;
+  }
 
   float zx = zoom * 2 * intrinsic_matrix.v[2] / width;
   float zy = zoom * 2 * intrinsic_matrix.v[5] / height;
