@@ -2172,7 +2172,7 @@ void AutoEnableSpeed::refresh() {
   btnplus.setText("+");
 }
 
-CamDecelDistAdd::CamDecelDistAdd() : AbstractControl("안전구간감속 거리 늘림(%)", "안전구간 감속시 감속시작 거리를 늘립니다.", "../assets/offroad/icon_shell.png") {
+CamDecelDistAdd::CamDecelDistAdd() : AbstractControl("안전구간감속거리 줄임/늘림(%)", "안전구간 감속시 감속시작 거리를 줄이거나 늘립니다.", "../assets/offroad/icon_shell.png") {
 
   label.setAlignment(Qt::AlignVCenter|Qt::AlignRight);
   label.setStyleSheet("color: #e0e879");
@@ -2203,8 +2203,8 @@ CamDecelDistAdd::CamDecelDistAdd() : AbstractControl("안전구간감속 거리 
     auto str = QString::fromStdString(params.get("SafetyCamDecelDistGain"));
     int value = str.toInt();
     value = value - 5;
-    if (value <= 0 ) {
-      value = 0;
+    if (value <= -100 ) {
+      value = -100;
     }
     QString values = QString::number(value);
     params.put("SafetyCamDecelDistGain", values.toStdString());
