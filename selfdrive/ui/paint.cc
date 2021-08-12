@@ -1390,7 +1390,7 @@ void ui_nvg_init(UIState *s) {
   glBindBuffer(GL_ARRAY_BUFFER, 0);
   glBindVertexArray(0);
 
-  ui_resize(s, s->fb_w, s->fb_h);
+  ui_resize(s, s->fb_w/2, s->fb_h);
 }
 
 void ui_resize(UIState *s, int width, int height) {
