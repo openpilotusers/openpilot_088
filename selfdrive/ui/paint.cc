@@ -1175,9 +1175,9 @@ static void ui_draw_vision_car(UIState *s) {
 // draw date/time
 void draw_kr_date_time(UIState *s) {
   int rect_w = 450;
-  const int rect_h = 70;
+  const int rect_h = 50;
   int rect_x = s->fb_w/2 - rect_w/2;
-  const int rect_y = 0;
+  const int rect_y = bdr_s;
   char dayofweek[10];
 
   // Get local time to display
@@ -1201,15 +1201,15 @@ void draw_kr_date_time(UIState *s) {
   }
   if (s->scene.kr_date_show && s->scene.kr_time_show) {
     snprintf(now,sizeof(now),"%04d년 %d월 %d일 %s %02d:%02d:%02d", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, dayofweek, tm.tm_hour, tm.tm_min, tm.tm_sec);
-    rect_w = 450;
+    rect_w = 650;
     rect_x = s->fb_w/2 - rect_w/2;
   } else if (s->scene.kr_date_show) {
     snprintf(now,sizeof(now),"%04d년 %d월 %d일 %s", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, dayofweek);
-    rect_w = 250;
+    rect_w = 350;
     rect_x = s->fb_w/2 - rect_w/2;
   } else if (s->scene.kr_time_show) {
     snprintf(now,sizeof(now),"%02d:%02d:%02d", tm.tm_hour, tm.tm_min, tm.tm_sec);
-    rect_w = 200;
+    rect_w = 250;
     rect_x = s->fb_w/2 - rect_w/2;
   }
 
@@ -1222,7 +1222,7 @@ void draw_kr_date_time(UIState *s) {
   nvgStrokeWidth(s->vg, 0);
   nvgStroke(s->vg);
 
-  nvgFontSize(s->vg, 34);
+  nvgFontSize(s->vg, 50);
   nvgFontFace(s->vg, "sans-semibold");
   nvgFillColor(s->vg, nvgRGBA(255, 255, 255, 200));
   nvgText(s->vg, s->fb_w/2, rect_y, now, NULL);
