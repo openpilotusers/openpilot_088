@@ -1201,22 +1201,16 @@ void draw_kr_date_time(UIState *s) {
   }
   if (s->scene.kr_date_show && s->scene.kr_time_show) {
     snprintf(now,sizeof(now),"%04d-%02d-%02d %s %02d:%02d:%02d", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, dayofweek, tm.tm_hour, tm.tm_min, tm.tm_sec);
-    rect_w = 600;
-    rect_x = s->fb_w/2 - rect_w/2;
   } else if (s->scene.kr_date_show) {
     snprintf(now,sizeof(now),"%04d-%02d-%02d %s", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, dayofweek);
-    rect_w = 325;
-    rect_x = s->fb_w/2 - rect_w/2;
   } else if (s->scene.kr_time_show) {
     snprintf(now,sizeof(now),"%02d:%02d:%02d", tm.tm_hour, tm.tm_min, tm.tm_sec);
-    rect_w = 225;
-    rect_x = s->fb_w/2 - rect_w/2;
   }
 
   nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_TOP);
   nvgBeginPath(s->vg);
   nvgRoundedRect(s->vg, rect_x, rect_y, rect_w, rect_h, 0);
-  nvgFillColor(s->vg, nvgRGBA(0, 0, 0, 50));
+  nvgFillColor(s->vg, nvgRGBA(0, 0, 0, 0));
   nvgFill(s->vg);
   nvgStrokeColor(s->vg, nvgRGBA(255,255,255,0));
   nvgStrokeWidth(s->vg, 0);
