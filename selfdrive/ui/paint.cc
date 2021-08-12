@@ -23,6 +23,7 @@
 
 #include "selfdrive/ui/ui.h"
 #include  <time.h> // opkr
+#include  <string.h> // opkr
 
 static void ui_print(UIState *s, int x, int y,  const char* fmt, ... )
 {
@@ -1177,26 +1178,26 @@ void draw_date_time(UIState *s) {
   const int rect_h = 70;
   int rect_x = s->fb_w/2 - rect_w/2;
   const int rect_y = 0;
-  char dayofweek[5];
+  char dayofweek[10];
 
   // Get local time to display
   time_t t = time(NULL);
   struct tm tm = *localtime(&t);
   char now[50];
   if (tm.tm_wday == 0) {
-    dayofweek ="(일)"
+    strcpy(dayofweek, "(일)");
   } else if (tm.tm_wday == 1) {
-    dayofweek ="(월)"
+    strcpy(dayofweek, "(월)");
   } else if (tm.tm_wday == 2) {
-    dayofweek ="(화)"
+    strcpy(dayofweek, "(화)");
   } else if (tm.tm_wday == 3) {
-    dayofweek ="(수)"
+    strcpy(dayofweek, "(수)");
   } else if (tm.tm_wday == 4) {
-    dayofweek ="(목)"
+    strcpy(dayofweek, "(목)");
   } else if (tm.tm_wday == 5) {
-    dayofweek ="(금)"
+    strcpy(dayofweek, "(금)");
   } else if (tm.tm_wday == 6) {
-    dayofweek ="(토)"
+    strcpy(dayofweek, "(토)");
   }
   if (s->scene.kr_date_show && s->scene.kr_time_show) {
     snprintf(now,sizeof(now),"%04d년 %d월 %d일 %s %02d:%02d:%02d", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, dayofweek, tm.tm_hour, tm.tm_min, tm.tm_sec);

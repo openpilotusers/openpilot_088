@@ -483,8 +483,8 @@ class KRDateToggle : public ToggleControl {
   Q_OBJECT
 
 public:
-  KRDate() : ToggleControl("주행화면 날짜 표시", "주행화면에 현재 날짜를 표시합니다.", "../assets/offroad/icon_shell.png", Params().getBool("KRDateShow")) {
-    QObject::connect(this, &KRDate::toggleFlipped, [=](int state) {
+  KRDateToggle() : ToggleControl("주행화면 날짜 표시", "주행화면에 현재 날짜를 표시합니다.", "../assets/offroad/icon_shell.png", Params().getBool("KRDateShow")) {
+    QObject::connect(this, &KRDateToggle::toggleFlipped, [=](int state) {
       char value = state ? '1' : '0';
       Params().put("KRDateShow", &value, 1);
     });
