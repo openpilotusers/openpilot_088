@@ -192,7 +192,7 @@ void NvgWindow::updateState(const UIState &s) {
 }
 
 void NvgWindow::resizeGL(int w, int h) {
-  ui_resize(&QUIState::ui_state, w/2, h);
+  ui_resize(&QUIState::ui_state, w, h);
 }
 
 void NvgWindow::paintGL() {
