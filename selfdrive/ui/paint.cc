@@ -1175,9 +1175,9 @@ static void ui_draw_vision_car(UIState *s) {
 void draw_date_time(UIState *s) {
   int rect_w = 450;
   const int rect_h = 70;
-  const int rect_x = s->fb_w/2 - rect_w/2;
+  int rect_x = s->fb_w/2 - rect_w/2;
   const int rect_y = 0;
-  char dayofweek;
+  char dayofweek[5];
 
   // Get local time to display
   time_t t = time(NULL);
@@ -1201,12 +1201,15 @@ void draw_date_time(UIState *s) {
   if (s->scene.kr_date_show && s->scene.kr_time_show) {
     snprintf(now,sizeof(now),"%04d년 %d월 %d일 %s %02d:%02d:%02d", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, dayofweek, tm.tm_hour, tm.tm_min, tm.tm_sec);
     rect_w = 450;
+    rect_x = s->fb_w/2 - rect_w/2;
   } else if (s->scene.kr_date_show) {
     snprintf(now,sizeof(now),"%04d년 %d월 %d일 %s", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, dayofweek);
     rect_w = 250;
+    rect_x = s->fb_w/2 - rect_w/2;
   } else if (s->scene.kr_time_show) {
     snprintf(now,sizeof(now),"%02d:%02d:%02d", tm.tm_hour, tm.tm_min, tm.tm_sec);
     rect_w = 200;
+    rect_x = s->fb_w/2 - rect_w/2;
   }
 
   nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_TOP);
