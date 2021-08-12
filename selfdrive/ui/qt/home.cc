@@ -308,8 +308,8 @@ void OffroadHome::hideEvent(QHideEvent *event) {
 void OffroadHome::refresh() {
   // opkr
   QLocale::setDefault(QLocale::Korean);
-  QString date_kr = QDate::currentDate().toString(Qt::SystemLocaleLongDate);
-  QString time_kr = QTime::currentTime().toString(Qt::SystemLocaleShortDate);
+  QString date_kr = QDate::currentDate().toString(Qt::DefaultLocaleLongDate);
+  QString time_kr = QTime::currentTime().toString(Qt::DefaultLocaleShortDate);
   date->setText(date_kr + " " + time_kr);
 
   bool updateAvailable = update_widget->refresh();
