@@ -305,6 +305,7 @@ void OffroadHome::hideEvent(QHideEvent *event) {
 }
 
 void OffroadHome::refresh() {
+  // opkr
   QString date_kr = QDate::currentDate().toString(Qt::SystemLocaleLongDate);
   QString time_kr = QTime::currentTime().toString(Qt::SystemLocaleShortDate);
   date->setText(date_kr + " " + time_kr);
