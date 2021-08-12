@@ -1173,7 +1173,7 @@ static void ui_draw_vision_car(UIState *s) {
 }
 
 // draw date/time
-void draw_date_time(UIState *s) {
+void draw_kr_date_time(UIState *s) {
   int rect_w = 450;
   const int rect_h = 70;
   int rect_x = s->fb_w/2 - rect_w/2;
@@ -1279,7 +1279,7 @@ static void ui_draw_vision(UIState *s) {
     ui_draw_live_camera_offet_adjust(s);
   }
   if (s->scene.kr_date_show || s->scene.kr_time_show) {
-    draw_date_time(s);
+    draw_kr_date_time(s);
   }
 }
 
