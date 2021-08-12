@@ -185,6 +185,10 @@ DevicePanel::DevicePanel(QWidget* parent) : QWidget(parent) {
     });
   }
 
+  main_layout->addWidget(horizontal_line());
+
+  main_layout->addWidget(new OpenpilotView());
+
   for (auto btn : {dcamBtn, retrainingBtn, regulatoryBtn}) {
     if (btn) {
       main_layout->addWidget(horizontal_line());
@@ -423,8 +427,6 @@ QWidget * network_panel(QWidget * parent) {
   QVBoxLayout *layout = new QVBoxLayout(w);
   layout->setSpacing(30);
 
-  layout->addWidget(new OpenpilotView());
-  layout->addWidget(horizontal_line());
   // wifi + tethering buttons
   auto wifiBtn = new ButtonControl("WiFi 설정", "열기");
   QObject::connect(wifiBtn, &ButtonControl::clicked, [=]() { HardwareEon::launch_wifi(); });

@@ -244,10 +244,16 @@ OpenpilotView::OpenpilotView() : AbstractControl("오픈파일럿 주행화면 �
 
 void OpenpilotView::refresh() {
   bool param = params.getBool("IsOpenpilotViewEnabled");
+  QString car_param = QString::fromStdString(params.get("CarParams"));
   if (param) {
     btn.setText("미리보기해제");
   } else {
     btn.setText("미리보기");
+  }
+  if (car_param.length()) {
+    btn.setEnabled(false);
+  } else {
+    btn.setEnabled(true);
   }
 }
 
