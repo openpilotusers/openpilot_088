@@ -382,6 +382,7 @@ static void update_status(UIState *s) {
   static bool started_prev = false;
   if (s->scene.started != started_prev) {
     if (s->scene.started) {
+      params = Params();
       s->status = STATUS_DISENGAGED;
       s->scene.started_frame = s->sm->frame;
 
@@ -398,24 +399,24 @@ static void update_status(UIState *s) {
       } else {
         s->vipc_client = s->vipc_client_rear;
       }
-      s->scene.end_to_end = Params().getBool("EndToEndToggle");
-      s->scene.driving_record = Params().getBool("OpkrDrivingRecord");
-      s->nDebugUi1 = Params().getBool("DebugUi1");
-      s->nDebugUi2 = Params().getBool("DebugUi2");
-      s->scene.forceGearD = Params().getBool("JustDoGearD");
-      s->nOpkrBlindSpotDetect = Params().getBool("OpkrBlindSpotDetect");
-      s->scene.laneless_mode = std::stoi(Params().get("LanelessMode"));
-      s->scene.recording_count = std::stoi(Params().get("RecordingCount"));
-      s->scene.recording_quality = std::stoi(Params().get("RecordingQuality"));
-      s->scene.speed_lim_off = std::stoi(Params().get("OpkrSpeedLimitOffset"));
-      s->scene.monitoring_mode = Params().getBool("OpkrMonitoringMode");
-      s->scene.scr.brightness = std::stoi(Params().get("OpkrUIBrightness"));
-      s->scene.scr.nVolumeBoost = std::stoi(Params().get("OpkrUIVolumeBoost"));
-      s->scene.scr.autoScreenOff = std::stoi(Params().get("OpkrAutoScreenOff"));
-      s->scene.brightness_off = std::stoi(Params().get("OpkrUIBrightnessOff"));
-      s->scene.live_camera_offset = std::stoi(Params().get("CameraOffsetAdj"));
-      s->scene.kr_date_show = Params().getBool("KRDateShow");
-      s->scene.kr_time_show = Params().getBool("KRTimeShow");
+      s->scene.end_to_end = params.getBool("EndToEndToggle");
+      s->scene.driving_record = params.getBool("OpkrDrivingRecord");
+      s->nDebugUi1 = params.getBool("DebugUi1");
+      s->nDebugUi2 = params.getBool("DebugUi2");
+      s->scene.forceGearD = params.getBool("JustDoGearD");
+      s->nOpkrBlindSpotDetect = params.getBool("OpkrBlindSpotDetect");
+      s->scene.laneless_mode = std::stoi(params.get("LanelessMode"));
+      s->scene.recording_count = std::stoi(params.get("RecordingCount"));
+      s->scene.recording_quality = std::stoi(params.get("RecordingQuality"));
+      s->scene.speed_lim_off = std::stoi(params.get("OpkrSpeedLimitOffset"));
+      s->scene.monitoring_mode = params.getBool("OpkrMonitoringMode");
+      s->scene.scr.brightness = std::stoi(params.get("OpkrUIBrightness"));
+      s->scene.scr.nVolumeBoost = std::stoi(params.get("OpkrUIVolumeBoost"));
+      s->scene.scr.autoScreenOff = std::stoi(params.get("OpkrAutoScreenOff"));
+      s->scene.brightness_off = std::stoi(params.get("OpkrUIBrightnessOff"));
+      s->scene.live_camera_offset = std::stoi(params.get("CameraOffsetAdj"));
+      s->scene.kr_date_show = params.getBool("KRDateShow");
+      s->scene.kr_time_show = params.getBool("KRTimeShow");
 
       if (s->scene.scr.autoScreenOff > 0) {
         s->scene.scr.nTime = s->scene.scr.autoScreenOff * 60 * UI_FREQ;
@@ -426,9 +427,9 @@ static void update_status(UIState *s) {
       } else {
         s->scene.scr.nTime = -1;
       }
-      s->scene.comma_stock_ui = Params().getBool("CommaStockUI");
-      s->scene.apks_enabled = Params().getBool("OpkrApksEnable");
-      s->scene.batt_less = Params().getBool("OpkrBattLess");
+      s->scene.comma_stock_ui = params.getBool("CommaStockUI");
+      s->scene.apks_enabled = params.getBool("OpkrApksEnable");
+      s->scene.batt_less = params.getBool("OpkrBattLess");
     } else {
       s->vipc_client->connected = false;
     }

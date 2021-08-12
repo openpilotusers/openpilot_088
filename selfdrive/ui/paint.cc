@@ -1174,10 +1174,10 @@ static void ui_draw_vision_car(UIState *s) {
 
 // draw date/time
 void draw_kr_date_time(UIState *s) {
-  int rect_w = 450;
+  int rect_w = 600;
   const int rect_h = 50;
   int rect_x = s->fb_w/2 - rect_w/2;
-  const int rect_y = bdr_s;
+  const int rect_y = 0;
   char dayofweek[10];
 
   // Get local time to display
@@ -1185,31 +1185,31 @@ void draw_kr_date_time(UIState *s) {
   struct tm tm = *localtime(&t);
   char now[50];
   if (tm.tm_wday == 0) {
-    strcpy(dayofweek, "(일)");
+    strcpy(dayofweek, "SUN");
   } else if (tm.tm_wday == 1) {
-    strcpy(dayofweek, "(월)");
+    strcpy(dayofweek, "MON");
   } else if (tm.tm_wday == 2) {
-    strcpy(dayofweek, "(화)");
+    strcpy(dayofweek, "TUE");
   } else if (tm.tm_wday == 3) {
-    strcpy(dayofweek, "(수)");
+    strcpy(dayofweek, "WED");
   } else if (tm.tm_wday == 4) {
-    strcpy(dayofweek, "(목)");
+    strcpy(dayofweek, "THU");
   } else if (tm.tm_wday == 5) {
-    strcpy(dayofweek, "(금)");
+    strcpy(dayofweek, "FRI");
   } else if (tm.tm_wday == 6) {
-    strcpy(dayofweek, "(토)");
+    strcpy(dayofweek, "SAT");
   }
   if (s->scene.kr_date_show && s->scene.kr_time_show) {
-    snprintf(now,sizeof(now),"%04d년 %d월 %d일 %s %02d:%02d:%02d", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, dayofweek, tm.tm_hour, tm.tm_min, tm.tm_sec);
-    rect_w = 650;
+    snprintf(now,sizeof(now),"%04d-%02d-%02d %s %02d:%02d:%02d", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, dayofweek, tm.tm_hour, tm.tm_min, tm.tm_sec);
+    rect_w = 600;
     rect_x = s->fb_w/2 - rect_w/2;
   } else if (s->scene.kr_date_show) {
-    snprintf(now,sizeof(now),"%04d년 %d월 %d일 %s", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, dayofweek);
-    rect_w = 350;
+    snprintf(now,sizeof(now),"%04d-%02d-%02d %s", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, dayofweek);
+    rect_w = 325;
     rect_x = s->fb_w/2 - rect_w/2;
   } else if (s->scene.kr_time_show) {
     snprintf(now,sizeof(now),"%02d:%02d:%02d", tm.tm_hour, tm.tm_min, tm.tm_sec);
-    rect_w = 250;
+    rect_w = 225;
     rect_x = s->fb_w/2 - rect_w/2;
   }
 
