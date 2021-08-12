@@ -317,25 +317,26 @@ static void update_state(UIState *s) {
 static void update_params(UIState *s) {
   const uint64_t frame = s->sm->frame;
   UIScene &scene = s->scene;
+  Params params;
   if (frame % (5*UI_FREQ) == 0) {
-    scene.is_metric = Params().getBool("IsMetric");
-    scene.is_OpenpilotViewEnabled = Params().getBool("IsOpenpilotViewEnabled");
+    scene.is_metric = params.getBool("IsMetric");
+    scene.is_OpenpilotViewEnabled = params.getBool("IsOpenpilotViewEnabled");
   }
   //opkr navi on boot
   if (!scene.navi_on_boot && (frame - scene.started_frame > 5*UI_FREQ)) {
-    if (Params().getBool("OpkrRunNaviOnBoot") && Params().getBool("ControlsReady") && (Params().get("CarParams").size() > 0)) {
+    if (params.getBool("OpkrRunNaviOnBoot") && params.getBool("ControlsReady") && (params.get("CarParams").size() > 0)) {
       scene.navi_on_boot = true;
       scene.map_is_running = true;
       scene.map_on_top = true;
       scene.map_on_overlay = false;
-      Params().putBool("OpkrMapEnable", true);
+      params.putBool("OpkrMapEnable", true);
       system("am start com.mnsoft.mappyobn/com.mnsoft.mappy.MainActivity");
     } else if (frame - scene.started_frame > 15*UI_FREQ) {
       scene.navi_on_boot = true;
     }
   }
   if (!scene.move_to_background && (frame - scene.started_frame > 10*UI_FREQ)) {
-    if (Params().getBool("OpkrRunNaviOnBoot") && Params().getBool("OpkrMapEnable") && Params().getBool("ControlsReady") && (Params().get("CarParams").size() > 0)) {
+    if (params.getBool("OpkrRunNaviOnBoot") && params.getBool("OpkrMapEnable") && params.getBool("ControlsReady") && (params.get("CarParams").size() > 0)) {
       scene.move_to_background = true;
       scene.map_on_top = false;
       scene.map_on_overlay = true;
@@ -382,11 +383,11 @@ static void update_status(UIState *s) {
   static bool started_prev = false;
   if (s->scene.started != started_prev) {
     if (s->scene.started) {
-      params = Params();
+      Params params;
       s->status = STATUS_DISENGAGED;
       s->scene.started_frame = s->sm->frame;
 
-      s->wide_camera = Hardware::TICI() ? Params().getBool("EnableWideCamera") : false;
+      s->wide_camera = Hardware::TICI() ? params.getBool("EnableWideCamera") : false;
 
       // Update intrinsics matrix after possible wide camera toggle change
       if (s->vg) {
