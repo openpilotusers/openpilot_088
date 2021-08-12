@@ -22,6 +22,7 @@
 #include "selfdrive/hardware/hw.h"
 
 #include "selfdrive/ui/ui.h"
+#include  <time.h> // opkr
 
 static void ui_print(UIState *s, int x, int y,  const char* fmt, ... )
 {
@@ -1170,6 +1171,59 @@ static void ui_draw_vision_car(UIState *s) {
   }
 }
 
+// draw date/time
+void draw_date_time(UIState *s) {
+  int rect_w = 450;
+  const int rect_h = 70;
+  const int rect_x = s->fb_w/2 - rect_w/2;
+  const int rect_y = 0;
+  char dayofweek;
+
+  // Get local time to display
+  time_t t = time(NULL);
+  struct tm tm = *localtime(&t);
+  char now[50];
+  if (tm.tm_wday == 0) {
+    dayofweek ="(일)"
+  } else if (tm.tm_wday == 1) {
+    dayofweek ="(월)"
+  } else if (tm.tm_wday == 2) {
+    dayofweek ="(화)"
+  } else if (tm.tm_wday == 3) {
+    dayofweek ="(수)"
+  } else if (tm.tm_wday == 4) {
+    dayofweek ="(목)"
+  } else if (tm.tm_wday == 5) {
+    dayofweek ="(금)"
+  } else if (tm.tm_wday == 6) {
+    dayofweek ="(토)"
+  }
+  if (s->scene.kr_date_show && s->scene.kr_time_show) {
+    snprintf(now,sizeof(now),"%04d년 %d월 %d일 %s %02d:%02d:%02d", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, dayofweek, tm.tm_hour, tm.tm_min, tm.tm_sec);
+    rect_w = 450;
+  } else if (s->scene.kr_date_show) {
+    snprintf(now,sizeof(now),"%04d년 %d월 %d일 %s", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, dayofweek);
+    rect_w = 250;
+  } else if (s->scene.kr_time_show) {
+    snprintf(now,sizeof(now),"%02d:%02d:%02d", tm.tm_hour, tm.tm_min, tm.tm_sec);
+    rect_w = 200;
+  }
+
+  nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_TOP);
+  nvgBeginPath(s->vg);
+  nvgRoundedRect(s->vg, rect_x, rect_y, rect_w, rect_h, 0);
+  nvgFillColor(s->vg, nvgRGBA(0, 0, 0, 50));
+  nvgFill(s->vg);
+  nvgStrokeColor(s->vg, nvgRGBA(255,255,255,0));
+  nvgStrokeWidth(s->vg, 0);
+  nvgStroke(s->vg);
+
+  nvgFontSize(s->vg, 34);
+  nvgFontFace(s->vg, "sans-semibold");
+  nvgFillColor(s->vg, nvgRGBA(255, 255, 255, 200));
+  nvgText(s->vg, s->fb_w/2, rect_y, now, NULL);
+}
+
 // live camera offset adjust by OPKR
 static void ui_draw_live_camera_offet_adjust(UIState *s) {
   const int width = 160;
@@ -1218,7 +1272,10 @@ static void ui_draw_vision(UIState *s) {
     }
   }
   if (s->scene.live_camera_offset_enable) {
-      ui_draw_live_camera_offet_adjust(s);
+    ui_draw_live_camera_offet_adjust(s);
+  }
+  if (s->scene.kr_date_show || s->scene.kr_time_show) {
+    draw_date_time(s);
   }
 }
 

@@ -198,6 +198,8 @@ typedef struct UIScene {
   float brightness_off;
   int live_camera_offset;
   bool live_camera_offset_enable;
+  bool kr_date_show;
+  bool kr_time_show;
 
   cereal::DeviceState::Reader deviceState;
   cereal::RadarState::LeadData::Reader lead_data[2];

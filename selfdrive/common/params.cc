@@ -340,6 +340,8 @@ std::unordered_map<std::string, uint32_t> keys = {
     {"LCTimingFactorEnable", PERSISTENT},
     {"SafetyCamDecelDistGain", PERSISTENT},
     {"OpkrLiveCameraOffsetEnable", PERSISTENT},
+    {"KRDateShow", PERSISTENT},
+    {"KRTimeShow", PERSISTENT},
 };
 
 } // namespace
