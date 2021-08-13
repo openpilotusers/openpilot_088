@@ -17,8 +17,6 @@ const CanMsg HYUNDAI_COMMUNITY_TX_MSGS[] = {
   {905, 0, 8},  //   SCC14,  Bus 0
   {1186, 0, 8},  //   4a2SCC, Bus 0
   {790, 1, 8}, // EMS11, Bus 1
-  {1427, 0, 6},   // TPMS, Bus 0
-  {1332, 0, 8},
 };
 
 // older hyundai models have less checks due to missing counters and checksums

@@ -558,7 +558,7 @@ UserPanel::UserPanel(QWidget* parent) : QWidget(parent) {
   //layout->addWidget(new LabelControl(car_model, ""));
 
   layout->addWidget(horizontal_line());
-  layout->addWidget(new LabelControl("판다 값", "주의要"));
+  layout->addWidget(new LabelControl("판다 세이프티 값", ""));
   layout->addWidget(new MaxSteer());
   layout->addWidget(new MaxRTDelta());
   layout->addWidget(new MaxRateUp());
