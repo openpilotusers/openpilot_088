@@ -427,6 +427,7 @@ static void update_status(UIState *s) {
       s->scene.lqrScale = std::stoi(params.get("Scale"));
       s->scene.lqrKi = std::stoi(params.get("LqrKi"));
       s->scene.lqrDcGain = std::stoi(params.get("DcGain"));
+      s->scene.live_tune_panel_enable = params.getBool("OpkrLiveTunePanelEnable");
       s->scene.kr_date_show = params.getBool("KRDateShow");
       s->scene.kr_time_show = params.getBool("KRTimeShow");
 
