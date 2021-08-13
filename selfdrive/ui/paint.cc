@@ -1239,9 +1239,9 @@ static void ui_draw_live_tune_panel(UIState *s) {
   nvgFill(s->vg);
   //left symbol_above
   nvgBeginPath(s->vg);
-  nvgMoveTo(s->vg, x_start_pos_l, y_pos - 200);
-  nvgLineTo(s->vg, x_start_pos_l - width + 30, y_pos + height/2 - 200);
-  nvgLineTo(s->vg, x_start_pos_l, y_pos + height - 200);
+  nvgMoveTo(s->vg, x_start_pos_l, y_pos - 175);
+  nvgLineTo(s->vg, x_start_pos_l - width + 30, y_pos + height/2 - 175);
+  nvgLineTo(s->vg, x_start_pos_l, y_pos + height - 175);
   nvgClosePath(s->vg);
   nvgFillColor(s->vg, nvgRGBA(255,153,153,150));
   nvgFill(s->vg);
@@ -1255,9 +1255,9 @@ static void ui_draw_live_tune_panel(UIState *s) {
   nvgFill(s->vg);
   //right symbol above
   nvgBeginPath(s->vg);
-  nvgMoveTo(s->vg, x_start_pos_r, y_pos - 200);
-  nvgLineTo(s->vg, x_start_pos_r + width - 30, y_pos + height/2 - 200);
-  nvgLineTo(s->vg, x_start_pos_r, y_pos + height - 200);
+  nvgMoveTo(s->vg, x_start_pos_r, y_pos - 175);
+  nvgLineTo(s->vg, x_start_pos_r + width - 30, y_pos + height/2 - 175);
+  nvgLineTo(s->vg, x_start_pos_r, y_pos + height - 175);
   nvgClosePath(s->vg);
   nvgFillColor(s->vg, nvgRGBA(255,153,153,150));
   nvgFill(s->vg);
@@ -1267,53 +1267,54 @@ static void ui_draw_live_tune_panel(UIState *s) {
   if (s->scene.live_tune_panel_list == 0) {
     ui_print(s, s->fb_w/2, y_pos + height/2, "%+0.3f", s->scene.cameraOffset*0.001);
     nvgFontSize(s->vg, 75);
-    ui_print(s, s->fb_w/2, y_pos - 60, "CameraOffset");
+    ui_print(s, s->fb_w/2, y_pos - 130, "CameraOffset");
   } else if (s->scene.live_tune_panel_list == 1 && s->scene.lateralControlMethod == 0) {
     ui_print(s, s->fb_w/2, y_pos + height/2, "%0.2f", s->scene.pidKp*0.01);
     nvgFontSize(s->vg, 75);
-    ui_print(s, s->fb_w/2, y_pos - 60, "Pid: Kp");
+    ui_print(s, s->fb_w/2, y_pos - 130, "Pid: Kp");
   } else if (s->scene.live_tune_panel_list == 2 && s->scene.lateralControlMethod == 0) {
     ui_print(s, s->fb_w/2, y_pos + height/2, "%0.3f", s->scene.pidKi*0.001);
     nvgFontSize(s->vg, 75);
-    ui_print(s, s->fb_w/2, y_pos - 60, "Pid: Ki");
+    ui_print(s, s->fb_w/2, y_pos - 130, "Pid: Ki");
   } else if (s->scene.live_tune_panel_list == 3 && s->scene.lateralControlMethod == 0) {
     ui_print(s, s->fb_w/2, y_pos + height/2, "%0.2f", s->scene.pidKd*0.01);
     nvgFontSize(s->vg, 75);
-    ui_print(s, s->fb_w/2, y_pos - 60, "Pid: Kd");
+    ui_print(s, s->fb_w/2, y_pos - 130, "Pid: Kd");
   } else if (s->scene.live_tune_panel_list == 4 && s->scene.lateralControlMethod == 0) {
     ui_print(s, s->fb_w/2, y_pos + height/2, "%0.5f", s->scene.pidKf*0.00001);
     nvgFontSize(s->vg, 75);
-    ui_print(s, s->fb_w/2, y_pos - 60, "Pid: Kf");
+    ui_print(s, s->fb_w/2, y_pos - 130, "Pid: Kf");
   } else if (s->scene.live_tune_panel_list == 1 && s->scene.lateralControlMethod == 1) {
     ui_print(s, s->fb_w/2, y_pos + height/2, "%0.1f", s->scene.indiInnerLoopGain*0.1);
     nvgFontSize(s->vg, 75);
-    ui_print(s, s->fb_w/2, y_pos - 60, "INDI: ILGain");
+    ui_print(s, s->fb_w/2, y_pos - 130, "INDI: ILGain");
   } else if (s->scene.live_tune_panel_list == 2 && s->scene.lateralControlMethod == 1) {
     ui_print(s, s->fb_w/2, y_pos + height/2, "%0.1f", s->scene.indiOuterLoopGain*0.1);
     nvgFontSize(s->vg, 75);
-    ui_print(s, s->fb_w/2, y_pos - 60, "INDI: OLGain");
+    ui_print(s, s->fb_w/2, y_pos - 130, "INDI: OLGain");
   } else if (s->scene.live_tune_panel_list == 3 && s->scene.lateralControlMethod == 1) {
     ui_print(s, s->fb_w/2, y_pos + height/2, "%0.1f", s->scene.indiTimeConstant*0.1);
     nvgFontSize(s->vg, 75);
-    ui_print(s, s->fb_w/2, y_pos - 60, "INDI: TConst");
+    ui_print(s, s->fb_w/2, y_pos - 130, "INDI: TConst");
   } else if (s->scene.live_tune_panel_list == 4 && s->scene.lateralControlMethod == 1) {
     ui_print(s, s->fb_w/2, y_pos + height/2, "%0.1f", s->scene.indiActuatorEffectiveness*0.1);
     nvgFontSize(s->vg, 75);
-    ui_print(s, s->fb_w/2, y_pos - 60, "INDI: ActEffct");
+    ui_print(s, s->fb_w/2, y_pos - 130, "INDI: ActEffct");
   } else if (s->scene.live_tune_panel_list == 1 && s->scene.lateralControlMethod == 2) {
     ui_print(s, s->fb_w/2, y_pos + height/2, "%0.0f", s->scene.lqrScale*1.0);
     nvgFontSize(s->vg, 75);
-    ui_print(s, s->fb_w/2, y_pos - 60, "LQR: Scale");
+    ui_print(s, s->fb_w/2, y_pos - 130, "LQR: Scale");
   } else if (s->scene.live_tune_panel_list == 2 && s->scene.lateralControlMethod == 2) {
     ui_print(s, s->fb_w/2, y_pos + height/2, "%0.3f", s->scene.lqrKi*0.001);
     nvgFontSize(s->vg, 75);
-    ui_print(s, s->fb_w/2, y_pos - 60, "LQR: Ki");
+    ui_print(s, s->fb_w/2, y_pos - 130, "LQR: Ki");
   } else if (s->scene.live_tune_panel_list == 3 && s->scene.lateralControlMethod == 2) {
     ui_print(s, s->fb_w/2, y_pos + height/2, "%0.5f", s->scene.lqrDcGain*0.00001);
     nvgFontSize(s->vg, 75);
-    ui_print(s, s->fb_w/2, y_pos - 60, "LQR: DcGain");
+    ui_print(s, s->fb_w/2, y_pos - 130, "LQR: DcGain");
   }
   nvgFillColor(s->vg, COLOR_WHITE_ALPHA(200));
+  nvgFill(s->vg);
 }
 
 static void ui_draw_vision(UIState *s) {

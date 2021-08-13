@@ -90,10 +90,10 @@ const Rect laneless_btn = {1585, 905, 140, 140};
 const Rect monitoring_btn = {50, 830, 140, 140};
 const Rect ml_btn = {1265, 905, 140, 140};
 const Rect stockui_btn = {15, 15, 184, 202};
-const Rect livetunepanel_left_btn = {510, 700, 130, 160};
-const Rect livetunepanel_right_btn = {1280, 700, 130, 160};
-const Rect livetunepanel_left_above_btn = {510, 500, 130, 160};
-const Rect livetunepanel_right_above_btn = {1280, 500, 130, 160};
+const Rect livetunepanel_left_btn = {510, 750, 130, 160};
+const Rect livetunepanel_right_btn = {1280, 750, 130, 160};
+const Rect livetunepanel_left_above_btn = {510, 575, 130, 160};
+const Rect livetunepanel_right_above_btn = {1280, 575, 130, 160};
 
 const int UI_FREQ = 20;   // Hz
 
