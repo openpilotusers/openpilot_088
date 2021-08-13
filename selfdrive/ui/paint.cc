@@ -880,7 +880,7 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
   int label_fontSize=15*0.8;
   int uom_fontSize = 15*0.8;
   int bb_uom_dx =  (int)(bb_w /2 - uom_fontSize*2.5);
-  auto lead_one = (*s->sm)["modelV2"].getModelV2().getLeads()[0];
+  auto lead_one = (*s->sm)["modelV2"].getModelV2().getLeadsV3()[0];
 
   //add visual radar relative distance
   if (true) {
@@ -890,17 +890,17 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
     if (lead_one.getProb() > .5) {
       //show RED if less than 5 meters
       //show orange if less than 15 meters
-      if((int)(lead_one.getXyva()[0]) < 15) {
+      if((int)(lead_one.getX()[0]) < 15) {
         val_color = COLOR_ORANGE_ALPHA(200);
       }
-      if((int)(lead_one.getXyva()[0]) < 5) {
+      if((int)(lead_one.getX()[0]) < 5) {
         val_color = COLOR_RED_ALPHA(200);
       }
       // lead car relative distance is always in meters
-      if((float)(lead_one.getXyva()[0]) < 10) {
-        snprintf(val_str, sizeof(val_str), "%.1f", (float)lead_one.getXyva()[0]);
+      if((float)(lead_one.getX()[0]) < 10) {
+        snprintf(val_str, sizeof(val_str), "%.1f", (float)lead_one.getX()[0]);
       } else {
-        snprintf(val_str, sizeof(val_str), "%d", (int)lead_one.getXyva()[0]);
+        snprintf(val_str, sizeof(val_str), "%d", (int)lead_one.getX()[0]);
       }
 
     } else {
@@ -921,17 +921,17 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
     if (lead_one.getProb() > .5) {
       //show Orange if negative speed (approaching)
       //show Orange if negative speed faster than 5mph (approaching fast)
-      if((int)(lead_one.getXyva()[2]) < 0) {
+      if((int)(lead_one.getV()[0]) < 0) {
         val_color = nvgRGBA(255, 188, 3, 200);
       }
-      if((int)(lead_one.getXyva()[2]) < -5) {
+      if((int)(lead_one.getV()[0]) < -5) {
         val_color = nvgRGBA(255, 0, 0, 200);
       }
       // lead car relative speed is always in meters
       if (s->scene.is_metric) {
-         snprintf(val_str, sizeof(val_str), "%d", (int)(lead_one.getXyva()[2] * 3.6 + 0.5));
+         snprintf(val_str, sizeof(val_str), "%d", (int)(lead_one.getV()[0] * 3.6 + 0.5));
       } else {
-         snprintf(val_str, sizeof(val_str), "%d", (int)(lead_one.getXyva()[2] * 2.2374144 + 0.5));
+         snprintf(val_str, sizeof(val_str), "%d", (int)(lead_one.getV()[0] * 2.2374144 + 0.5));
       }
     } else {
        snprintf(val_str, sizeof(val_str), "-");
