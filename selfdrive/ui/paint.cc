@@ -94,7 +94,7 @@ static void ui_draw_circle_image(const UIState *s, int center_x, int center_y, i
   }
 }
 
-static void draw_lead(UIState *s, const cereal::ModelDataV2::LeadDataV2::Reader &lead_data, const vertex_data &vd) {
+static void draw_lead(UIState *s, const cereal::ModelDataV2::LeadDataV3::Reader &lead_data, const vertex_data &vd) {
   // Draw lead car indicator
   auto [x, y] = vd;
 
