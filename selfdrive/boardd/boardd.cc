@@ -404,9 +404,6 @@ void hardware_control_thread() {
   LOGD("start hardware control thread");
   SubMaster sm({"deviceState", "driverCameraState"});
 
-  // Other pandas don't have hardware to control
-  if (panda->hw_type != cereal::PandaState::PandaType::UNO && panda->hw_type != cereal::PandaState::PandaType::DOS) return;
-
   uint64_t last_front_frame_t = 0;
   uint16_t prev_fan_speed = 999;
   uint16_t ir_pwr = 0;
@@ -420,14 +417,7 @@ void hardware_control_thread() {
     cnt++;
     sm.update(1000); // TODO: what happens if EINTR is sent while in sm.update?
 
-#if defined(QCOM) || defined(QCOM2)
-    if (sm.updated("deviceState")) {
-      // Fan speed
-      uint16_t fan_speed = sm["deviceState"].getDeviceState().getFanSpeedPercentDesired();
-      if (fan_speed != prev_fan_speed || cnt % 100 == 0){
-        panda->set_fan_speed(fan_speed);
-        prev_fan_speed = fan_speed;
-      }
+    if (!Hardware::PC() && sm.updated("deviceState")) {
       // Charging mode
       bool charging_disabled = sm["deviceState"].getDeviceState().getChargingDisabled();
       if (charging_disabled != prev_charging_disabled) {
@@ -441,13 +431,24 @@ void hardware_control_thread() {
         prev_charging_disabled = charging_disabled;
       }
     }
-#endif
+
+    // Other pandas don't have fan/IR to control
+    if (panda->hw_type != cereal::PandaState::PandaType::UNO && panda->hw_type != cereal::PandaState::PandaType::DOS) continue;
+    if (sm.updated("deviceState")) {
+      // Fan speed
+      uint16_t fan_speed = sm["deviceState"].getDeviceState().getFanSpeedPercentDesired();
+      if (fan_speed != prev_fan_speed || cnt % 100 == 0) {
+        panda->set_fan_speed(fan_speed);
+        prev_fan_speed = fan_speed;
+      }
+    }
     if (sm.updated("driverCameraState")) {
       auto event = sm["driverCameraState"];
       int cur_integ_lines = event.getDriverCameraState().getIntegLines();
+      float cur_gain = event.getDriverCameraState().getGain();
 
       if (Hardware::TICI()) {
-        cur_integ_lines = integ_lines_filter.update(cur_integ_lines);
+        cur_integ_lines = integ_lines_filter.update(cur_integ_lines * cur_gain);
       }
       last_front_frame_t = event.getLogMonoTime();
 
