@@ -1179,7 +1179,6 @@ void draw_kr_date_time(UIState *s) {
   int rect_x = s->fb_w/2 - rect_w/2;
   const int rect_y = 0;
   char dayofweek[10];
-  char ampm[20];
 
   // Get local time to display
   time_t t = time(NULL);
