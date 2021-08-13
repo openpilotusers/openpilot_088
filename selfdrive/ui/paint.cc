@@ -1260,7 +1260,7 @@ static void ui_draw_live_tune_panel(UIState *s) {
   nvgLineTo(s->vg, x_start_pos_r, y_pos + height);
   nvgClosePath(s->vg);
 
-  nvgFillColor(s->vg, COLOR_WHITE_ALPHA(200));
+  nvgFillColor(s->vg, COLOR_WHITE_ALPHA(150));
   nvgFill(s->vg);
 
   //param value
