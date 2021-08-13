@@ -1180,7 +1180,6 @@ void draw_kr_date_time(UIState *s) {
   const int rect_y = 0;
   char dayofweek[10];
   char ampm[20];
-  int hour12;
 
   // Get local time to display
   time_t t = time(NULL);
@@ -1202,24 +1201,12 @@ void draw_kr_date_time(UIState *s) {
     strcpy(dayofweek, "SAT");
   }
 
-  if (tm.tm_hour == 0) {
-    hour12 = 12;
-    strcpy(ampm, "AM");
-  } else if (tm.tm_hour > 12) {
-    hour12 = hour12 - 12;
-    strcpy(ampm, "PM");
-  } else {
-    hour12 = tm.tm_hour;
-    strcpy(ampm, "AM");
-  }
-
-  setlocale(LC_ALL, "Korean");
   if (s->scene.kr_date_show && s->scene.kr_time_show) {
-    snprintf(now,sizeof(now),"%04d-%02d-%02d %s %s %d:%02d:%02d", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, dayofweek, ampm, hour12, tm.tm_min, tm.tm_sec);
+    snprintf(now,sizeof(now),"%04d-%02d-%02d %s %02d:%02d:%02d", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, dayofweek, tm.tm_hour, tm.tm_min, tm.tm_sec);
   } else if (s->scene.kr_date_show) {
     snprintf(now,sizeof(now),"%04d-%02d-%02d %s", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, dayofweek);
   } else if (s->scene.kr_time_show) {
-    snprintf(now,sizeof(now),"%s %d:%02d:%02d", ampm, hour12, tm.tm_min, tm.tm_sec);
+    snprintf(now,sizeof(now),"%02d:%02d:%02d", tm.tm_hour, tm.tm_min, tm.tm_sec);
   }
 
   nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_TOP);
