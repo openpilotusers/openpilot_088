@@ -416,6 +416,17 @@ static void update_status(UIState *s) {
       s->scene.scr.autoScreenOff = std::stoi(params.get("OpkrAutoScreenOff"));
       s->scene.brightness_off = std::stoi(params.get("OpkrUIBrightnessOff"));
       s->scene.cameraOffset = std::stoi(params.get("CameraOffsetAdj"));
+      s->scene.pidKp = std::stoi(params.get("PidKp"));
+      s->scene.pidKi = std::stoi(params.get("PidKi"));
+      s->scene.pidKd = std::stoi(params.get("PidKd"));
+      s->scene.pidKf = std::stoi(params.get("PidKf"));
+      s->scene.indiInnerLoopGain = std::stoi(params.get("InnerLoopGain"));
+      s->scene.indiOuterLoopGain = std::stoi(params.get("OuterLoopGain"));
+      s->scene.indiTimeConstant = std::stoi(params.get("TimeConstant"));
+      s->scene.indiActuatorEffectiveness = std::stoi(params.get("ActuatorEffectiveness"));
+      s->scene.lqrScale = std::stoi(params.get("Scale"));
+      s->scene.lqrKi = std::stoi(params.get("LqrKi"));
+      s->scene.lqrDcGain = std::stoi(params.get("DcGain"));
       s->scene.kr_date_show = params.getBool("KRDateShow");
       s->scene.kr_time_show = params.getBool("KRTimeShow");
 
