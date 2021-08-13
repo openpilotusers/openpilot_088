@@ -595,7 +595,7 @@ class CarController():
     self.cc_timer += 1
     if self.cc_timer > 100:
       self.cc_timer = 0
-      if self.params.get_bool("OpkrLiveTune"):
+      if self.params.get_bool("OpkrLiveTunePanelEnable"):
         if CS.CP.lateralTuning.which() == 'pid':
           self.str_log2 = 'T={:0.2f}/{:0.3f}/{:0.2f}/{:0.5f}'.format(float(Decimal(self.params.get("PidKp", encoding="utf8"))*Decimal('0.01')), \
            float(Decimal(self.params.get("PidKi", encoding="utf8"))*Decimal('0.001')), float(Decimal(self.params.get("PidKd", encoding="utf8"))*Decimal('0.01')), \
@@ -606,7 +606,7 @@ class CarController():
            float(Decimal(self.params.get("ActuatorEffectiveness", encoding="utf8"))*Decimal('0.1')))
         elif CS.CP.lateralTuning.which() == 'lqr':
           self.str_log2 = 'T={:04.0f}/{:05.3f}/{:06.4f}'.format(float(Decimal(self.params.get("Scale", encoding="utf8"))*Decimal('1.0')), \
-           float(Decimal(self.params.get("LqrKi", encoding="utf8"))*Decimal('0.001')), float(Decimal(self.params.get("DcGain", encoding="utf8"))*Decimal('0.0001')))
+           float(Decimal(self.params.get("LqrKi", encoding="utf8"))*Decimal('0.001')), float(Decimal(self.params.get("DcGain", encoding="utf8"))*Decimal('0.00001')))
 
     trace1.printf1('{}  {}'.format(str_log1, self.str_log2))
 

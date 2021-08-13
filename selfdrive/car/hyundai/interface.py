@@ -45,7 +45,7 @@ class CarInterface(CarInterfaceBase):
     ActuatorEffectiveness = float(Decimal(params.get("ActuatorEffectiveness", encoding="utf8")) * Decimal('0.1'))
     Scale = float(Decimal(params.get("Scale", encoding="utf8")) * Decimal('1.0'))
     LqrKi = float(Decimal(params.get("LqrKi", encoding="utf8")) * Decimal('0.001'))
-    DcGain = float(Decimal(params.get("DcGain", encoding="utf8")) * Decimal('0.0001'))
+    DcGain = float(Decimal(params.get("DcGain", encoding="utf8")) * Decimal('0.00001'))
     SteerMaxV = float(Decimal(params.get("SteerMaxvAdj", encoding="utf8")) * Decimal('0.1'))
 
     # Most Hyundai car ports are community features for now

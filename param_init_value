@@ -20,7 +20,7 @@ TimeConstant:14
 ActuatorEffectiveness:20
 Scale:1500
 LqrKi:15
-DcGain:27
+DcGain:270
 IgnoreZone:0
 PidKp:20
 PidKi:40
@@ -56,7 +56,6 @@ OpkrVariableSteerMax:1
 OpkrVariableSteerDelta:0
 FingerprintTwoSet:0
 OpkrVariableCruiseProfile:0
-OpkrLiveTune:0
 OpkrDrivingRecord:0
 OpkrTurnSteeringDisable:0
 OpkrHotspotOnBoot:0
@@ -92,4 +91,4 @@ OpkrUIBrightnessOff:0
 LCTimingFactorEnable:1
 AutoEnableSpeed:3
 SafetyCamDecelDistGain:0
-OpkrLiveCameraOffsetEnable:0
+OpkrLiveTunePanelEnable:0

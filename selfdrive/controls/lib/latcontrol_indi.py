@@ -56,7 +56,7 @@ class LatControlINDI():
     self.sat_limit = CP.steerLimitTimer
     self.steer_filter = FirstOrderFilter(0., self.RC, DT_CTRL)
 
-    self.live_tune_enabled = self.params.get_bool("OpkrLiveTune")
+    self.live_tune_enabled = False
 
     self.reset()
 
@@ -105,7 +105,7 @@ class LatControlINDI():
     self.li_timer += 1
     if self.li_timer > 100:
       self.li_timer = 0
-      self.live_tune_enabled = self.params.get_bool("OpkrLiveTune")
+      self.live_tune_enabled = self.params.get_bool("OpkrLiveTunePanelEnable")
     if self.live_tune_enabled:
       self.live_tune(CP)
 

@@ -415,7 +415,7 @@ static void update_status(UIState *s) {
       s->scene.scr.nVolumeBoost = std::stoi(params.get("OpkrUIVolumeBoost"));
       s->scene.scr.autoScreenOff = std::stoi(params.get("OpkrAutoScreenOff"));
       s->scene.brightness_off = std::stoi(params.get("OpkrUIBrightnessOff"));
-      s->scene.live_camera_offset = std::stoi(params.get("CameraOffsetAdj"));
+      s->scene.cameraOffset = std::stoi(params.get("CameraOffsetAdj"));
       s->scene.kr_date_show = params.getBool("KRDateShow");
       s->scene.kr_time_show = params.getBool("KRTimeShow");
 

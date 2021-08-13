@@ -285,7 +285,6 @@ std::unordered_map<std::string, uint32_t> keys = {
     {"OpkrVariableSteerDelta", PERSISTENT},
     {"FingerprintTwoSet", PERSISTENT},
     {"OpkrVariableCruiseProfile", PERSISTENT},
-    {"OpkrLiveTune", PERSISTENT},
     {"OpkrDrivingRecord", PERSISTENT},
     {"OpkrTurnSteeringDisable", PERSISTENT},
     {"CarModel", PERSISTENT},
@@ -339,7 +338,7 @@ std::unordered_map<std::string, uint32_t> keys = {
     {"OpkrUIBrightnessOff", PERSISTENT},
     {"LCTimingFactorEnable", PERSISTENT},
     {"SafetyCamDecelDistGain", PERSISTENT},
-    {"OpkrLiveCameraOffsetEnable", PERSISTENT},
+    {"OpkrLiveTunePanelEnable", PERSISTENT},
     {"KRDateShow", PERSISTENT},
     {"KRTimeShow", PERSISTENT},
 };

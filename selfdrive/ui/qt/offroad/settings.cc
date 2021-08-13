@@ -579,7 +579,6 @@ TuningPanel::TuningPanel(QWidget* parent) : QWidget(parent) {
   // OPKR
   layout->addWidget(new LabelControl("튜닝메뉴", ""));
   layout->addWidget(new CameraOffset());
-  layout->addWidget(new LiveCameraOffsetToggle());
   layout->addWidget(new LiveSteerRatioToggle());
   layout->addWidget(new SRBaseControl());
   layout->addWidget(new SRMaxControl());
@@ -602,7 +601,7 @@ TuningPanel::TuningPanel(QWidget* parent) : QWidget(parent) {
 
   layout->addWidget(new LabelControl("제어메뉴", ""));
   layout->addWidget(new LateralControl());
-  layout->addWidget(new LiveTuneToggle());
+  layout->addWidget(new LiveTunePanelToggle());
   QString lat_control = QString::fromStdString(Params().get("LateralControlMethod", false));
   if (lat_control == "0") {
     layout->addWidget(new PidKp());

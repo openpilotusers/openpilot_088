@@ -90,8 +90,10 @@ const Rect laneless_btn = {1585, 905, 140, 140};
 const Rect monitoring_btn = {50, 830, 140, 140};
 const Rect ml_btn = {1265, 905, 140, 140};
 const Rect stockui_btn = {15, 15, 184, 202};
-const Rect livecamoffset_left_btn = {510, 700, 130, 160};
-const Rect livecamoffset_right_btn = {1280, 700, 130, 160};
+const Rect livetunepanel_left_btn = {510, 700, 130, 160};
+const Rect livetunepanel_right_btn = {1280, 700, 130, 160};
+const Rect livetunepanel_left_above_btn = {510, 500, 130, 160};
+const Rect livetunepanel_right_above_btn = {1280, 500, 130, 160};
 
 const int UI_FREQ = 20;   // Hz
 
@@ -196,10 +198,14 @@ typedef struct UIScene {
   float dynamic_tr_value;
   bool touched2 = false;
   float brightness_off;
-  int live_camera_offset;
-  bool live_camera_offset_enable;
+  int cameraOffset;
+  int pidKp, pidKi, pidKd, pidKf;
+  int indiInnerLoopGain, indiOuterLoopGain, indiTimeConstant, indiActuatorEffectiveness;
+  int lqrScale, lqrKi, lqrDcGain;
+  bool live_tune_panel_enable;
   bool kr_date_show;
   bool kr_time_show;
+  int live_tune_panel_list = 0;
 
   cereal::DeviceState::Reader deviceState;
   cereal::RadarState::LeadData::Reader lead_data[2];

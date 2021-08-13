@@ -1223,12 +1223,12 @@ void draw_kr_date_time(UIState *s) {
 }
 
 // live camera offset adjust by OPKR
-static void ui_draw_live_camera_offet_adjust(UIState *s) {
+static void ui_draw_live_tune_panel(UIState *s) {
   const int width = 160;
   const int height = 160;
   const int x_start_pos_l = s->fb_w/2 - width*2;
   const int x_start_pos_r = s->fb_w/2 + width*2;
-  const int y_pos = 700;
+  const int y_pos = 750;
   //left symbol
   nvgBeginPath(s->vg);
   nvgMoveTo(s->vg, x_start_pos_l, y_pos);
@@ -1236,6 +1236,14 @@ static void ui_draw_live_camera_offet_adjust(UIState *s) {
   nvgLineTo(s->vg, x_start_pos_l, y_pos + height);
   nvgClosePath(s->vg);
   nvgFillColor(s->vg, nvgRGBA(171,242,0,150));
+  nvgFill(s->vg);
+  //left symbol_above
+  nvgBeginPath(s->vg);
+  nvgMoveTo(s->vg, x_start_pos_l, y_pos - 200);
+  nvgLineTo(s->vg, x_start_pos_l - width + 30, y_pos + height/2 - 200);
+  nvgLineTo(s->vg, x_start_pos_l, y_pos + height - 200);
+  nvgClosePath(s->vg);
+  nvgFillColor(s->vg, nvgRGBA(255,153,153,150));
   nvgFill(s->vg);
   //right symbol
   nvgBeginPath(s->vg);
@@ -1245,14 +1253,67 @@ static void ui_draw_live_camera_offet_adjust(UIState *s) {
   nvgClosePath(s->vg);
   nvgFillColor(s->vg, nvgRGBA(171,242,0,150));
   nvgFill(s->vg);
+  //right symbol above
+  nvgBeginPath(s->vg);
+  nvgMoveTo(s->vg, x_start_pos_r, y_pos - 200);
+  nvgLineTo(s->vg, x_start_pos_r + width - 30, y_pos + height/2 - 200);
+  nvgLineTo(s->vg, x_start_pos_r, y_pos + height - 200);
+  nvgClosePath(s->vg);
+  nvgFillColor(s->vg, nvgRGBA(255,153,153,150));
+  nvgFill(s->vg);
   //param value
   nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_MIDDLE);
   nvgFontSize(s->vg, 150);
+  if (s->scene.live_tune_panel_list = 0) {
+    ui_print(s, s->fb_w/2, y_pos + height/2, "%+0.3f", s->scene.cameraOffset*0.001);
+    nvgFontSize(s->vg, 75);
+    ui_print(s, s->fb_w/2, y_pos - 60, "CameraOffset");
+  } else if (s->scene.live_tune_panel_list = 1 && s->scene.lateralControlMethod == 0) {
+    ui_print(s, s->fb_w/2, y_pos + height/2, "%0.2f", s->scene.pidKp*0.01);
+    nvgFontSize(s->vg, 75);
+    ui_print(s, s->fb_w/2, y_pos - 60, "Pid: Kp");
+  } else if (s->scene.live_tune_panel_list = 2 && s->scene.lateralControlMethod == 0) {
+    ui_print(s, s->fb_w/2, y_pos + height/2, "%0.3f", s->scene.pidKi*0.001);
+    nvgFontSize(s->vg, 75);
+    ui_print(s, s->fb_w/2, y_pos - 60, "Pid: Ki");
+  } else if (s->scene.live_tune_panel_list = 3 && s->scene.lateralControlMethod == 0) {
+    ui_print(s, s->fb_w/2, y_pos + height/2, "%0.2f", s->scene.pidKd*0.01);
+    nvgFontSize(s->vg, 75);
+    ui_print(s, s->fb_w/2, y_pos - 60, "Pid: Kd");
+  } else if (s->scene.live_tune_panel_list = 4 && s->scene.lateralControlMethod == 0) {
+    ui_print(s, s->fb_w/2, y_pos + height/2, "%0.5f", s->scene.pidKf*0.00001);
+    nvgFontSize(s->vg, 75);
+    ui_print(s, s->fb_w/2, y_pos - 60, "Pid: Kf");
+  } else if (s->scene.live_tune_panel_list = 1 && s->scene.lateralControlMethod == 1) {
+    ui_print(s, s->fb_w/2, y_pos + height/2, "%0.1f", s->scene.indiInnerLoopGain*0.1);
+    nvgFontSize(s->vg, 75);
+    ui_print(s, s->fb_w/2, y_pos - 60, "INDI: ILGain");
+  } else if (s->scene.live_tune_panel_list = 2 && s->scene.lateralControlMethod == 1) {
+    ui_print(s, s->fb_w/2, y_pos + height/2, "%0.1f", s->scene.indiOuterLoopGain*0.1);
+    nvgFontSize(s->vg, 75);
+    ui_print(s, s->fb_w/2, y_pos - 60, "INDI: OLGain");
+  } else if (s->scene.live_tune_panel_list = 3 && s->scene.lateralControlMethod == 1) {
+    ui_print(s, s->fb_w/2, y_pos + height/2, "%0.1f", s->scene.indiTimeConstant*0.1);
+    nvgFontSize(s->vg, 75);
+    ui_print(s, s->fb_w/2, y_pos - 60, "INDI: TConst");
+  } else if (s->scene.live_tune_panel_list = 4 && s->scene.lateralControlMethod == 1) {
+    ui_print(s, s->fb_w/2, y_pos + height/2, "%0.1f", s->scene.indiActuatorEffectiveness*0.1);
+    nvgFontSize(s->vg, 75);
+    ui_print(s, s->fb_w/2, y_pos - 60, "INDI: ActEffct");
+  } else if (s->scene.live_tune_panel_list = 1 && s->scene.lateralControlMethod == 2) {
+    ui_print(s, s->fb_w/2, y_pos + height/2, "%0.0f", s->scene.lqrScale*1.0);
+    nvgFontSize(s->vg, 75);
+    ui_print(s, s->fb_w/2, y_pos - 60, "LQR: Scale");
+  } else if (s->scene.live_tune_panel_list = 2 && s->scene.lateralControlMethod == 2) {
+    ui_print(s, s->fb_w/2, y_pos + height/2, "%0.3f", s->scene.lqrKi*0.001);
+    nvgFontSize(s->vg, 75);
+    ui_print(s, s->fb_w/2, y_pos - 60, "LQR: Ki");
+  } else if (s->scene.live_tune_panel_list = 3 && s->scene.lateralControlMethod == 2) {
+    ui_print(s, s->fb_w/2, y_pos + height/2, "%0.5f", s->scene.lqrDcGain*0.00001);
+    nvgFontSize(s->vg, 75);
+    ui_print(s, s->fb_w/2, y_pos - 60, "LQR: DcGain");
+  }
   nvgFillColor(s->vg, COLOR_WHITE_ALPHA(200));
-  ui_print(s, s->fb_w/2, y_pos + height/2, "%+0.3f", s->scene.live_camera_offset*0.001);
-  nvgFontSize(s->vg, 75);
-  nvgFillColor(s->vg, COLOR_WHITE_ALPHA(200));
-  ui_print(s, s->fb_w/2, y_pos - 50, "CameraOffset");
 }
 
 static void ui_draw_vision(UIState *s) {
@@ -1269,8 +1330,8 @@ static void ui_draw_vision(UIState *s) {
       ui_draw_vision_car(s);
     }
   }
-  if (s->scene.live_camera_offset_enable) {
-    ui_draw_live_camera_offet_adjust(s);
+  if (s->scene.live_tune_panel_enable) {
+    ui_draw_live_tune_panel(s);
   }
   if (s->scene.kr_date_show || s->scene.kr_time_show) {
     draw_kr_date_time(s);

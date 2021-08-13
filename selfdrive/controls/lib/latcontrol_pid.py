@@ -18,7 +18,7 @@ class LatControlPID():
     self.mpc_frame = 0
     self.params = Params()
 
-    self.live_tune_enabled = self.params.get_bool("OpkrLiveTune")
+    self.live_tune_enabled = False
     self.dead_zone = float(Decimal(self.params.get("IgnoreZone", encoding="utf8")) * Decimal('0.1'))
 
     self.lp_timer = 0
@@ -44,7 +44,7 @@ class LatControlPID():
     self.lp_timer += 1
     if self.lp_timer > 100:
       self.lp_timer = 0
-      self.live_tune_enabled = self.params.get_bool("OpkrLiveTune")
+      self.live_tune_enabled = self.params.get_bool("OpkrLiveTunePanelEnable")
     if self.live_tune_enabled:
       self.live_tune(CP)
 

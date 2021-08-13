@@ -66,7 +66,7 @@ def manager_init():
     ("ActuatorEffectiveness", "20"),
     ("Scale", "1500"),
     ("LqrKi", "15"),
-    ("DcGain", "27"),
+    ("DcGain", "270"),
     ("IgnoreZone", "0"),
     ("PidKp", "20"),
     ("PidKi", "40"),
@@ -102,7 +102,6 @@ def manager_init():
     ("OpkrVariableSteerDelta", "0"),
     ("FingerprintTwoSet", "0"),
     ("OpkrVariableCruiseProfile", "1"),
-    ("OpkrLiveTune", "0"),
     ("OpkrDrivingRecord", "0"),
     ("OpkrTurnSteeringDisable", "0"),
     ("CarModel", ""),
@@ -152,7 +151,7 @@ def manager_init():
     ("LCTimingFactorEnable", "1"),
     ("AutoEnableSpeed", "3"),
     ("SafetyCamDecelDistGain", "0"),
-    ("OpkrLiveCameraOffsetEnable", "0"),
+    ("OpkrLiveTunePanelEnable", "0"),
   ]
   if not PC:
     default_params.append(("LastUpdateTime", datetime.datetime.utcnow().isoformat().encode('utf8')))

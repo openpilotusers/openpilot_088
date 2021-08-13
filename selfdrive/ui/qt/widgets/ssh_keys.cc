@@ -3684,7 +3684,7 @@ PidKd::PidKd() : AbstractControl("Kd", "Kd값을 조정합니다.", "../assets/o
   QObject::connect(&btnminus, &QPushButton::clicked, [=]() {
     auto str = QString::fromStdString(params.get("PidKd"));
     int value = str.toInt();
-    value = value - 1;
+    value = value - 5;
     if (value <= 0 ) {
       value = 0;
     }
@@ -3696,7 +3696,7 @@ PidKd::PidKd() : AbstractControl("Kd", "Kd값을 조정합니다.", "../assets/o
   QObject::connect(&btnplus, &QPushButton::clicked, [=]() {
     auto str = QString::fromStdString(params.get("PidKd"));
     int value = str.toInt();
-    value = value + 1;
+    value = value + 5;
     if (value >= 300 ) {
       value = 300;
     }
@@ -4247,9 +4247,9 @@ DcGain::DcGain() : AbstractControl("DcGain", "DcGain값을 조정합니다.", ".
   QObject::connect(&btnminus, &QPushButton::clicked, [=]() {
     auto str = QString::fromStdString(params.get("DcGain"));
     int value = str.toInt();
-    value = value - 1;
-    if (value <= 1 ) {
-      value = 1;
+    value = value - 5;
+    if (value <= 5 ) {
+      value = 5;
     }
     QString values = QString::number(value);
     params.put("DcGain", values.toStdString());
@@ -4259,9 +4259,9 @@ DcGain::DcGain() : AbstractControl("DcGain", "DcGain값을 조정합니다.", ".
   QObject::connect(&btnplus, &QPushButton::clicked, [=]() {
     auto str = QString::fromStdString(params.get("DcGain"));
     int value = str.toInt();
-    value = value + 1;
-    if (value >= 50 ) {
-      value = 50;
+    value = value + 5;
+    if (value >= 500 ) {
+      value = 500;
     }
     QString values = QString::number(value);
     params.put("DcGain", values.toStdString());
@@ -4273,7 +4273,7 @@ DcGain::DcGain() : AbstractControl("DcGain", "DcGain값을 조정합니다.", ".
 void DcGain::refresh() {
   auto strs = QString::fromStdString(params.get("DcGain"));
   int valuei = strs.toInt();
-  float valuef = valuei * 0.0001;
+  float valuef = valuei * 0.00001;
   QString valuefs = QString::number(valuef);
   label.setText(QString::fromStdString(valuefs.toStdString()));
   btnminus.setText("－");

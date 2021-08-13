@@ -87,7 +87,7 @@ class LanePlanner:
     self.lp_timer += 1
     if self.lp_timer > 100:
       self.lp_timer = 0
-      if Params().get_bool("OpkrLiveCameraOffsetEnable"):
+      if Params().get_bool("OpkrLiveTunePanelEnable"):
         self.camera_offset = float(Decimal(Params().get("CameraOffsetAdj", encoding="utf8")) * Decimal('0.001'))
 
     if len(md.laneLines) == 4 and len(md.laneLines[0].t) == TRAJECTORY_SIZE:
