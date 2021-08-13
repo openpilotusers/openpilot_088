@@ -1186,7 +1186,7 @@ void draw_kr_date_time(UIState *s) {
   // Get local time to display
   time_t t = time(NULL);
   struct tm tm = *localtime(&t);
-  char now[50];
+  char now[128];
   if (tm.tm_wday == 0) {
     strcpy(dayofweek, "일");
   } else if (tm.tm_wday == 1) {
@@ -1214,7 +1214,7 @@ void draw_kr_date_time(UIState *s) {
     strcpy(ampm, "오전");
   }
 
-  setlocale(LC_ALL, "");
+  setlocale(LC_ALL, "Korean");
   if (s->scene.kr_date_show && s->scene.kr_time_show) {
     snprintf(now,sizeof(now),"%04d년 %02d월 %02d일 (%s) %s %d:%02d:%02d", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, dayofweek, ampm, hour12, tm.tm_min, tm.tm_sec);
   } else if (s->scene.kr_date_show) {
