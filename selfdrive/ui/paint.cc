@@ -24,6 +24,7 @@
 #include "selfdrive/ui/ui.h"
 #include  <time.h> // opkr
 #include  <string.h> // opkr
+#include  <locale.h> // opkr
 
 static void ui_print(UIState *s, int x, int y,  const char* fmt, ... )
 {
@@ -1179,32 +1180,47 @@ void draw_kr_date_time(UIState *s) {
   int rect_x = s->fb_w/2 - rect_w/2;
   const int rect_y = 0;
   char dayofweek[10];
+  char ampm[20];
+  int hour12;
 
   // Get local time to display
   time_t t = time(NULL);
   struct tm tm = *localtime(&t);
   char now[50];
   if (tm.tm_wday == 0) {
-    strcpy(dayofweek, "SUN");
+    strcpy(dayofweek, "일");
   } else if (tm.tm_wday == 1) {
-    strcpy(dayofweek, "MON");
+    strcpy(dayofweek, "월");
   } else if (tm.tm_wday == 2) {
-    strcpy(dayofweek, "TUE");
+    strcpy(dayofweek, "화");
   } else if (tm.tm_wday == 3) {
-    strcpy(dayofweek, "WED");
+    strcpy(dayofweek, "수");
   } else if (tm.tm_wday == 4) {
-    strcpy(dayofweek, "THU");
+    strcpy(dayofweek, "목");
   } else if (tm.tm_wday == 5) {
-    strcpy(dayofweek, "FRI");
+    strcpy(dayofweek, "금");
   } else if (tm.tm_wday == 6) {
-    strcpy(dayofweek, "SAT");
+    strcpy(dayofweek, "토");
   }
+
+  if (tm.tm_hour == 0) {
+    hour12 = 12;
+    strcpy(ampm, "오전");
+  } else if (tm.tm_hour > 12) {
+    hour12 = hour12 - 12;
+    strcpy(ampm, "오후");
+  } else {
+    hour12 = tm.tm_hour;
+    strcpy(ampm, "오전");
+  }
+
+  setlocale(LC_ALL, "");
   if (s->scene.kr_date_show && s->scene.kr_time_show) {
-    snprintf(now,sizeof(now),"%04d-%02d-%02d %s %02d:%02d:%02d", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, dayofweek, tm.tm_hour, tm.tm_min, tm.tm_sec);
+    snprintf(now,sizeof(now),"%04d년 %02d월 %02d일 (%s) %s %d:%02d:%02d", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, dayofweek, ampm, hour12, tm.tm_min, tm.tm_sec);
   } else if (s->scene.kr_date_show) {
-    snprintf(now,sizeof(now),"%04d-%02d-%02d %s", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, dayofweek);
+    snprintf(now,sizeof(now),"%04d년 %02d월 %02d일 (%s)", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, dayofweek);
   } else if (s->scene.kr_time_show) {
-    snprintf(now,sizeof(now),"%02d:%02d:%02d", tm.tm_hour, tm.tm_min, tm.tm_sec);
+    snprintf(now,sizeof(now),"%s %d:%02d:%02d", ampm, hour12, tm.tm_min, tm.tm_sec);
   }
 
   nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_TOP);
