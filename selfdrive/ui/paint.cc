@@ -101,8 +101,8 @@ static void draw_lead(UIState *s, const cereal::ModelDataV2::LeadDataV2::Reader 
   float fillAlpha = 0;
   float speedBuff = 10.;
   float leadBuff = 40.;
-  float d_rel = lead_data.getXyva()[0];
-  float v_rel = lead_data.getXyva()[2];
+  float d_rel = lead_data.getX()[0];
+  float v_rel = lead_data.getV()[0];
   if (d_rel < leadBuff) {
     fillAlpha = 255*(1.0-(d_rel/leadBuff));
     if (v_rel < 0) {
@@ -255,12 +255,12 @@ static void ui_draw_world(UIState *s) {
   // Draw lead indicators if openpilot is handling longitudinal
   //if (s->scene.longitudinal_control) {
   if (true) {
-    auto lead_one = (*s->sm)["modelV2"].getModelV2().getLeads()[0];
-    auto lead_two = (*s->sm)["modelV2"].getModelV2().getLeads()[1];
+    auto lead_one = (*s->sm)["modelV2"].getModelV2().getLeadsV3()[0];
+    auto lead_two = (*s->sm)["modelV2"].getModelV2().getLeadsV3()[1];
     if (lead_one.getProb() > .5) {
       draw_lead(s, lead_one, s->scene.lead_vertices[0]);
     }
-    if (lead_two.getProb() > .5 && (std::abs(lead_one.getXyva()[0] - lead_two.getXyva()[0]) > 3.0)) {
+    if (lead_two.getProb() > .5 && (std::abs(lead_one.getX()[0] - lead_two.getX()[0]) > 3.0)) {
       draw_lead(s, lead_two, s->scene.lead_vertices[1]);
     }
   }

@@ -420,10 +420,10 @@ EVENTS: Dict[int, Dict[str, Union[Alert, Callable[[Any, messaging.SubMaster, boo
   # This alert is thrown when any of these values exceed a sanity check. This can be caused by
   # bad alignment or bad sensor data. If this happens consistently consider creating an issue on GitHub
   EventName.vehicleModelInvalid: {
-    ET.NO_ENTRY: NoEntryAlert("차량 매개 변수 식별 실패"),
-    ET.SOFT_DISABLE: SoftDisableAlert("차량 매개 변수 식별 실패"),
+    ET.NO_ENTRY: NoEntryAlert("차량 매개 변수 식별 실패, 메뉴에서 튜닝값을 점검하세요"),
+    ET.SOFT_DISABLE: SoftDisableAlert("차량 매개 변수 식별 실패, 메뉴에서 튜닝값을 점검하세요"),
     ET.WARNING: Alert(
-      "차량 매개 변수 식별 실패",
+      "차량 매개 변수 식별 실패, 메뉴에서 튜닝값을 점검하세요",
       "",
       AlertStatus.normal, AlertSize.small,
       Priority.LOWEST, VisualAlert.none, AudibleAlert.none, .0, .0, .1),
