@@ -24,7 +24,6 @@
 #include "selfdrive/ui/ui.h"
 #include  <time.h> // opkr
 #include  <string.h> // opkr
-#include  <locale.h> // opkr
 
 static void ui_print(UIState *s, int x, int y,  const char* fmt, ... )
 {
@@ -1186,39 +1185,39 @@ void draw_kr_date_time(UIState *s) {
   // Get local time to display
   time_t t = time(NULL);
   struct tm tm = *localtime(&t);
-  char now[128];
+  char now[50];
   if (tm.tm_wday == 0) {
-    strcpy(dayofweek, "일");
+    strcpy(dayofweek, "SUN");
   } else if (tm.tm_wday == 1) {
-    strcpy(dayofweek, "월");
+    strcpy(dayofweek, "MON");
   } else if (tm.tm_wday == 2) {
-    strcpy(dayofweek, "화");
+    strcpy(dayofweek, "TUE");
   } else if (tm.tm_wday == 3) {
-    strcpy(dayofweek, "수");
+    strcpy(dayofweek, "WED");
   } else if (tm.tm_wday == 4) {
-    strcpy(dayofweek, "목");
+    strcpy(dayofweek, "THU");
   } else if (tm.tm_wday == 5) {
-    strcpy(dayofweek, "금");
+    strcpy(dayofweek, "FRI");
   } else if (tm.tm_wday == 6) {
-    strcpy(dayofweek, "토");
+    strcpy(dayofweek, "SAT");
   }
 
   if (tm.tm_hour == 0) {
     hour12 = 12;
-    strcpy(ampm, "오전");
+    strcpy(ampm, "AM");
   } else if (tm.tm_hour > 12) {
     hour12 = hour12 - 12;
-    strcpy(ampm, "오후");
+    strcpy(ampm, "PM");
   } else {
     hour12 = tm.tm_hour;
-    strcpy(ampm, "오전");
+    strcpy(ampm, "AM");
   }
 
   setlocale(LC_ALL, "Korean");
   if (s->scene.kr_date_show && s->scene.kr_time_show) {
-    snprintf(now,sizeof(now),"%04d년 %02d월 %02d일 (%s) %s %d:%02d:%02d", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, dayofweek, ampm, hour12, tm.tm_min, tm.tm_sec);
+    snprintf(now,sizeof(now),"%04d-%02d-%02d %s %s %d:%02d:%02d", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, dayofweek, ampm, hour12, tm.tm_min, tm.tm_sec);
   } else if (s->scene.kr_date_show) {
-    snprintf(now,sizeof(now),"%04d년 %02d월 %02d일 (%s)", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, dayofweek);
+    snprintf(now,sizeof(now),"%04d-%02d-%02d %s", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, dayofweek);
   } else if (s->scene.kr_time_show) {
     snprintf(now,sizeof(now),"%s %d:%02d:%02d", ampm, hour12, tm.tm_min, tm.tm_sec);
   }
