@@ -224,6 +224,7 @@ static void screen_draw_button(UIState *s) {
     nvgStroke(s->vg);
 
     nvgFontSize(s->vg, 45);
+    nvgFontFace(s->vg, "sans-semibold");
 
     if (captureState == CAPTURE_STATE_CAPTURING) {
       NVGcolor fillColor = nvgRGBA(255,0,0,150);
