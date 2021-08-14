@@ -1,5 +1,5 @@
 OpkrAutoShutdown:2
-OpkrAutoScreenOff:0
+OpkrAutoScreenOff:-2
 OpkrUIBrightness:0
 OpkrUIVolumeBoost:0
 OpkrEnableDriverMonitoring:1
