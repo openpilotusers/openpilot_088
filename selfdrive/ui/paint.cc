@@ -1262,6 +1262,7 @@ static void ui_draw_live_tune_panel(UIState *s) {
 
   nvgFillColor(s->vg, COLOR_WHITE_ALPHA(150));
   nvgFill(s->vg);
+
   //param value
   nvgFontSize(s->vg, 150);
   nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_MIDDLE);
