@@ -1306,6 +1306,8 @@ static void ui_draw_live_tune_panel(UIState *s) {
     nvgFontSize(s->vg, 75);
     ui_print(s, s->fb_w/2, y_pos - 95, "LQR: DcGain");
   }
+  nvgFillColor(s->vg, nvgRGBA(255,255,255,150));
+  nvgFill(s->vg);
 
   //right symbol
   nvgBeginPath(s->vg);
