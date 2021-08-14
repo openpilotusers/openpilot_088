@@ -178,7 +178,7 @@ void HomeWindow::mousePressEvent(QMouseEvent* e) {
     }
     return;
   }
-  // opkr live camera offset
+  // opkr live ui tune
   if (QUIState::ui_state.scene.live_tune_panel_enable) {
     if (QUIState::ui_state.scene.started && !sidebar->isVisible() && !QUIState::ui_state.scene.map_on_top && livetunepanel_left_btn.ptInRect(e->x(), e->y())) {
       if (QUIState::ui_state.scene.live_tune_panel_list == 0) {
@@ -193,6 +193,13 @@ void HomeWindow::mousePressEvent(QMouseEvent* e) {
         if (QUIState::ui_state.scene.pathOffset <= -1000) QUIState::ui_state.scene.pathOffset = -1000;
         QString value = QString::number(QUIState::ui_state.scene.pathOffset);
         Params().put("PathOffsetAdj", value.toStdString());
+        return;
+      }
+      if (QUIState::ui_state.scene.live_tune_panel_list == 2) {
+        QUIState::ui_state.scene.osteerRateCost = QUIState::ui_state.scene.osteerRateCost - 1;
+        if (QUIState::ui_state.scene.osteerRateCost <= 1) QUIState::ui_state.scene.osteerRateCost = 1;
+        QString value = QString::number(QUIState::ui_state.scene.osteerRateCost);
+        Params().put("SteerRateCostAdj", value.toStdString());
         return;
       }
       if (QUIState::ui_state.scene.live_tune_panel_list == (QUIState::ui_state.scene.list_count+0) && QUIState::ui_state.scene.lateralControlMethod == 0) {
@@ -276,6 +283,13 @@ void HomeWindow::mousePressEvent(QMouseEvent* e) {
         if (QUIState::ui_state.scene.pathOffset >= 1000) QUIState::ui_state.scene.pathOffset = 1000;
         QString value = QString::number(QUIState::ui_state.scene.pathOffset);
         Params().put("PathOffsetAdj", value.toStdString());
+        return;
+      }
+      if (QUIState::ui_state.scene.live_tune_panel_list == 2) {
+        QUIState::ui_state.scene.osteerRateCost = QUIState::ui_state.scene.osteerRateCost + 1;
+        if (QUIState::ui_state.scene.osteerRateCost >= 200) QUIState::ui_state.scene.osteerRateCost = 200;
+        QString value = QString::number(QUIState::ui_state.scene.osteerRateCost);
+        Params().put("SteerRateCostAdj", value.toStdString());
         return;
       }
       if (QUIState::ui_state.scene.live_tune_panel_list == (QUIState::ui_state.scene.list_count+0) && QUIState::ui_state.scene.lateralControlMethod == 0) {

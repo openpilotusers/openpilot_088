@@ -198,7 +198,7 @@ typedef struct UIScene {
   float dynamic_tr_value;
   bool touched2 = false;
   float brightness_off;
-  int cameraOffset, pathOffset;
+  int cameraOffset, pathOffset, osteerRateCost;
   int pidKp, pidKi, pidKd, pidKf;
   int indiInnerLoopGain, indiOuterLoopGain, indiTimeConstant, indiActuatorEffectiveness;
   int lqrScale, lqrKi, lqrDcGain;
@@ -206,7 +206,7 @@ typedef struct UIScene {
   bool kr_date_show;
   bool kr_time_show;
   int live_tune_panel_list = 0;
-  int list_count = 2;
+  int list_count = 3;
 
   cereal::DeviceState::Reader deviceState;
   cereal::RadarState::LeadData::Reader lead_data[2];

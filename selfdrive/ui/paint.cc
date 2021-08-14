@@ -1274,7 +1274,11 @@ static void ui_draw_live_tune_panel(UIState *s) {
     ui_print(s, s->fb_w/2, y_pos + height/2, "%+0.3f", s->scene.pathOffset*0.001);
     nvgFontSize(s->vg, 75);
     ui_print(s, s->fb_w/2, y_pos - 95, "PathOffset");
-  }else if (s->scene.live_tune_panel_list == (s->scene.list_count+0) && s->scene.lateralControlMethod == 0) {
+  } else if (s->scene.live_tune_panel_list == 2) {
+    ui_print(s, s->fb_w/2, y_pos + height/2, "%+0.3f", s->scene.osteerRateCost*0.01);
+    nvgFontSize(s->vg, 75);
+    ui_print(s, s->fb_w/2, y_pos - 95, "SteerRateCost");
+  } else if (s->scene.live_tune_panel_list == (s->scene.list_count+0) && s->scene.lateralControlMethod == 0) {
     ui_print(s, s->fb_w/2, y_pos + height/2, "%0.2f", s->scene.pidKp*0.01);
     nvgFontSize(s->vg, 75);
     ui_print(s, s->fb_w/2, y_pos - 95, "Pid: Kp");
