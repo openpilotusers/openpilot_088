@@ -917,22 +917,24 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
   if (true) {
     char val_str[16];
     char uom_str[6];
+    float vrel;
+    if (s->scene.is_metric) {
+      vrel = (lead_one.getV()[0] - s->scene.car_state.getVEgo())*3.6;
+    } else {
+      vrel = (lead_one.getV()[0] - s->scene.car_state.getVEgo())*2.2374144;
+    }
     NVGcolor val_color = COLOR_WHITE_ALPHA(200);
     if (lead_one.getProb() > .5) {
       //show Orange if negative speed (approaching)
       //show Orange if negative speed faster than 5mph (approaching fast)
-      if((int)(lead_one.getV()[0]) < 0) {
+      if(vrel < 0) {
         val_color = nvgRGBA(255, 188, 3, 200);
       }
-      if((int)(lead_one.getV()[0]) < -5) {
+      if(vrel < -5) {
         val_color = nvgRGBA(255, 0, 0, 200);
       }
       // lead car relative speed is always in meters
-      if (s->scene.is_metric) {
-         snprintf(val_str, sizeof(val_str), "%d", (int)(lead_one.getV()[0] * 3.6 + 0.5));
-      } else {
-         snprintf(val_str, sizeof(val_str), "%d", (int)(lead_one.getV()[0] * 2.2374144 + 0.5));
-      }
+      snprintf(val_str, sizeof(val_str), "%d", (int)(vrel));
     } else {
        snprintf(val_str, sizeof(val_str), "-");
     }
