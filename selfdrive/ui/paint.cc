@@ -1253,12 +1253,6 @@ static void ui_draw_live_tune_panel(UIState *s) {
   nvgClosePath(s->vg);
   nvgFillColor(s->vg, nvgRGBA(171,242,0,150));
   nvgFill(s->vg);
-  //right symbol
-  nvgBeginPath(s->vg);
-  nvgMoveTo(s->vg, x_start_pos_r, y_pos);
-  nvgLineTo(s->vg, x_start_pos_r + width - 30, y_pos + height/2);
-  nvgLineTo(s->vg, x_start_pos_r, y_pos + height);
-  nvgClosePath(s->vg);
 
   nvgFillColor(s->vg, COLOR_WHITE_ALPHA(150));
   nvgFill(s->vg);
@@ -1315,8 +1309,15 @@ static void ui_draw_live_tune_panel(UIState *s) {
     nvgFontSize(s->vg, 75);
     ui_print(s, s->fb_w/2, y_pos - 95, "LQR: DcGain");
   }
-  nvgFillColor(s->vg, nvgRGBA(171,242,0,100));
+  nvgFillColor(s->vg, nvgRGBA(171,242,0,150));
   nvgFill(s->vg);
+
+  //right symbol
+  nvgBeginPath(s->vg);
+  nvgMoveTo(s->vg, x_start_pos_r, y_pos);
+  nvgLineTo(s->vg, x_start_pos_r + width - 30, y_pos + height/2);
+  nvgLineTo(s->vg, x_start_pos_r, y_pos + height);
+  nvgClosePath(s->vg);
 }
 
 static void ui_draw_vision(UIState *s) {
