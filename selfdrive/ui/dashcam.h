@@ -223,9 +223,6 @@ static void screen_draw_button(UIState *s) {
     nvgStrokeWidth(s->vg, 6);
     nvgStroke(s->vg);
 
-    nvgFontSize(s->vg, 45);
-    nvgFontFace(s->vg, "sans-semibold");
-
     if (captureState == CAPTURE_STATE_CAPTURING) {
       NVGcolor fillColor = nvgRGBA(255,0,0,150);
       nvgFillColor(s->vg, fillColor);
@@ -235,6 +232,8 @@ static void screen_draw_button(UIState *s) {
     else {
       nvgFillColor(s->vg, nvgRGBA(255, 255, 255, 200));
     }
+    nvgFontSize(s->vg, 45);
+    nvgFontFace(s->vg, "sans-bold");
     nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_MIDDLE);
     nvgText(s->vg, btn_xc, btn_yc, "REC", NULL);
   }
