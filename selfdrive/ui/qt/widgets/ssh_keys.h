@@ -797,6 +797,21 @@ private:
   void refresh();
 };
 
+class PathOffset : public AbstractControl {
+  Q_OBJECT
+
+public:
+  PathOffset();
+
+private:
+  QPushButton btnplus;
+  QPushButton btnminus;
+  QLabel label;
+  Params params;
+  
+  void refresh();
+};
+
 class SRBaseControl : public AbstractControl {
   Q_OBJECT
 

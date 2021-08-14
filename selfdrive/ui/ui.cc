@@ -417,6 +417,7 @@ static void update_status(UIState *s) {
       s->scene.scr.autoScreenOff = std::stoi(params.get("OpkrAutoScreenOff"));
       s->scene.brightness_off = std::stoi(params.get("OpkrUIBrightnessOff"));
       s->scene.cameraOffset = std::stoi(params.get("CameraOffsetAdj"));
+      s->scene.pathOffset = std::stoi(params.get("PathOffsetAdj"));
       s->scene.pidKp = std::stoi(params.get("PidKp"));
       s->scene.pidKi = std::stoi(params.get("PidKi"));
       s->scene.pidKd = std::stoi(params.get("PidKd"));

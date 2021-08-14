@@ -14,7 +14,7 @@ TRAJECTORY_SIZE = 33
 if EON:
   CAMERA_OFFSET = float(Decimal(Params().get("CameraOffsetAdj", encoding="utf8")) * Decimal('0.001'))  # m from center car to camera
   CAMERA_OFFSET_A = CAMERA_OFFSET - 0.1
-  PATH_OFFSET = 0.0
+  PATH_OFFSET = float(Decimal(Params().get("PathOffsetAdj", encoding="utf8")) * Decimal('0.001'))  # default 0.0
 elif TICI:
   CAMERA_OFFSET = -0.04
   PATH_OFFSET = -0.04
@@ -50,6 +50,7 @@ class LanePlanner:
     self.right_curv_offset = int(Params().get("RightCurvOffsetAdj", encoding="utf8"))
 
     self.lp_timer = 0
+    self.lp_timer2 = 0
 
   def parse_model(self, md, sm, v_ego):
     curvature = sm['controlsState'].curvature
@@ -107,6 +108,11 @@ class LanePlanner:
       self.r_lane_change_prob = md.meta.desireState[log.LateralPlan.Desire.laneChangeRight]
 
   def get_d_path(self, v_ego, path_t, path_xyz):
+    self.lp_timer2 += 1
+    if self.lp_timer2 > 100:
+      self.lp_timer2 = 0
+      if Params().get_bool("OpkrLiveTunePanelEnable"):
+        self.path_offset = float(Decimal(Params().get("PathOffsetAdj", encoding="utf8")) * Decimal('0.001'))
     # Reduce reliance on lanelines that are too far apart or
     # will be in a few seconds
     path_xyz[:, 1] -= self.path_offset

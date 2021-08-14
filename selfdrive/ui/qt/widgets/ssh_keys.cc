@@ -2474,7 +2474,7 @@ void MaxRateDown::refresh() {
 }
 
 //튜닝
-CameraOffset::CameraOffset() : AbstractControl("CameraOffset", "CameraOffset값을 설정합니다.", "../assets/offroad/icon_shell.png") {
+CameraOffset::CameraOffset() : AbstractControl("CameraOffset", "CameraOffset값을 설정합니다. (+값:왼쪽이동, -값:오른쪽이동)", "../assets/offroad/icon_shell.png") {
 
   label.setAlignment(Qt::AlignVCenter|Qt::AlignRight);
   label.setStyleSheet("color: #e0e879");
@@ -2529,6 +2529,69 @@ CameraOffset::CameraOffset() : AbstractControl("CameraOffset", "CameraOffset값�
 
 void CameraOffset::refresh() {
   auto strs = QString::fromStdString(params.get("CameraOffsetAdj"));
+  int valuei = strs.toInt();
+  float valuef = valuei * 0.001;
+  QString valuefs = QString::number(valuef);
+  label.setText(QString::fromStdString(valuefs.toStdString()));
+  btnminus.setText("－");
+  btnplus.setText("＋");
+}
+
+PathOffset::PathOffset() : AbstractControl("PathOffset", "PathOffset값을 설정합니다. (+값:왼쪽이동, -값:오른쪽이동)", "../assets/offroad/icon_shell.png") {
+
+  label.setAlignment(Qt::AlignVCenter|Qt::AlignRight);
+  label.setStyleSheet("color: #e0e879");
+  hlayout->addWidget(&label);
+
+  btnminus.setStyleSheet(R"(
+    padding: 0;
+    border-radius: 50px;
+    font-size: 35px;
+    font-weight: 500;
+    color: #E4E4E4;
+    background-color: #393939;
+  )");
+  btnplus.setStyleSheet(R"(
+    padding: 0;
+    border-radius: 50px;
+    font-size: 35px;
+    font-weight: 500;
+    color: #E4E4E4;
+    background-color: #393939;
+  )");
+  btnminus.setFixedSize(150, 100);
+  btnplus.setFixedSize(150, 100);
+  hlayout->addWidget(&btnminus);
+  hlayout->addWidget(&btnplus);
+
+  QObject::connect(&btnminus, &QPushButton::clicked, [=]() {
+    auto str = QString::fromStdString(params.get("PathOffsetAdj"));
+    int value = str.toInt();
+    value = value - 5;
+    if (value <= -1000 ) {
+      value = -1000;
+    }
+    QString values = QString::number(value);
+    params.put("PathOffsetAdj", values.toStdString());
+    refresh();
+  });
+  
+  QObject::connect(&btnplus, &QPushButton::clicked, [=]() {
+    auto str = QString::fromStdString(params.get("PathOffsetAdj"));
+    int value = str.toInt();
+    value = value + 5;
+    if (value >= 1000 ) {
+      value = 1000;
+    }
+    QString values = QString::number(value);
+    params.put("PathOffsetAdj", values.toStdString());
+    refresh();
+  });
+  refresh();
+}
+
+void PathOffset::refresh() {
+  auto strs = QString::fromStdString(params.get("PathOffsetAdj"));
   int valuei = strs.toInt();
   float valuef = valuei * 0.001;
   QString valuefs = QString::number(valuef);
