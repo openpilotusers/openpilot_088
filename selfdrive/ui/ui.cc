@@ -482,8 +482,8 @@ void QUIState::update() {
   update_sockets(&ui_state);
   update_state(&ui_state);
   update_status(&ui_state);
-  dashcam(&ui_state);
   update_vision(&ui_state);
+  dashcam(&ui_state);
 
   if (ui_state.scene.started != started_prev) {
     started_prev = ui_state.scene.started;
