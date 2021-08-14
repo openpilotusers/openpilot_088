@@ -269,10 +269,10 @@ static void ui_draw_world(UIState *s) {
 
 // TPMS code added from OPKR
 static void ui_draw_tpms(UIState *s) {
-  char tpmsFl[32];
-  char tpmsFr[32];
-  char tpmsRl[32];
-  char tpmsRr[32];
+  char tpmsFl[64];
+  char tpmsFr[64];
+  char tpmsRl[64];
+  char tpmsRr[64];
   int viz_tpms_w = 230;
   int viz_tpms_h = 160;
   int viz_tpms_x = s->fb_w - (bdr_s+425);
@@ -746,7 +746,7 @@ static void bb_ui_draw_measures_left(UIState *s, int bb_x, int bb_y, int bb_w ) 
   //CPU TEMP
   if (true) {
     //char val_str[16];
-    char uom_str[6];
+    char uom_str[16];
     std::string cpu_temp_val = std::to_string(int(s->scene.cpuTemp)) + "°C";
     NVGcolor val_color = COLOR_WHITE_ALPHA(200);
     if(s->scene.cpuTemp > 75) {
@@ -766,7 +766,7 @@ static void bb_ui_draw_measures_left(UIState *s, int bb_x, int bb_y, int bb_w ) 
   //DEVICE TEMP
   if (s->scene.batt_less) {
     //char val_str[16];
-    char uom_str[6];
+    char uom_str[16];
     std::string device_temp_val = std::to_string(int(s->scene.ambientTemp)) + "°C";
     NVGcolor val_color = COLOR_WHITE_ALPHA(200);
     if(s->scene.ambientTemp > 45) {
@@ -787,7 +787,7 @@ static void bb_ui_draw_measures_left(UIState *s, int bb_x, int bb_y, int bb_w ) 
   //BAT TEMP
   if (!s->scene.batt_less) {
     //char val_str[16];
-    char uom_str[6];
+    char uom_str[16];
     std::string bat_temp_val = std::to_string(int(s->scene.batTemp)) + "°C";
     NVGcolor val_color = COLOR_WHITE_ALPHA(200);
     if(s->scene.batTemp > 40) {
@@ -808,7 +808,7 @@ static void bb_ui_draw_measures_left(UIState *s, int bb_x, int bb_y, int bb_w ) 
   //BAT LEVEL
   if(!s->scene.batt_less) {
     //char val_str[16];
-    char uom_str[6];
+    char uom_str[16];
     std::string bat_level_val = std::to_string(int(s->scene.batPercent)) + "%";
     NVGcolor val_color = COLOR_WHITE_ALPHA(200);
     snprintf(uom_str, sizeof(uom_str), "%s", scene->deviceState.getBatteryStatus() == "Charging" ? "++" : "--");
@@ -821,7 +821,7 @@ static void bb_ui_draw_measures_left(UIState *s, int bb_x, int bb_y, int bb_w ) 
   //add Ublox GPS accuracy
   if (scene->gpsAccuracyUblox != 0.00) {
     char val_str[16];
-    char uom_str[3];
+    char uom_str[16];
     NVGcolor val_color = COLOR_WHITE_ALPHA(200);
     //show red/orange if gps accuracy is low
       if(scene->gpsAccuracyUblox > 0.85) {
@@ -849,7 +849,7 @@ static void bb_ui_draw_measures_left(UIState *s, int bb_x, int bb_y, int bb_w ) 
   //add altitude
   if (scene->gpsAccuracyUblox != 0.00) {
     char val_str[16];
-    char uom_str[3];
+    char uom_str[16];
     NVGcolor val_color = COLOR_WHITE_ALPHA(200);
     snprintf(val_str, sizeof(val_str), "%.0f", (s->scene.altitudeUblox));
     snprintf(uom_str, sizeof(uom_str), "m");
@@ -885,7 +885,7 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
   //add visual radar relative distance
   if (true) {
     char val_str[16];
-    char uom_str[6];
+    char uom_str[16];
     NVGcolor val_color = COLOR_WHITE_ALPHA(200);
     if (lead_one.getProb() > .5) {
       //show RED if less than 5 meters
@@ -915,23 +915,23 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
   }
   //add visual radar relative speed
   if (true) {
-    char val_str[16];
-    char uom_str[6];
+    char val_str[32];
+    char uom_str[16];
     NVGcolor val_color = COLOR_WHITE_ALPHA(200);
     if (lead_one.getProb() > .5) {
       //show Orange if negative speed (approaching)
       //show Orange if negative speed faster than 5mph (approaching fast)
-      if((int)(lead_one.getV()[0]) < 0) {
+      if((int)((lead_one.getV()[0] - s->scene.car_state.getVEgo()) * 3.6) < 0) {
         val_color = nvgRGBA(255, 188, 3, 200);
       }
-      if((int)(lead_one.getV()[0]) < -5) {
+      if((int)((lead_one.getV()[0] - s->scene.car_state.getVEgo()) * 3.6) < -5) {
         val_color = nvgRGBA(255, 0, 0, 200);
       }
       // lead car relative speed is always in meters
       if (s->scene.is_metric) {
-         snprintf(val_str, sizeof(val_str), "%d", (int)(lead_one.getV()[0] * 3.6 + 0.5));
+         snprintf(val_str, sizeof(val_str), "%d", (int)((lead_one.getV()[0] - s->scene.car_state.getVEgo()) * 3.6));
       } else {
-         snprintf(val_str, sizeof(val_str), "%d", (int)(lead_one.getV()[0] * 2.2374144 + 0.5));
+         snprintf(val_str, sizeof(val_str), "%d", (int)((lead_one.getV()[0] - s->scene.car_state.getVEgo()) * 2.2374144));
       }
     } else {
        snprintf(val_str, sizeof(val_str), "-");
@@ -950,7 +950,7 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
   //add steering angle
   if (true) {
     char val_str[16];
-    char uom_str[6];
+    char uom_str[16];
     //std::string angle_val = std::to_string(int(s->scene.angleSteers*10)/10) + "°";
     NVGcolor val_color = COLOR_GREEN_ALPHA(200);
     //show Orange if more than 30 degrees
@@ -975,7 +975,7 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
   //add steerratio from lateralplan
   if (true) {
     char val_str[16];
-    char uom_str[6];
+    char uom_str[16];
     NVGcolor val_color = COLOR_WHITE_ALPHA(200);
     if (scene->controls_state.getEnabled()) {
       snprintf(val_str, sizeof(val_str), "%.2f",(s->scene.steerRatio));
@@ -993,7 +993,7 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
   //cruise gap
   if (s->scene.longitudinal_control) {
     char val_str[16];
-    char uom_str[6];
+    char uom_str[16];
     NVGcolor val_color = COLOR_WHITE_ALPHA(200);
     if (scene->controls_state.getEnabled()) {
       if (s->scene.cruise_gap == s->scene.dynamic_tr_mode) {
@@ -1178,7 +1178,7 @@ void draw_kr_date_time(UIState *s) {
   const int rect_h = 50;
   int rect_x = s->fb_w/2 - rect_w/2;
   const int rect_y = 0;
-  char dayofweek[10];
+  char dayofweek[50];
 
   // Get local time to display
   time_t t = time(NULL);
@@ -1218,7 +1218,6 @@ void draw_kr_date_time(UIState *s) {
   nvgStroke(s->vg);
 
   nvgFontSize(s->vg, 50);
-  nvgFontFace(s->vg, "sans-semibold");
   nvgFillColor(s->vg, nvgRGBA(255, 255, 255, 200));
   nvgText(s->vg, s->fb_w/2, rect_y, now, NULL);
 }
