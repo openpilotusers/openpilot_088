@@ -523,9 +523,19 @@ void Device::setAwake(bool on, bool reset) {
 }
 
 void Device::updateBrightness(const UIState &s) {
-  float brightness_b = 10;
-  float brightness_m = 0.1;
-  float clipped_brightness = std::min(100.0f, (s.scene.light_sensor * brightness_m) + brightness_b);
+  // Scale to 0% to 100%
+  float clipped_brightness = 100.0 * s.scene.light_sensor;
+
+  // CIE 1931 - https://www.photonstophotos.net/GeneralTopics/Exposure/Psychometric_Lightness_and_Gamma.htm
+  if (clipped_brightness <= 8) {
+    clipped_brightness = (clipped_brightness / 903.3);
+  } else {
+    clipped_brightness = std::pow((clipped_brightness + 16.0) / 116.0, 3.0);
+  }
+
+  // Scale back to 10% to 100%
+  clipped_brightness = std::clamp(100.0f * clipped_brightness, 10.0f, 100.0f);
+
   if (!s.scene.started) {
     clipped_brightness = BACKLIGHT_OFFROAD;
   } else if (s.scene.scr.autoScreenOff != -2 && s.scene.touched2) {
