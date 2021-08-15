@@ -366,7 +366,7 @@ CarSelectCombo::CarSelectCombo() : AbstractControl("차량강제인식", "핑거
     border-style: solid;
     border: 0px solid #1e1e1e;
     border-radius: 0;
-    width: 80px;
+    width: 100px;
   )");
 
   combobox.addItem("차량을 선택하세요");
@@ -408,7 +408,7 @@ CarSelectCombo::CarSelectCombo() : AbstractControl("차량강제인식", "핑거
   combobox.addItem("SOUL_EV");
   combobox.addItem("MOHAVE");
 
-  combobox.setFixedWidth(650);
+  combobox.setFixedWidth(700);
 
   btn.setStyleSheet(R"(
     padding: 0;
