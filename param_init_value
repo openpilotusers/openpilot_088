@@ -93,3 +93,4 @@ LCTimingFactorEnable:1
 AutoEnableSpeed:3
 SafetyCamDecelDistGain:0
 OpkrLiveTunePanelEnable:0
+RadarLongHelper:1

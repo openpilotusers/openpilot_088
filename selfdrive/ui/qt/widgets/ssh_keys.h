@@ -491,6 +491,18 @@ public:
   }
 };
 
+class RadarLongHelperToggle : public ToggleControl {
+  Q_OBJECT
+
+public:
+  RadarLongHelperToggle() : ToggleControl("레이더 롱 보조 사용", "비전 SCC 사용 중 근거리(25m이하)에서 레이더값+콤마비전롱(보간)을 사용합니다. 비전SCC가 충분히 멈추지 못하는 상황에서 레이더 값을 이용해 확실히 멈출 수 있게 합니다. 레이더가 앞차 인식시만 사용되며, 앞차인식을 못할 시(녹색쉐브론)는 콤마비전롱으로만 감속됩니다. 이 기능을 끄면 항상 콤마 비전롱을 사용하는것을 의미합니다.(레이더인식시 앞차거리 3m 이하는 안전을 위해 레이더값을 강제로 사용함)", "../assets/offroad/icon_shell.png", Params().getBool("RadarLongHelper")) {
+    QObject::connect(this, &RadarLongHelperToggle::toggleFlipped, [=](int state) {
+      char value = state ? '1' : '0';
+      Params().put("RadarLongHelper", &value, 1);
+    });
+  }
+};
+
 // 오픈파일럿 미리보기
 class OpenpilotView : public AbstractControl {
   Q_OBJECT

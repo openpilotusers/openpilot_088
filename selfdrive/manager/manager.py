@@ -153,6 +153,7 @@ def manager_init():
     ("AutoEnableSpeed", "3"),
     ("SafetyCamDecelDistGain", "0"),
     ("OpkrLiveTunePanelEnable", "0"),
+    ("RadarLongHelper", "1"),
   ]
   if not PC:
     default_params.append(("LastUpdateTime", datetime.datetime.utcnow().isoformat().encode('utf8')))

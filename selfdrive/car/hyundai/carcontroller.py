@@ -138,6 +138,7 @@ class CarController():
     self.mad_mode_enabled = self.params.get_bool("MadModeEnabled")
     self.ldws_fix = self.params.get_bool("LdwsCarFix")
     self.apks_enabled = self.params.get_bool("OpkrApksEnable")
+    self.radar_helper_enabled = self.params.get_bool("RadarLongHelper")
 
     self.steer_mode = ""
     self.mdps_status = ""
@@ -546,7 +547,8 @@ class CarController():
         self.fca11alivecnt = self.fca11maxcnt - self.fca11inc
         lead_objspd = CS.lead_objspd  # vRel (km/h)
         aReqValue = CS.scc12["aReqValue"]
-        if 0 < CS.out.radarDistance <= 149:
+        if 0 < CS.out.radarDistance <= 149 and self.radar_helper_enabled:
+          # neokii's logic, opkr mod
           if aReqValue > 0.:
             stock_weight = interp(CS.out.radarDistance, [3., 25.], [0.8, 0.])
           elif aReqValue < 0.:
@@ -557,6 +559,8 @@ class CarController():
           else:
             stock_weight = 0.
           apply_accel = apply_accel * (1. - stock_weight) + aReqValue * stock_weight
+        elif 0 < CS.out.radarDistance <= 3: # use radar by force to stop anyway at 3m
+          apply_accel = aReqValue
         else:
           stock_weight = 0.
         can_sends.append(create_scc11(self.packer, frame, set_speed, lead_visible, self.scc_live, lead_dist, lead_vrel, lead_yrel, 
@@ -595,6 +599,7 @@ class CarController():
     self.cc_timer += 1
     if self.cc_timer > 100:
       self.cc_timer = 0
+      self.radar_helper_enabled = self.params.get_bool("RadarLongHelper")
       if self.params.get_bool("OpkrLiveTunePanelEnable"):
         if CS.CP.lateralTuning.which() == 'pid':
           self.str_log2 = 'T={:0.2f}/{:0.3f}/{:0.2f}/{:0.5f}'.format(float(Decimal(self.params.get("PidKp", encoding="utf8"))*Decimal('0.01')), \
