@@ -221,6 +221,15 @@ OpenpilotView::OpenpilotView() : AbstractControl("오픈파일럿 주행화면 �
   // setup widget
   hlayout->addStretch(1);
 
+  btn.setStyleSheet(R"(
+    padding: 0;
+    border-radius: 50px;
+    font-size: 35px;
+    font-weight: 500;
+    color: #E4E4E4;
+    background-color: #393939;
+  )");
+
   btn.setFixedSize(250, 100);
   hlayout->addWidget(&btn);
 
@@ -357,7 +366,7 @@ CarSelectCombo::CarSelectCombo() : AbstractControl("차량강제인식", "핑거
     border-style: solid;
     border: 0px solid #1e1e1e;
     border-radius: 0;
-    width: 70px;
+    width: 80px;
   )");
 
   combobox.addItem("차량을 선택하세요");
@@ -399,7 +408,16 @@ CarSelectCombo::CarSelectCombo() : AbstractControl("차량강제인식", "핑거
   combobox.addItem("SOUL_EV");
   combobox.addItem("MOHAVE");
 
-  combobox.setFixedWidth(700);
+  combobox.setFixedWidth(650);
+
+  btn.setStyleSheet(R"(
+    padding: 0;
+    border-radius: 50px;
+    font-size: 35px;
+    font-weight: 500;
+    color: #E4E4E4;
+    background-color: #393939;
+  )");
 
   btn.setFixedSize(150, 100);
 
