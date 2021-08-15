@@ -422,7 +422,7 @@ CarSelectCombo::CarSelectCombo() : AbstractControl("차량강제인식", "핑거
       if (ConfirmationDialog::confirm("차량 강제 설정을 해제하시겠습니까?", this)) {
         params.remove("CarModel");
         params.remove("CarModelAbb");
-        combobox.setCurrentIndex(0)
+        combobox.setCurrentIndex(0);
       }
     }
   });
