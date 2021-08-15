@@ -640,7 +640,7 @@ class CarState(CarStateBase):
         ("ComfortBandUpper", "SCC14", 0),
         ("ComfortBandLower", "SCC14", 0),
       ]
-      if not self.long_control_type
+      if not self.long_control_type:
         signals += [
           ("ACCMode", "SCC14", 0),
           ("ObjGap", "SCC14", 0),
