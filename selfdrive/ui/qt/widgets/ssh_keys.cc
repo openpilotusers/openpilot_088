@@ -406,13 +406,13 @@ CarSelectCombo::CarSelectCombo() : AbstractControl("차량강제인식", "핑거
   combobox.addItem("SOUL_EV");
   combobox.addItem("MOHAVE");
 
-  combobox.view().setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded).
+  combobox.view()->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 
   hlayout->addWidget(&combobox);
 
   QObject::connect(&combobox, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), [=](int index)
   {
-    combobox->itemData(combobox->currentIndex());
+    combobox.itemData(combobox.currentIndex());
     QString str = combobox.currentText();
     if (ConfirmationDialog::confirm("선택한 차량으로 강제 설정하시겠습니까?", this)) {
       params.put("CarModel", str.toStdString());
