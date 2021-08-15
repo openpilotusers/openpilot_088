@@ -365,7 +365,8 @@ CarSelectCombo::CarSelectCombo() : AbstractControl("차량강제인식", "핑거
     border-style: solid;
     border: 1px solid #1e1e1e;
     border-radius: 5;
-    padding: 1px 0px 1px 5px; 
+    padding: 1px 0px 1px 5px;
+    width: 30px;
   )");
 
   combobox.addItem("GENESIS");
@@ -406,7 +407,7 @@ CarSelectCombo::CarSelectCombo() : AbstractControl("차량강제인식", "핑거
   combobox.addItem("SOUL_EV");
   combobox.addItem("MOHAVE");
 
-  combobox.view()->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+  //combobox.view()->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 
   hlayout->addWidget(&combobox);
 
@@ -414,7 +415,7 @@ CarSelectCombo::CarSelectCombo() : AbstractControl("차량강제인식", "핑거
   {
     combobox.itemData(combobox.currentIndex());
     QString str = combobox.currentText();
-    if (ConfirmationDialog::confirm(str+"으로 강제 설정하시겠습니까?", this)) {
+    if (ConfirmationDialog::confirm(str + "(으)로 강제 설정하시겠습니까?", this)) {
       params.put("CarModel", str.toStdString());
       params.put("CarModelAbb", str.toStdString());
       QProcess::execute("/data/openpilot/car_force_set.sh");
