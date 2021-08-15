@@ -6,6 +6,8 @@
 #include "selfdrive/hardware/hw.h"
 #include "selfdrive/ui/qt/widgets/controls.h"
 #include "selfdrive/ui/ui.h" // opkr
+#include <QComboBox>
+#include <QAbstractItemView>
 
 // SSH enable toggle
 class SshToggle : public ToggleControl {
@@ -559,19 +561,18 @@ private:
   void refresh(QString carname);
 };
 
-class CarForceSet : public AbstractControl {
+class CarSelectCombo : public AbstractControl 
+{
   Q_OBJECT
 
 public:
-  CarForceSet();
+  CarSelectCombo();
 
 private:
-  QPushButton btnc;
-  QString carname;
-  //QLabel carname_label;
+  QComboBox combobox;
   Params params;
-  
-  void refreshc();
+
+  void refresh();
 };
 
 
