@@ -363,10 +363,6 @@ CarSelectCombo::CarSelectCombo() : AbstractControl("차량강제인식", "핑거
     color: white;
     background-color: #393939;
     border-style: solid;
-    border: 1px solid #1e1e1e;
-    border-radius: 5;
-    padding: 1px 0px 1px 5px;
-    width: 300px;
   )");
 
   combobox.addItem("차량을 선택하세요");
