@@ -250,6 +250,30 @@ static void update_state(UIState *s) {
     scene.steerMax_V = sm["carParams"].getCarParams().getSteerMaxV()[0];
     scene.steer_actuator_delay = sm["carParams"].getCarParams().getSteerActuatorDelay();
   }
+  if (sm.updated("lateralPlan")) {
+    scene.lateral_plan = sm["lateralPlan"].getLateralPlan();
+    auto data = sm["lateralPlan"].getLateralPlan();
+
+    scene.lateralPlan.laneWidth = data.getLaneWidth();
+    scene.lateralPlan.dProb = data.getDProb();
+    scene.lateralPlan.lProb = data.getLProb();
+    scene.lateralPlan.rProb = data.getRProb();
+    scene.lateralPlan.steerRateCost = data.getSteerRateCost();
+    scene.lateralPlan.standstillElapsedTime = data.getStandstillElapsedTime();
+    scene.lateralPlan.lanelessModeStatus = data.getLanelessMode();
+  }
+  // opkr
+  if (sm.updated("liveMapData")) {
+    scene.live_map_data = sm["liveMapData"].getLiveMapData();
+    auto data = sm["liveMapData"].getLiveMapData();
+
+    scene.liveMapData.opkrspeedlimit = data.getSpeedLimit();
+    scene.liveMapData.opkrspeedlimitdist = data.getSpeedLimitDistance();
+    scene.liveMapData.opkrspeedsign = data.getSafetySign();
+    scene.liveMapData.opkrcurveangle = data.getRoadCurvature();
+    scene.liveMapData.opkrturninfo = data.getTurnInfo();
+    scene.liveMapData.opkrdisttoturn = data.getDistanceToTurn();
+  }
   if (sm.updated("sensorEvents")) {
     for (auto sensor : sm["sensorEvents"].getSensorEvents()) {
       if (!scene.started && sensor.which() == cereal::SensorEventData::ACCELERATION) {
@@ -289,30 +313,6 @@ static void update_state(UIState *s) {
   }
   scene.started = sm["deviceState"].getDeviceState().getStarted();
   //scene.started = sm["deviceState"].getDeviceState().getStarted() && scene.ignition;
-  if (sm.updated("lateralPlan")) {
-    scene.lateral_plan = sm["lateralPlan"].getLateralPlan();
-    auto data = sm["lateralPlan"].getLateralPlan();
-
-    scene.lateralPlan.laneWidth = data.getLaneWidth();
-    scene.lateralPlan.dProb = data.getDProb();
-    scene.lateralPlan.lProb = data.getLProb();
-    scene.lateralPlan.rProb = data.getRProb();
-    scene.lateralPlan.steerRateCost = data.getSteerRateCost();
-    scene.lateralPlan.standstillElapsedTime = data.getStandstillElapsedTime();
-    scene.lateralPlan.lanelessModeStatus = data.getLanelessMode();
-  }
-  // opkr
-  if (sm.updated("liveMapData")) {
-    scene.live_map_data = sm["liveMapData"].getLiveMapData();
-    auto data = sm["liveMapData"].getLiveMapData();
-
-    scene.liveMapData.opkrspeedlimit = data.getSpeedLimit();
-    scene.liveMapData.opkrspeedlimitdist = data.getSpeedLimitDistance();
-    scene.liveMapData.opkrspeedsign = data.getSafetySign();
-    scene.liveMapData.opkrcurveangle = data.getRoadCurvature();
-    scene.liveMapData.opkrturninfo = data.getTurnInfo();
-    scene.liveMapData.opkrdisttoturn = data.getDistanceToTurn();
-  }
 }
 
 static void update_params(UIState *s) {
@@ -488,7 +488,7 @@ void QUIState::update() {
   update_vision(&ui_state);
   dashcam(&ui_state);
 
-  if (ui_state.scene.started != started_prev) {
+  if (ui_state.scene.started != started_prev || ui_state.sm->frame == 1) {
     started_prev = ui_state.scene.started;
     emit offroadTransition(!ui_state.scene.started);
 

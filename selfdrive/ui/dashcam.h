@@ -186,17 +186,17 @@ void draw_date_time(UIState *s) {
   snprintf(now,sizeof(now),"%04d-%02d-%02d  %02d:%02d:%02d", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec);
 
   nvgBeginPath(s->vg);
-    nvgRoundedRect(s->vg, rect_x, rect_y, rect_w, rect_h, 0);
-    nvgFillColor(s->vg, nvgRGBA(0, 0, 0, 0));
-    nvgFill(s->vg);
-    nvgStrokeColor(s->vg, nvgRGBA(255,255,255,0));
-    nvgStrokeWidth(s->vg, 0);
-    nvgStroke(s->vg);
+  nvgRoundedRect(s->vg, rect_x, rect_y, rect_w, rect_h, 0);
+  nvgFillColor(s->vg, nvgRGBA(0, 0, 0, 0));
+  nvgFill(s->vg);
+  nvgStrokeColor(s->vg, nvgRGBA(255,255,255,0));
+  nvgStrokeWidth(s->vg, 0);
+  nvgStroke(s->vg);
 
   nvgFontSize(s->vg, 34);
-    nvgFontFace(s->vg, "sans-bold");
-    nvgFillColor(s->vg, nvgRGBA(255, 255, 255, 200));
-    nvgText(s->vg,rect_x+229,rect_y+57,now,NULL);
+  nvgFontFace(s->vg, "sans-bold");
+  nvgFillColor(s->vg, nvgRGBA(255, 255, 255, 200));
+  nvgText(s->vg,rect_x+229,rect_y+57,now,NULL);
 }
 
 static void rotate_video(UIState *s) {
