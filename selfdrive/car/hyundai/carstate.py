@@ -44,6 +44,8 @@ class CarState(CarStateBase):
     self.steer_anglecorrection = float(int(Params().get("OpkrSteerAngleCorrection", encoding="utf8")) * 0.1)
     self.gear_correction = Params().get_bool("JustDoGearD")
     self.steer_wind_down = Params().get_bool("SteerWindDown")
+    self.long_control_type = Params().get_bool("LongControlType")
+    self.fca_type = Params().get_bool("FCAType")
 
     self.brake_check = False
     self.cancel_check = False
@@ -259,7 +261,7 @@ class CarState(CarStateBase):
     else:
       ret.gearShifter = self.parse_gear_shifter(self.shifter_values.get(gear))
 
-    if self.CP.fcaBus != -1 or self.CP.carFingerprint in FEATURES["use_fca"]:
+    if self.CP.fcaBus != -1 or self.CP.carFingerprint in FEATURES["use_fca"] or self.fca_type:
       ret.stockAeb = cp_fca.vl["FCA11"]["FCA_CmdAct"] != 0
       ret.stockFcw = cp_fca.vl["FCA11"]["CF_VSM_Warn"] == 2
     elif not self.CP.radarOffCan:
@@ -279,12 +281,14 @@ class CarState(CarStateBase):
     self.scc12 = copy.copy(cp_scc.vl["SCC12"])
     self.scc13 = copy.copy(cp_scc.vl["SCC13"])
     self.scc14 = copy.copy(cp_scc.vl["SCC14"])
-    self.fca11 = copy.copy(cp_fca.vl["FCA11"])
+    if not self.long_control_type:
+      self.fca11 = copy.copy(cp_fca.vl["FCA11"])
     self.mdps12 = copy.copy(cp_mdps.vl["MDPS12"])
 
     self.scc11init = copy.copy(cp.vl["SCC11"])
     self.scc12init = copy.copy(cp.vl["SCC12"])
-    self.fca11init = copy.copy(cp.vl["FCA11"])
+    if not self.long_control_type:
+      self.fca11init = copy.copy(cp.vl["FCA11"])
 
     ret.brakeHold = cp.vl["TCS15"]["AVH_LAMP"] == 2 # 0 OFF, 1 ERROR, 2 ACTIVE, 3 READY
     self.brakeHold = ret.brakeHold
@@ -353,11 +357,6 @@ class CarState(CarStateBase):
       ("ESC_Off_Step", "TCS15", 0),
       ("AVH_LAMP", "TCS15", 0),
 
-      ("CF_Lvr_CruiseSet", "LVR12", 0),
-      ("CRUISE_LAMP_M", "EMS16", 0),
-      ("CR_FCA_Alive", "FCA11", 0),
-      ("Supplemental_Counter", "FCA11", 0),
-
       ("MainMode_ACC", "SCC11", 1),
       ("SCCInfoDisplay", "SCC11", 0),
       ("AliveCounterACC", "SCC11", 0),
@@ -416,6 +415,21 @@ class CarState(CarStateBase):
       ("OPKR_S_Sign", "NAVI", 31),
       ("OPKR_SBR_Dist", "NAVI", 0),
     ]
+    if not self.long_control_type
+      signals += [
+        ("CR_FCA_Alive", "FCA11", 0),
+        ("Supplemental_Counter", "FCA11", 0),
+      ]
+    if CP.fcaBus == 0 and not self.long_control_type:
+      signals += [
+        ("FCA_CmdAct", "FCA11", 0),
+        ("CF_VSM_Warn", "FCA11", 0),
+      ]
+    if CP.sccBus == -1:
+      signals += [
+        ("CRUISE_LAMP_M", "EMS16", 0),
+        ("CF_Lvr_CruiseSet", "LVR12", 0),
+    ]
 
     checks = [
       # address, frequency
@@ -433,13 +447,8 @@ class CarState(CarStateBase):
         ("SCC11", 50),
         ("SCC12", 50),
       ]
-    if CP.fcaBus == 0:
-      signals += [
-        ("FCA_CmdAct", "FCA11", 0),
-        ("CF_VSM_Warn", "FCA11", 0),
-      ]
+    if CP.fcaBus == 0 and not self.long_control_type:
       checks += [("FCA11", 50)]
-
     if CP.mdpsBus == 0:
       signals += [
         ("CR_Mdps_StrColTq", "MDPS12", 0),
@@ -481,7 +490,7 @@ class CarState(CarStateBase):
         ]
       else:
         signals += [
-          ("Accel_Pedal_Pos", "E_EMS11", 0)
+          ("Accel_Pedal_Pos", "E_EMS11", 0),
         ]
       checks += [
         ("E_EMS11", 50),
@@ -630,33 +639,35 @@ class CarState(CarStateBase):
         ("SCCMode2", "SCC14", 0),
         ("ComfortBandUpper", "SCC14", 0),
         ("ComfortBandLower", "SCC14", 0),
-        ("ACCMode", "SCC14", 0),
-        ("ObjGap", "SCC14", 0),
-
-        ("CF_VSM_Prefill", "FCA11", 0),
-        ("CF_VSM_HBACmd", "FCA11", 0),
-        ("CF_VSM_Warn", "FCA11", 0),
-        ("CF_VSM_BeltCmd", "FCA11", 0),
-        ("CR_VSM_DecCmd", "FCA11", 0),
-        ("FCA_Status", "FCA11", 2),
-        ("FCA_CmdAct", "FCA11", 0),
-        ("FCA_StopReq", "FCA11", 0),
-        ("FCA_DrvSetStatus", "FCA11", 1),
-        ("CF_VSM_DecCmdAct", "FCA11", 0),
-        ("FCA_Failinfo", "FCA11", 0),
-        ("FCA_RelativeVelocity", "FCA11", 0),
-        ("FCA_TimetoCollision", "FCA11", 2540.),
-        ("CR_FCA_Alive", "FCA11", 0),
-        ("CR_FCA_ChkSum", "FCA11", 0),
-        ("Supplemental_Counter", "FCA11", 0),
-        ("PAINT1_Status", "FCA11", 1),
       ]
+      if not self.long_control_type
+        signals += [
+          ("ACCMode", "SCC14", 0),
+          ("ObjGap", "SCC14", 0),
+          ("CF_VSM_Prefill", "FCA11", 0),
+          ("CF_VSM_HBACmd", "FCA11", 0),
+          ("CF_VSM_Warn", "FCA11", 0),
+          ("CF_VSM_BeltCmd", "FCA11", 0),
+          ("CR_VSM_DecCmd", "FCA11", 0),
+          ("FCA_Status", "FCA11", 2),
+          ("FCA_CmdAct", "FCA11", 0),
+          ("FCA_StopReq", "FCA11", 0),
+          ("FCA_DrvSetStatus", "FCA11", 1),
+          ("CF_VSM_DecCmdAct", "FCA11", 0),
+          ("FCA_Failinfo", "FCA11", 0),
+          ("FCA_RelativeVelocity", "FCA11", 0),
+          ("FCA_TimetoCollision", "FCA11", 2540.),
+          ("CR_FCA_Alive", "FCA11", 0),
+          ("CR_FCA_ChkSum", "FCA11", 0),
+          ("Supplemental_Counter", "FCA11", 0),
+          ("PAINT1_Status", "FCA11", 1),
+        ]
       if CP.sccBus == 2:
         checks += [
           ("SCC11", 50),
           ("SCC12", 50),
         ]
-        if CP.fcaBus == 2:
+        if CP.fcaBus == 2 and not self.long_control_type:
           checks += [("FCA11", 50)]
 
     return CANParser(DBC[CP.carFingerprint]["pt"], signals, checks, 2, enforce_checks=False)

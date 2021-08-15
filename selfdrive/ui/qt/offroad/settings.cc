@@ -537,6 +537,7 @@ UserPanel::UserPanel(QWidget* parent) : QWidget(parent) {
   layout->addWidget(new PrebuiltToggle());
   layout->addWidget(new FPTwoToggle());
   layout->addWidget(new LDWSToggle());
+  layout->addWidget(new FCATypeToggle());
   layout->addWidget(new GearDToggle());
   layout->addWidget(new ComIssueToggle());
   layout->addWidget(new WhitePandaSupportToggle());
@@ -628,6 +629,7 @@ TuningPanel::TuningPanel(QWidget* parent) : QWidget(parent) {
   layout->addWidget(new DynamicTR());
   layout->addWidget(new CruiseGapTR());
   layout->addWidget(new RadarLongHelperToggle());
+  layout->addWidget(new LongTypeToggle());
 }
 
 void SettingsWindow::showEvent(QShowEvent *event) {

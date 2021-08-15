@@ -343,6 +343,8 @@ std::unordered_map<std::string, uint32_t> keys = {
     {"KRDateShow", PERSISTENT},
     {"KRTimeShow", PERSISTENT},
     {"RadarLongHelper", PERSISTENT},
+    {"LongControlType", PERSISTENT},
+    {"FCAType", PERSISTENT},
 };
 
 } // namespace

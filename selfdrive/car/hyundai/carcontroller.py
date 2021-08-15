@@ -139,6 +139,7 @@ class CarController():
     self.ldws_fix = self.params.get_bool("LdwsCarFix")
     self.apks_enabled = self.params.get_bool("OpkrApksEnable")
     self.radar_helper_enabled = self.params.get_bool("RadarLongHelper")
+    self.lc_type = self.params.get_bool("LongControlType")
 
     self.steer_mode = ""
     self.mdps_status = ""
@@ -532,19 +533,20 @@ class CarController():
         self.scc12cnt %= 0xF
         self.scc11cnt += 1
         self.scc11cnt %= 0x10
-        self.fca11supcnt += 1
-        self.fca11supcnt %= 0xF
-        if self.fca11alivecnt == 1:
-          self.fca11inc = 0
-          if self.fca11cnt13 == 3:
-            self.fca11maxcnt = 0x9
-            self.fca11cnt13 = 0
+        if not self.lc_type:
+          self.fca11supcnt += 1
+          self.fca11supcnt %= 0xF
+          if self.fca11alivecnt == 1:
+            self.fca11inc = 0
+            if self.fca11cnt13 == 3:
+              self.fca11maxcnt = 0x9
+              self.fca11cnt13 = 0
+            else:
+              self.fca11maxcnt = 0xD
+              self.fca11cnt13 += 1
           else:
-            self.fca11maxcnt = 0xD
-            self.fca11cnt13 += 1
-        else:
-          self.fca11inc += 4
-        self.fca11alivecnt = self.fca11maxcnt - self.fca11inc
+            self.fca11inc += 4
+          self.fca11alivecnt = self.fca11maxcnt - self.fca11inc
         lead_objspd = CS.lead_objspd  # vRel (km/h)
         aReqValue = CS.scc12["aReqValue"]
         if 0 < CS.out.radarDistance <= 149 and self.radar_helper_enabled:
@@ -573,11 +575,11 @@ class CarController():
            CS.out.stockAeb, self.car_fingerprint, CS.out.vEgo * CV.MS_TO_KPH, CS.scc12))
         can_sends.append(create_scc14(self.packer, enabled, CS.scc14, CS.out.stockAeb, lead_visible, lead_dist, 
          CS.out.vEgo, self.acc_standstill, self.car_fingerprint))
-        if CS.CP.fcaBus == -1:
+        if CS.CP.fcaBus == -1 and not self.lc_type:
           can_sends.append(create_fca11(self.packer, CS.fca11, self.fca11alivecnt, self.fca11supcnt))
       if frame % 20 == 0:
         can_sends.append(create_scc13(self.packer, CS.scc13))
-        if CS.CP.fcaBus == -1:
+        if CS.CP.fcaBus == -1 and not self.lc_type:
           can_sends.append(create_fca12(self.packer))
       if frame % 50 == 0:
         can_sends.append(create_scc42a(self.packer))
@@ -585,8 +587,9 @@ class CarController():
       self.counter_init = True
       self.scc12cnt = CS.scc12init["CR_VSM_Alive"]
       self.scc11cnt = CS.scc11init["AliveCounterACC"]
-      self.fca11alivecnt = CS.fca11init["CR_FCA_Alive"]
-      self.fca11supcnt = CS.fca11init["Supplemental_Counter"]
+      if not self.lc_type:
+        self.fca11alivecnt = CS.fca11init["CR_FCA_Alive"]
+        self.fca11supcnt = CS.fca11init["Supplemental_Counter"]
 
     aq_value = CS.scc12["aReqValue"] if CS.CP.sccBus == 0 else apply_accel
     if self.apks_enabled:
