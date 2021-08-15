@@ -410,11 +410,11 @@ CarSelectCombo::CarSelectCombo() : AbstractControl("차량강제인식", "핑거
 
   hlayout->addWidget(&combobox);
 
-  QObject::connect(&combobox, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), [=](int index)
+  QObject::connect(&combobox, static_cast<void(QComboBox::*)(int)>(&QComboBox::activated), [=](int index)
   {
     combobox.itemData(combobox.currentIndex());
     QString str = combobox.currentText();
-    if (ConfirmationDialog::confirm("선택한 차량으로 강제 설정하시겠습니까?", this)) {
+    if (ConfirmationDialog::confirm(str+"으로 강제 설정하시겠습니까?", this)) {
       params.put("CarModel", str.toStdString());
       params.put("CarModelAbb", str.toStdString());
       QProcess::execute("/data/openpilot/car_force_set.sh");
