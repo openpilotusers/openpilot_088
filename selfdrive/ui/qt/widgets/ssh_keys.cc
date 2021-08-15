@@ -412,7 +412,7 @@ CarSelectCombo::CarSelectCombo() : AbstractControl("차량강제인식", "핑거
 
   QObject::connect(&combobox, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), [=](int index)
   {
-    combobox->itemData(combobox->currentIndex())
+    combobox->itemData(combobox->currentIndex());
     QString str = combobox.currentText();
     if (ConfirmationDialog::confirm("선택한 차량으로 강제 설정하시겠습니까?", this)) {
       params.put("CarModel", str.toStdString());
@@ -423,11 +423,10 @@ CarSelectCombo::CarSelectCombo() : AbstractControl("차량강제인식", "핑거
   refresh();
 }
 
-void CarSelectCombo::refresh() 
-{
+void CarSelectCombo::refresh() {
   QString selected_carname = QString::fromStdString(params.get("CarModelAbb"));
-  int index = comboBox->findText(selected_carname);
-  if (index >= 0) comboBox->setCurrentIndex(index);
+  int index = combobox.findText(selected_carname);
+  if (index >= 0) combobox.setCurrentIndex(index);
 }
 
 //UI
