@@ -321,7 +321,6 @@ static void update_params(UIState *s) {
   Params params;
   if (frame % (5*UI_FREQ) == 0) {
     scene.is_metric = params.getBool("IsMetric");
-    scene.is_OpenpilotViewEnabled = params.getBool("IsOpenpilotViewEnabled");
   }
   //opkr navi on boot
   if (!scene.navi_on_boot && (frame - scene.started_frame > 5*UI_FREQ)) {
@@ -447,6 +446,7 @@ static void update_status(UIState *s) {
       s->scene.opkr_livetune_ui = params.getBool("OpkrLiveTunePanelEnable");
       s->scene.apks_enabled = params.getBool("OpkrApksEnable");
       s->scene.batt_less = params.getBool("OpkrBattLess");
+      s->scene.s_OpenpilotViewEnabled = params.getBool("IsOpenpilotViewEnabled");
     } else {
       s->vipc_client->connected = false;
     }
