@@ -460,8 +460,10 @@ public:
       Params().put("OpkrLiveTunePanelEnable", &value, 1);
       if (state) {
         QUIState::ui_state.scene.live_tune_panel_enable = true;
+        QUIState::ui_state.scene.opkr_livetune_ui = true;
       } else {
         QUIState::ui_state.scene.live_tune_panel_enable = false;
+        QUIState::ui_state.scene.opkr_livetune_ui = false;
       }
     });
   }

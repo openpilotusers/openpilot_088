@@ -444,6 +444,7 @@ static void update_status(UIState *s) {
         s->scene.scr.nTime = -1;
       }
       s->scene.comma_stock_ui = params.getBool("CommaStockUI");
+      s->scene.opkr_livetune_ui = params.getBool("OpkrLiveTunePanelEnable");
       s->scene.apks_enabled = params.getBool("OpkrApksEnable");
       s->scene.batt_less = params.getBool("OpkrBattLess");
     } else {

@@ -90,10 +90,11 @@ const Rect laneless_btn = {1585, 905, 140, 140};
 const Rect monitoring_btn = {50, 830, 140, 140};
 const Rect ml_btn = {1265, 905, 140, 140};
 const Rect stockui_btn = {15, 15, 184, 202};
-const Rect livetunepanel_left_btn = {510, 750, 130, 160};
-const Rect livetunepanel_right_btn = {1280, 750, 130, 160};
-const Rect livetunepanel_left_above_btn = {510, 575, 130, 160};
-const Rect livetunepanel_right_above_btn = {1280, 575, 130, 160};
+const Rect tuneui_btn = {1720, 15, 184, 202};
+const Rect livetunepanel_left_btn = {500, 750, 150, 160};
+const Rect livetunepanel_right_btn = {1270, 750, 150, 160};
+const Rect livetunepanel_left_above_btn = {500, 575, 150, 160};
+const Rect livetunepanel_right_above_btn = {1270, 575, 150, 160};
 
 const int UI_FREQ = 20;   // Hz
 
@@ -187,7 +188,7 @@ typedef struct UIScene {
   int setbtn_count = 0;
   int homebtn_count = 0;
   bool forceGearD;
-  bool comma_stock_ui;
+  bool comma_stock_ui, opkr_livetune_ui;
   bool apks_enabled;
   bool is_OpenpilotViewEnabled;
   bool driving_record;

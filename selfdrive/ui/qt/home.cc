@@ -178,6 +178,18 @@ void HomeWindow::mousePressEvent(QMouseEvent* e) {
     }
     return;
   }
+  // LiveTune UI Toggle
+  if (QUIState::ui_state.scene.started && !sidebar->isVisible() && !QUIState::ui_state.scene.map_on_top && tuneui_btn.ptInRect(e->x(), e->y())) {
+    QUIState::ui_state.scene.opkr_livetune_ui = !QUIState::ui_state.scene.opkr_livetune_ui;
+    if (QUIState::ui_state.scene.opkr_livetune_ui) {
+      Params().putBool("OpkrLiveTunePanelEnable", true);
+      QUIState::ui_state.scene.live_tune_panel_enable = true;
+    } else {
+      Params().putBool("OpkrLiveTunePanelEnable", false);
+      QUIState::ui_state.scene.live_tune_panel_enable = false;
+    }
+    return;
+  }
   // opkr live ui tune
   if (QUIState::ui_state.scene.live_tune_panel_enable) {
     if (QUIState::ui_state.scene.started && !sidebar->isVisible() && !QUIState::ui_state.scene.map_on_top && livetunepanel_left_btn.ptInRect(e->x(), e->y())) {
