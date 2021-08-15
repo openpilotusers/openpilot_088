@@ -221,14 +221,6 @@ OpenpilotView::OpenpilotView() : AbstractControl("오픈파일럿 주행화면 �
   // setup widget
   hlayout->addStretch(1);
 
-  btn.setStyleSheet(R"(
-    padding: 0;
-    border-radius: 50px;
-    font-size: 35px;
-    font-weight: 500;
-    color: #E4E4E4;
-    background-color: #393939;
-  )");
   btn.setFixedSize(250, 100);
   hlayout->addWidget(&btn);
 
@@ -363,9 +355,9 @@ CarSelectCombo::CarSelectCombo() : AbstractControl("차량강제인식", "핑거
     color: white;
     background-color: #393939;
     border-style: solid;
-    border: 10px solid #1e1e1e;
+    border: 0px solid #1e1e1e;
     border-radius: 0;
-    width: 50px;
+    width: 70px;
   )");
 
   combobox.addItem("차량을 선택하세요");
@@ -407,16 +399,8 @@ CarSelectCombo::CarSelectCombo() : AbstractControl("차량강제인식", "핑거
   combobox.addItem("SOUL_EV");
   combobox.addItem("MOHAVE");
 
-  combobox.setFixedWidth(400);
+  combobox.setFixedWidth(700);
 
-  btn.setStyleSheet(R"(
-    padding: 0;
-    border-radius: 50px;
-    font-size: 35px;
-    font-weight: 500;
-    color: #E4E4E4;
-    background-color: #393939;
-  )");
   btn.setFixedSize(150, 100);
 
   QObject::connect(&btn, &QPushButton::clicked, [=]() {
@@ -456,11 +440,11 @@ void CarSelectCombo::refresh() {
   int index = combobox.findText(selected_carname);
   if (index >= 0) combobox.setCurrentIndex(index);
   if (selected_carname.length()) {
-    btn.setText("설정제거");
     btn.setEnabled(true);
+    btn.setText("설정제거");
   } else {
-    btn.setText("<-선택");
     btn.setEnabled(false);
+    btn.setText("<-선택");
   }
 }
 
