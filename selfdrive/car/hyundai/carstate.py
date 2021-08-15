@@ -415,7 +415,7 @@ class CarState(CarStateBase):
       ("OPKR_S_Sign", "NAVI", 31),
       ("OPKR_SBR_Dist", "NAVI", 0),
     ]
-    if not self.long_control_type
+    if not self.long_control_type:
       signals += [
         ("CR_FCA_Alive", "FCA11", 0),
         ("Supplemental_Counter", "FCA11", 0),
