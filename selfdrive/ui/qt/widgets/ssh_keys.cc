@@ -363,8 +363,8 @@ CarSelectCombo::CarSelectCombo() : AbstractControl("차량강제인식", "핑거
     color: white;
     background-color: #393939;
     border-style: solid;
-    border: 1px solid #1e1e1e;
-    border-radius: 5;
+    border: 10px solid #1e1e1e;
+    border-radius: 0;
     width: 50px;
   )");
 
@@ -407,6 +407,8 @@ CarSelectCombo::CarSelectCombo() : AbstractControl("차량강제인식", "핑거
   combobox.addItem("SOUL_EV");
   combobox.addItem("MOHAVE");
 
+  combo.setFixedWidth(400)
+
   btn.setStyleSheet(R"(
     padding: 0;
     border-radius: 50px;
@@ -423,6 +425,7 @@ CarSelectCombo::CarSelectCombo() : AbstractControl("차량강제인식", "핑거
         params.remove("CarModel");
         params.remove("CarModelAbb");
         combobox.setCurrentIndex(0);
+        refresh();
       }
     }
   });
@@ -443,6 +446,7 @@ CarSelectCombo::CarSelectCombo() : AbstractControl("차량강제인식", "핑거
         QProcess::execute("/data/openpilot/car_force_set.sh");
       }
     }
+    refresh();
   });
   refresh();
 }
