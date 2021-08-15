@@ -30,6 +30,7 @@ SshControl::SshControl() : ButtonControl("SSH 키 설정", "", "경고: 이렇�
     } else {
       params.remove("GithubUsername");
       params.remove("GithubSshKeys");
+      params.put("OpkrSSHLegacy", "0", 1);
       refresh();
     }
   });
@@ -39,12 +40,13 @@ SshControl::SshControl() : ButtonControl("SSH 키 설정", "", "경고: 이렇�
 
 void SshControl::refresh() {
   QString param = QString::fromStdString(params.get("GithubSshKeys"));
+  QString isUsername = QString::fromStdString(params.get("GithubUsername"));
   bool legacy_stat = params.getBool("OpkrSSHLegacy");
   if (param.length()) {
-    if (legacy_stat) {
-      username_label.setText("공개KEY 사용중");
-    } else {
+    if (isUsername.length()) {
       username_label.setText(QString::fromStdString(params.get("GithubUsername")));
+    } else if (legacy_stat) {
+      username_label.setText("공개KEY 사용중");
     }
     setText("제거");
   } else {
