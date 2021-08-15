@@ -407,7 +407,7 @@ CarSelectCombo::CarSelectCombo() : AbstractControl("차량강제인식", "핑거
   combobox.addItem("SOUL_EV");
   combobox.addItem("MOHAVE");
 
-  combo.setFixedWidth(400)
+  combobox.setFixedWidth(400);
 
   btn.setStyleSheet(R"(
     padding: 0;
