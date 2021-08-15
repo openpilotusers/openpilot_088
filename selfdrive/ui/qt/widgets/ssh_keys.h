@@ -569,6 +569,7 @@ public:
   CarSelectCombo();
 
 private:
+  QPushButton btn;
   QComboBox combobox;
   Params params;
 

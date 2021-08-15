@@ -363,6 +363,9 @@ CarSelectCombo::CarSelectCombo() : AbstractControl("차량강제인식", "핑거
     color: white;
     background-color: #393939;
     border-style: solid;
+    border: 1px solid #1e1e1e;
+    border-radius: 5;
+    width: 50px;
   )");
 
   combobox.addItem("차량을 선택하세요");
@@ -404,9 +407,30 @@ CarSelectCombo::CarSelectCombo() : AbstractControl("차량강제인식", "핑거
   combobox.addItem("SOUL_EV");
   combobox.addItem("MOHAVE");
 
+  btn.setStyleSheet(R"(
+    padding: 0;
+    border-radius: 50px;
+    font-size: 35px;
+    font-weight: 500;
+    color: #E4E4E4;
+    background-color: #393939;
+  )");
+  btn.setFixedSize(150, 100);
+
+  QObject::connect(&btn, &QPushButton::clicked, [=]() {
+    if (btn.text() == "설정제거") {
+      if (ConfirmationDialog::confirm("차량 강제 설정을 해제하시겠습니까?", this)) {
+        params.remove("CarModel");
+        params.remove("CarModelAbb");
+        combobox.setCurrentIndex(0)
+      }
+    }
+  });
+
   //combobox.view()->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 
   hlayout->addWidget(&combobox);
+  hlayout->addWidget(&btn);
 
   QObject::connect(&combobox, static_cast<void(QComboBox::*)(int)>(&QComboBox::activated), [=](int index)
   {
@@ -427,6 +451,13 @@ void CarSelectCombo::refresh() {
   QString selected_carname = QString::fromStdString(params.get("CarModelAbb"));
   int index = combobox.findText(selected_carname);
   if (index >= 0) combobox.setCurrentIndex(index);
+  if (selected_carname.length()) {
+    btn.setText("설정제거");
+    btn.setEnabled(true);
+  } else {
+    btn.setText("<-선택");
+    btn.setEnabled(false);
+  }
 }
 
 //UI
