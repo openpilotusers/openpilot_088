@@ -415,7 +415,7 @@ class CarState(CarStateBase):
       ("OPKR_S_Sign", "NAVI", 31),
       ("OPKR_SBR_Dist", "NAVI", 0),
     ]
-    if CP.fcaBus != -1:
+    if CP.fcaBus != -1 or Params().get_bool("FCAType"):
       signals += [
         ("CR_FCA_Alive", "FCA11", 0),
         ("Supplemental_Counter", "FCA11", 0),
@@ -444,7 +444,7 @@ class CarState(CarStateBase):
         ("SCC11", 50),
         ("SCC12", 50),
       ]
-    if CP.fcaBus != -1:
+    if CP.fcaBus != -1 or Params().get_bool("FCAType"):
       checks += [("FCA11", 50)]
     if CP.mdpsBus == 0:
       signals += [
