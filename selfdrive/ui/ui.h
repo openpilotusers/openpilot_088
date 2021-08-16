@@ -208,6 +208,8 @@ typedef struct UIScene {
   bool kr_time_show;
   int live_tune_panel_list = 0;
   int list_count = 3;
+  int nTime, autoScreenOff, brightness, awake;
+  int nVolumeBoost = 0;
 
   cereal::DeviceState::Reader deviceState;
   cereal::RadarState::LeadData::Reader lead_data[2];
@@ -239,15 +241,6 @@ typedef struct UIScene {
 
 
   // atom
-  struct _screen
-  {
-     int  nTime;
-     int  autoScreenOff;
-     int  brightness;
-     int  nVolumeBoost = 0;
-     int  awake;
-  } scr;
-
   struct _LiveParams
   {
     float angleOffset;

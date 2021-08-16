@@ -78,10 +78,10 @@ void HomeWindow::mousePressEvent(QMouseEvent* e) {
     //effect1.setLoopCount(1);
     //effect1.setLoopCount(QSoundEffect::Infinite);
     float volume1 = 0.5;
-    if (QUIState::ui_state.scene.scr.nVolumeBoost < 0) {
+    if (QUIState::ui_state.scene.nVolumeBoost < 0) {
       volume1 = 0.0;
-    } else if (QUIState::ui_state.scene.scr.nVolumeBoost > 1) {
-      volume1 = QUIState::ui_state.scene.scr.nVolumeBoost * 0.01;
+    } else if (QUIState::ui_state.scene.nVolumeBoost > 1) {
+      volume1 = QUIState::ui_state.scene.nVolumeBoost * 0.01;
     }
     effect1.setVolume(volume1);
     effect1.play();
@@ -96,10 +96,10 @@ void HomeWindow::mousePressEvent(QMouseEvent* e) {
     //effect1.setLoopCount(1);
     //effect1.setLoopCount(QSoundEffect::Infinite);
     float volume2 = 0.5;
-    if (QUIState::ui_state.scene.scr.nVolumeBoost < 0) {
+    if (QUIState::ui_state.scene.nVolumeBoost < 0) {
       volume2 = 0.0;
-    } else if (QUIState::ui_state.scene.scr.nVolumeBoost > 1) {
-      volume2 = QUIState::ui_state.scene.scr.nVolumeBoost * 0.01;
+    } else if (QUIState::ui_state.scene.nVolumeBoost > 1) {
+      volume2 = QUIState::ui_state.scene.nVolumeBoost * 0.01;
     }
     effect2.setVolume(volume2);
     effect2.play();
@@ -125,10 +125,10 @@ void HomeWindow::mousePressEvent(QMouseEvent* e) {
     //effect1.setLoopCount(1);
     //effect1.setLoopCount(QSoundEffect::Infinite);
     float volume3 = 0.5;
-    if (QUIState::ui_state.scene.scr.nVolumeBoost < 0) {
+    if (QUIState::ui_state.scene.nVolumeBoost < 0) {
       volume3 = 0.0;
-    } else if (QUIState::ui_state.scene.scr.nVolumeBoost > 1) {
-      volume3 = QUIState::ui_state.scene.scr.nVolumeBoost * 0.01;
+    } else if (QUIState::ui_state.scene.nVolumeBoost > 1) {
+      volume3 = QUIState::ui_state.scene.nVolumeBoost * 0.01;
     }
     effect3.setVolume(volume3);
     effect3.play();
@@ -410,7 +410,7 @@ void HomeWindow::mousePressEvent(QMouseEvent* e) {
 
   QUIState::ui_state.scene.setbtn_count = 0;
   QUIState::ui_state.scene.homebtn_count = 0;
-  if (QUIState::ui_state.scene.started && QUIState::ui_state.scene.scr.autoScreenOff != -2) {
+  if (QUIState::ui_state.scene.started && QUIState::ui_state.scene.autoScreenOff != -2) {
     QUIState::ui_state.scene.touched2 = true;
     QTimer::singleShot(500, []() { QUIState::ui_state.scene.touched2 = false; });
   }

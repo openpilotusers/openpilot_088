@@ -658,7 +658,7 @@ VolumeControl::VolumeControl() : AbstractControl("EON 볼륨 조절(%)", "EON의
       value = -5;
     }
     QString values = QString::number(value);
-    QUIState::ui_state.scene.scr.nVolumeBoost = value;
+    QUIState::ui_state.scene.nVolumeBoost = value;
     params.put("OpkrUIVolumeBoost", values.toStdString());
     playsound();
     refresh();
@@ -672,7 +672,7 @@ VolumeControl::VolumeControl() : AbstractControl("EON 볼륨 조절(%)", "EON의
       value = 100;
     }
     QString values = QString::number(value);
-    QUIState::ui_state.scene.scr.nVolumeBoost = value;
+    QUIState::ui_state.scene.nVolumeBoost = value;
     params.put("OpkrUIVolumeBoost", values.toStdString());
     playsound();
     refresh();
@@ -694,7 +694,7 @@ void VolumeControl::refresh() {
 }
 
 void VolumeControl::playsound() {
-  float value = QUIState::ui_state.scene.scr.nVolumeBoost;
+  float value = QUIState::ui_state.scene.nVolumeBoost;
   if (value > 1 ) {
     effect.setVolume(value * 0.01);
     effect.play();
@@ -738,7 +738,7 @@ BrightnessControl::BrightnessControl() : AbstractControl("EON 밝기 조절(%)",
     if (value <= 0 ) {
       value = 0;
     }
-    QUIState::ui_state.scene.scr.brightness = value;
+    QUIState::ui_state.scene.brightness = value;
     QString values = QString::number(value);
     params.put("OpkrUIBrightness", values.toStdString());
     refresh();
@@ -751,7 +751,7 @@ BrightnessControl::BrightnessControl() : AbstractControl("EON 밝기 조절(%)",
     if (value >= 100 ) {
       value = 100;
     }
-    QUIState::ui_state.scene.scr.brightness = value;
+    QUIState::ui_state.scene.brightness = value;
     QString values = QString::number(value);
     params.put("OpkrUIBrightness", values.toStdString());
     refresh();
@@ -871,7 +871,7 @@ AutoScreenOff::AutoScreenOff() : AbstractControl("EON 화면끄기 시간", "주
     if (value <= -2 ) {
       value = -2;
     }
-    QUIState::ui_state.scene.scr.autoScreenOff = value;
+    QUIState::ui_state.scene.autoScreenOff = value;
     QString values = QString::number(value);
     params.put("OpkrAutoScreenOff", values.toStdString());
     refresh();
@@ -884,7 +884,7 @@ AutoScreenOff::AutoScreenOff() : AbstractControl("EON 화면끄기 시간", "주
     if (value >= 10 ) {
       value = 10;
     }
-    QUIState::ui_state.scene.scr.autoScreenOff = value;
+    QUIState::ui_state.scene.autoScreenOff = value;
     QString values = QString::number(value);
     params.put("OpkrAutoScreenOff", values.toStdString());
     refresh();

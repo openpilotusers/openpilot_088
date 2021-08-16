@@ -81,10 +81,10 @@ void Sidebar::mousePressEvent(QMouseEvent *event) {
     //effect.setLoopCount(QSoundEffect::Infinite);
     //effect.setVolume(0.1);
     float volume = 0.5f;
-    if (QUIState::ui_state.scene.scr.nVolumeBoost < 0) {
+    if (QUIState::ui_state.scene.nVolumeBoost < 0) {
       volume = 0.0f;
-    } else if (QUIState::ui_state.scene.scr.nVolumeBoost > 1) {
-      volume = QUIState::ui_state.scene.scr.nVolumeBoost * 0.01;
+    } else if (QUIState::ui_state.scene.nVolumeBoost > 1) {
+      volume = QUIState::ui_state.scene.nVolumeBoost * 0.01;
     }
     effect.setVolume(volume);
     effect.play();

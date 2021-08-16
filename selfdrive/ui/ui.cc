@@ -162,7 +162,7 @@ static void update_state(UIState *s) {
     scene.car_state = sm["carState"].getCarState();
     auto data = sm["carState"].getCarState();
     auto cruiseState = scene.car_state.getCruiseState();
-    scene.scr.awake = cruiseState.getCruiseSwState();
+    scene.awake = cruiseState.getCruiseSwState();
 
     if(scene.leftBlinker!=data.getLeftBlinker() || scene.rightBlinker!=data.getRightBlinker()){
       scene.blinker_blinkingrate = 120;
@@ -362,8 +362,8 @@ static void update_vision(UIState *s) {
     } else if (!Hardware::PC()) {
       LOGE("visionIPC receive timeout");
     }
-  } else if (s->scene.started) {
-    util::sleep_for(1000. / UI_FREQ);
+  // } else if (s->scene.started) {
+  //   util::sleep_for(1000. / UI_FREQ);
   }
 }
 
@@ -412,9 +412,9 @@ static void update_status(UIState *s) {
       s->scene.recording_quality = std::stoi(params.get("RecordingQuality"));
       s->scene.speed_lim_off = std::stoi(params.get("OpkrSpeedLimitOffset"));
       s->scene.monitoring_mode = params.getBool("OpkrMonitoringMode");
-      s->scene.scr.brightness = std::stoi(params.get("OpkrUIBrightness"));
-      s->scene.scr.nVolumeBoost = std::stoi(params.get("OpkrUIVolumeBoost"));
-      s->scene.scr.autoScreenOff = std::stoi(params.get("OpkrAutoScreenOff"));
+      s->scene.brightness = std::stoi(params.get("OpkrUIBrightness"));
+      s->scene.nVolumeBoost = std::stoi(params.get("OpkrUIVolumeBoost"));
+      s->scene.autoScreenOff = std::stoi(params.get("OpkrAutoScreenOff"));
       s->scene.brightness_off = std::stoi(params.get("OpkrUIBrightnessOff"));
       s->scene.cameraOffset = std::stoi(params.get("CameraOffsetAdj"));
       s->scene.pathOffset = std::stoi(params.get("PathOffsetAdj"));
@@ -434,14 +434,14 @@ static void update_status(UIState *s) {
       s->scene.kr_date_show = params.getBool("KRDateShow");
       s->scene.kr_time_show = params.getBool("KRTimeShow");
 
-      if (s->scene.scr.autoScreenOff > 0) {
-        s->scene.scr.nTime = s->scene.scr.autoScreenOff * 60 * UI_FREQ;
-      } else if (s->scene.scr.autoScreenOff == 0) {
-        s->scene.scr.nTime = 30 * UI_FREQ;
-      } else if (s->scene.scr.autoScreenOff == -1) {
-        s->scene.scr.nTime = 15 * UI_FREQ;
+      if (s->scene.autoScreenOff > 0) {
+        s->scene.nTime = s->scene.autoScreenOff * 60 * UI_FREQ;
+      } else if (s->scene.autoScreenOff == 0) {
+        s->scene.nTime = 30 * UI_FREQ;
+      } else if (s->scene.autoScreenOff == -1) {
+        s->scene.nTime = 15 * UI_FREQ;
       } else {
-        s->scene.scr.nTime = -1;
+        s->scene.nTime = -1;
       }
       s->scene.comma_stock_ui = params.getBool("CommaStockUI");
       s->scene.opkr_livetune_ui = params.getBool("OpkrLiveTunePanelEnable");
@@ -541,26 +541,26 @@ void Device::updateBrightness(const UIState &s) {
 
   if (!s.scene.started) {
     clipped_brightness = BACKLIGHT_OFFROAD;
-  } else if (s.scene.scr.autoScreenOff != -2 && s.scene.touched2) {
-    sleep_time = s.scene.scr.nTime;
-  } else if (s.scene.controls_state.getAlertSize() != cereal::ControlsState::AlertSize::NONE && s.scene.scr.autoScreenOff != -2) {
-    sleep_time = s.scene.scr.nTime;
-  } else if (sleep_time > 0 && s.scene.scr.autoScreenOff != -2) {
+  } else if (s.scene.autoScreenOff != -2 && s.scene.touched2) {
+    sleep_time = s.scene.nTime;
+  } else if (s.scene.controls_state.getAlertSize() != cereal::ControlsState::AlertSize::NONE && s.scene.autoScreenOff != -2) {
+    sleep_time = s.scene.nTime;
+  } else if (sleep_time > 0 && s.scene.autoScreenOff != -2) {
     sleep_time--;
-  } else if (s.scene.started && sleep_time == -1 && s.scene.scr.autoScreenOff != -2) {
-    sleep_time = s.scene.scr.nTime;
+  } else if (s.scene.started && sleep_time == -1 && s.scene.autoScreenOff != -2) {
+    sleep_time = s.scene.nTime;
   }
 
   int brightness = brightness_filter.update(clipped_brightness);
   if (!awake) {
     brightness = 0;
-  } else if (s.scene.started && sleep_time == 0 && s.scene.scr.autoScreenOff != -2) {
+  } else if (s.scene.started && sleep_time == 0 && s.scene.autoScreenOff != -2) {
     brightness = s.scene.brightness_off * 0.01 * brightness;
-  } else if( s.scene.scr.brightness ) {
-    brightness = s.scene.scr.brightness * 0.99;
+  } else if( s.scene.brightness ) {
+    brightness = s.scene.brightness * 0.99;
   }
 
-  //printf("sleep_time=%d  scr_off=%d  started=%d  brightness=%d\n", sleep_time, s.scene.scr.autoScreenOff, s.scene.started, brightness);
+  //printf("sleep_time=%d  scr_off=%d  started=%d  brightness=%d\n", sleep_time, s.scene.autoScreenOff, s.scene.started, brightness);
 
   if (brightness != last_brightness) {
     std::thread{Hardware::set_brightness, brightness}.detach();
