@@ -212,7 +212,7 @@ class LongControl():
       self.long_plan_source = "---"
 
     if CP.sccBus != 0 and self.long_log:
-      str_log3 = 'BUS={:1.0f}/{:1.0f}  LS={:s}  LP={:s}  GS={:01.2f}/{:01.2f}  BK={:01.2f}/{:01.2f}  GB={:+04.2f}  G={:1.0f}  GS={}  TG={:04.2f}/{:+04.2f}'.format(CP.mdpsBus, CP.sccBus, self.long_stat, self.long_plan_source, final_gas, gas_max, abs(final_brake), abs(brake_max), output_gb, CS.cruiseGapSet, int(CS.gasPressed), v_target, a_target)
+      str_log3 = 'BUS={:1.0f}/{:1.0f}/{:1.0f}  LS={:s}  LP={:s}  GS={:01.2f}/{:01.2f}  BK={:01.2f}/{:01.2f}  GB={:+04.2f}  G={:1.0f}  GS={}  TG={:04.2f}/{:+04.2f}'.format(CP.mdpsBus, CP.sccBus, CP.fcaBus, self.long_stat, self.long_plan_source, final_gas, gas_max, abs(final_brake), abs(brake_max), output_gb, CS.cruiseGapSet, int(CS.gasPressed), v_target, a_target)
       trace1.printf2('{}'.format(str_log3))
 
     return final_gas, final_brake, v_target, a_target
