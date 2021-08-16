@@ -198,7 +198,7 @@ typedef struct UIScene {
   int dynamic_tr_mode;
   float dynamic_tr_value;
   bool touched2 = false;
-  float brightness_off;
+  int brightness_off;
   int cameraOffset, pathOffset, osteerRateCost;
   int pidKp, pidKi, pidKd, pidKf;
   int indiInnerLoopGain, indiOuterLoopGain, indiTimeConstant, indiActuatorEffectiveness;

@@ -448,7 +448,6 @@ static void update_status(UIState *s) {
       s->scene.opkr_livetune_ui = params.getBool("OpkrLiveTunePanelEnable");
       s->scene.apks_enabled = params.getBool("OpkrApksEnable");
       s->scene.batt_less = params.getBool("OpkrBattLess");
-      util::sleep_for(1000. / UI_FREQ);
     } else {
       s->vipc_client->connected = false;
     }
