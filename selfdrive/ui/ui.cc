@@ -363,7 +363,7 @@ static void update_vision(UIState *s) {
       LOGE("visionIPC receive timeout");
     }
   } else if (s->scene.started) {
-    util::sleep_for(3000. / UI_FREQ);
+    util::sleep_for(1000. / UI_FREQ);
   }
 }
 
@@ -401,6 +401,7 @@ static void update_status(UIState *s) {
       } else {
         s->vipc_client = s->vipc_client_rear;
       }
+      s->scene.is_OpenpilotViewEnabled = params.getBool("IsOpenpilotViewEnabled");
       s->scene.end_to_end = params.getBool("EndToEndToggle");
       s->scene.driving_record = params.getBool("OpkrDrivingRecord");
       s->nDebugUi1 = params.getBool("DebugUi1");
@@ -447,6 +448,7 @@ static void update_status(UIState *s) {
       s->scene.opkr_livetune_ui = params.getBool("OpkrLiveTunePanelEnable");
       s->scene.apks_enabled = params.getBool("OpkrApksEnable");
       s->scene.batt_less = params.getBool("OpkrBattLess");
+      util::sleep_for(1000. / UI_FREQ);
     } else {
       s->vipc_client->connected = false;
     }
