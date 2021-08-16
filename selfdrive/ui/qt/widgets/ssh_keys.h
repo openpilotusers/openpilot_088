@@ -160,6 +160,11 @@ public:
     QObject::connect(this, &BlindSpotDetectToggle::toggleFlipped, [=](int state) {
       bool status = state ? true : false;
       Params().putBool("OpkrBlindSpotDetect", status);
+      if (state) {
+        QUIState::ui_state.scene.nOpkrBlindSpotDetect = true;
+      } else {
+        QUIState::ui_state.scene.nOpkrBlindSpotDetect = false;
+      }
     });
   }
 };
@@ -280,6 +285,11 @@ public:
     QObject::connect(this, &DrivingRecordToggle::toggleFlipped, [=](int state) {
       bool status = state ? true : false;
       Params().putBool("OpkrDrivingRecord", status);
+      if (state) {
+        QUIState::ui_state.scene.driving_record = true;
+      } else {
+        QUIState::ui_state.scene.driving_record = false;
+      }
     });
   }
 };
@@ -328,6 +338,11 @@ public:
     QObject::connect(this, &DebugUiOneToggle::toggleFlipped, [=](int state) {
       bool status = state ? true : false;
       Params().putBool("DebugUi1", status);
+      if (state) {
+        QUIState::ui_state.scene.nDebugUi1 = true;
+      } else {
+        QUIState::ui_state.scene.nDebugUi1 = false;
+      }
     });
   }
 };
@@ -340,6 +355,11 @@ public:
     QObject::connect(this, &DebugUiTwoToggle::toggleFlipped, [=](int state) {
       bool status = state ? true : false;
       Params().putBool("DebugUi2", status);
+      if (state) {
+        QUIState::ui_state.scene.nDebugUi2 = true;
+      } else {
+        QUIState::ui_state.scene.nDebugUi2 = false;
+      }
     });
   }
 };
@@ -479,6 +499,11 @@ public:
     QObject::connect(this, &KRDateToggle::toggleFlipped, [=](int state) {
       bool status = state ? true : false;
       Params().putBool("KRDateShow", status);
+      if (state) {
+        QUIState::ui_state.scene.kr_date_show = true;
+      } else {
+        QUIState::ui_state.scene.kr_date_show = false;
+      }
     });
   }
 };
@@ -491,6 +516,11 @@ public:
     QObject::connect(this, &KRTimeToggle::toggleFlipped, [=](int state) {
       bool status = state ? true : false;
       Params().putBool("KRTimeShow", status);
+      if (state) {
+        QUIState::ui_state.scene.kr_time_show = true;
+      } else {
+        QUIState::ui_state.scene.kr_time_show = false;
+      }
     });
   }
 };

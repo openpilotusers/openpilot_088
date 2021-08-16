@@ -236,10 +236,8 @@ OpenpilotView::OpenpilotView() : AbstractControl("오픈파일럿 주행화면 �
   QObject::connect(&btn, &QPushButton::clicked, [=]() {
     bool stat = params.getBool("IsOpenpilotViewEnabled");
     if (stat) {
-      QUIState::ui_state.scene.is_OpenpilotViewEnabled = false;
       params.putBool("IsOpenpilotViewEnabled", false);
     } else {
-      QUIState::ui_state.scene.is_OpenpilotViewEnabled = true;
       params.putBool("IsOpenpilotViewEnabled", true);
     }
     refresh();
