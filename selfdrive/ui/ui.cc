@@ -321,7 +321,6 @@ static void update_params(UIState *s) {
   Params params;
   if (frame % (5*UI_FREQ) == 0) {
     scene.is_metric = params.getBool("IsMetric");
-    scene.is_OpenpilotViewEnabled = params.getBool("IsOpenpilotViewEnabled");
   }
   //opkr navi on boot
   if (!scene.navi_on_boot && (frame - scene.started_frame > 5*UI_FREQ)) {
