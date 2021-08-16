@@ -444,7 +444,7 @@ class CarState(CarStateBase):
         ("SCC11", 50),
         ("SCC12", 50),
       ]
-    if CP.fcaBus == 0:
+    if CP.fcaBus == -1:
       checks += [("FCA11", 50)]
     if CP.mdpsBus == 0:
       signals += [
@@ -663,7 +663,7 @@ class CarState(CarStateBase):
         ("SCC11", 50),
         ("SCC12", 50),
       ]
-      if CP.fcaBus == 2:
+      if CP.fcaBus == -1:
         checks += [("FCA11", 50)]
 
     return CANParser(DBC[CP.carFingerprint]["pt"], signals, checks, 2, enforce_checks=False)
