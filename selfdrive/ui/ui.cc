@@ -446,7 +446,7 @@ static void update_status(UIState *s) {
       s->scene.opkr_livetune_ui = params.getBool("OpkrLiveTunePanelEnable");
       s->scene.apks_enabled = params.getBool("OpkrApksEnable");
       s->scene.batt_less = params.getBool("OpkrBattLess");
-      s->scene.s_OpenpilotViewEnabled = params.getBool("IsOpenpilotViewEnabled");
+      s->scene.is_OpenpilotViewEnabled = params.getBool("IsOpenpilotViewEnabled");
     } else {
       s->vipc_client->connected = false;
     }

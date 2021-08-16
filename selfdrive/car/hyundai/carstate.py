@@ -415,13 +415,10 @@ class CarState(CarStateBase):
       ("OPKR_S_Sign", "NAVI", 31),
       ("OPKR_SBR_Dist", "NAVI", 0),
     ]
-    if not self.long_control_type:
+    if CP.fcaBus == 0:
       signals += [
         ("CR_FCA_Alive", "FCA11", 0),
         ("Supplemental_Counter", "FCA11", 0),
-      ]
-    if CP.fcaBus == 0 and not self.long_control_type:
-      signals += [
         ("FCA_CmdAct", "FCA11", 0),
         ("CF_VSM_Warn", "FCA11", 0),
       ]
@@ -447,7 +444,7 @@ class CarState(CarStateBase):
         ("SCC11", 50),
         ("SCC12", 50),
       ]
-    if CP.fcaBus == 0 and not self.long_control_type:
+    if CP.fcaBus == 0:
       checks += [("FCA11", 50)]
     if CP.mdpsBus == 0:
       signals += [
@@ -640,7 +637,7 @@ class CarState(CarStateBase):
         ("ComfortBandUpper", "SCC14", 0),
         ("ComfortBandLower", "SCC14", 0),
       ]
-      if not self.long_control_type:
+      if CP.fcaBus == 2:
         signals += [
           ("ACCMode", "SCC14", 0),
           ("ObjGap", "SCC14", 0),
@@ -662,13 +659,12 @@ class CarState(CarStateBase):
           ("Supplemental_Counter", "FCA11", 0),
           ("PAINT1_Status", "FCA11", 1),
         ]
-      if CP.sccBus == 2:
-        checks += [
-          ("SCC11", 50),
-          ("SCC12", 50),
-        ]
-        if CP.fcaBus == 2 and not self.long_control_type:
-          checks += [("FCA11", 50)]
+      checks += [
+        ("SCC11", 50),
+        ("SCC12", 50),
+      ]
+      if CP.fcaBus == 2:
+        checks += [("FCA11", 50)]
 
     return CANParser(DBC[CP.carFingerprint]["pt"], signals, checks, 2, enforce_checks=False)
 
