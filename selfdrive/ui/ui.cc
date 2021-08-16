@@ -362,8 +362,8 @@ static void update_vision(UIState *s) {
     } else if (!Hardware::PC()) {
       LOGE("visionIPC receive timeout");
     }
-  // } else if (s->scene.started) {
-  //   util::sleep_for(1000. / UI_FREQ);
+  } else if (s->scene.started) {
+    util::sleep_for(3000. / UI_FREQ);
   }
 }
 
