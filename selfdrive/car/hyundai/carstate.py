@@ -415,7 +415,7 @@ class CarState(CarStateBase):
       ("OPKR_S_Sign", "NAVI", 31),
       ("OPKR_SBR_Dist", "NAVI", 0),
     ]
-    if CP.fcaBus == 0:
+    if CP.fcaBus == -1:
       signals += [
         ("CR_FCA_Alive", "FCA11", 0),
         ("Supplemental_Counter", "FCA11", 0),
@@ -637,7 +637,7 @@ class CarState(CarStateBase):
         ("ComfortBandUpper", "SCC14", 0),
         ("ComfortBandLower", "SCC14", 0),
       ]
-      if CP.fcaBus == 2:
+      if CP.fcaBus == -1:
         signals += [
           ("ACCMode", "SCC14", 0),
           ("ObjGap", "SCC14", 0),
