@@ -237,10 +237,8 @@ OpenpilotView::OpenpilotView() : AbstractControl("오픈파일럿 주행화면 �
     bool stat = params.getBool("IsOpenpilotViewEnabled");
     if (stat) {
       params.putBool("IsOpenpilotViewEnabled", false);
-      QUIState::ui_state.scene.is_OpenpilotViewEnabled = false;
     } else {
       params.putBool("IsOpenpilotViewEnabled", true);
-      QUIState::ui_state.scene.is_OpenpilotViewEnabled = true;
     }
     refresh();
   });
