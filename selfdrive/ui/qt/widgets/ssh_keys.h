@@ -519,18 +519,6 @@ public:
   }
 };
 
-class LongTypeToggle : public ToggleControl {
-  Q_OBJECT
-
-public:
-  LongTypeToggle() : ToggleControl("FCA 코드 미사용(캔오류관련)", "롱컨트롤(개조) 사용시 FCA코드를 생성하지 않습니다. 롱컨트롤 사용시 캔오류 혹은 크루즈 오류가 날 경우 기능을 켜봅니다.", "../assets/offroad/icon_shell.png", Params().getBool("LongControlType")) {
-    QObject::connect(this, &LongTypeToggle::toggleFlipped, [=](int state) {
-      char value = state ? '1' : '0';
-      Params().put("LongControlType", &value, 1);
-    });
-  }
-};
-
 // 오픈파일럿 미리보기
 class OpenpilotView : public AbstractControl {
   Q_OBJECT

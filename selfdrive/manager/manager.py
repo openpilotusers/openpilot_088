@@ -154,7 +154,6 @@ def manager_init():
     ("SafetyCamDecelDistGain", "0"),
     ("OpkrLiveTunePanelEnable", "0"),
     ("RadarLongHelper", "1"),
-    ("LongControlType", "0"),
     ("FCAType", "0"),
   ]
   if not PC:
