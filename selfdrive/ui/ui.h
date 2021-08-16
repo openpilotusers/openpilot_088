@@ -190,7 +190,7 @@ typedef struct UIScene {
   bool forceGearD;
   bool comma_stock_ui, opkr_livetune_ui;
   bool apks_enabled;
-  bool is_OpenpilotViewEnabled;
+  bool is_OpenpilotViewEnabled = false;
   bool driving_record;
   float steer_actuator_delay;
   bool batt_less;
