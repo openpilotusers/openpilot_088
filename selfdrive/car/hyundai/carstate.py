@@ -414,19 +414,14 @@ class CarState(CarStateBase):
       ("OPKR_S_Dist", "NAVI", 0),
       ("OPKR_S_Sign", "NAVI", 31),
       ("OPKR_SBR_Dist", "NAVI", 0),
+      ("CRUISE_LAMP_M", "EMS16", 0),
+      ("CF_Lvr_CruiseSet", "LVR12", 0),
     ]
-    if CP.fcaBus == -1 and not Params().get_bool("FCAType"):
+    if CP.fcaBus == 0 and not Params().get_bool("FCAType"):
       signals += [
         ("CR_FCA_Alive", "FCA11", 0),
         ("Supplemental_Counter", "FCA11", 0),
-        ("FCA_CmdAct", "FCA11", 0),
-        ("CF_VSM_Warn", "FCA11", 0),
       ]
-    if CP.sccBus == -1:
-      signals += [
-        ("CRUISE_LAMP_M", "EMS16", 0),
-        ("CF_Lvr_CruiseSet", "LVR12", 0),
-    ]
 
     checks = [
       # address, frequency
@@ -444,8 +439,13 @@ class CarState(CarStateBase):
         ("SCC11", 50),
         ("SCC12", 50),
       ]
-    if CP.fcaBus == -1 and not Params().get_bool("FCAType"):
+    if CP.fcaBus == 0 and not Params().get_bool("FCAType"):
+      signals += [
+        ("FCA_CmdAct", "FCA11", 0),
+        ("CF_VSM_Warn", "FCA11", 0),
+      ]
       checks += [("FCA11", 50)]
+
     if CP.mdpsBus == 0:
       signals += [
         ("CR_Mdps_StrColTq", "MDPS12", 0),
@@ -637,7 +637,7 @@ class CarState(CarStateBase):
         ("ComfortBandUpper", "SCC14", 0),
         ("ComfortBandLower", "SCC14", 0),
       ]
-      if CP.fcaBus == -1 and not Params().get_bool("FCAType"):
+      if not Params().get_bool("FCAType"):
         signals += [
           ("ACCMode", "SCC14", 0),
           ("ObjGap", "SCC14", 0),
@@ -663,7 +663,7 @@ class CarState(CarStateBase):
         ("SCC11", 50),
         ("SCC12", 50),
       ]
-      if CP.fcaBus == -1 and not Params().get_bool("FCAType"):
+      if CP.fcaBus == 2 and not Params().get_bool("FCAType"):
         checks += [("FCA11", 50)]
 
     return CANParser(DBC[CP.carFingerprint]["pt"], signals, checks, 2, enforce_checks=False)
