@@ -227,6 +227,8 @@ def manager_init():
                    device=HARDWARE.get_device_type())
 
   os.system("/data/openpilot/gitcommit.sh")
+  if params.get_bool("GitPullOnBoot"):
+    os.system("/data/openpilot/gitpull.sh")
 
 def manager_prepare():
   for p in managed_processes.values():
