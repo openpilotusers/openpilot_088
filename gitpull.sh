@@ -6,16 +6,19 @@ export PATH=/usr/local/bin:/data/data/com.termux/files/usr/bin:/data/data/com.te
 export PYTHONPATH=/data/openpilot
 
 cd /data/openpilot
-BRANCH=$(git rev-parse --abbrev-ref HEAD)
-HASH=$(git rev-parse HEAD)
-/data/data/com.termux/files/usr/bin/git fetch
-REMOTE_HASH=$(git rev-parse --verify origin/$BRANCH)
-/data/data/com.termux/files/usr/bin/git pull
+ping -c 1 -w 1 google.com &> /dev/null
+if [ "$?" == "0" ]; then
+  BRANCH=$(git rev-parse --abbrev-ref HEAD)
+  HASH=$(git rev-parse HEAD)
+  /data/data/com.termux/files/usr/bin/git fetch
+  REMOTE_HASH=$(git rev-parse --verify origin/$BRANCH)
+  /data/data/com.termux/files/usr/bin/git pull
 
-if [ "$HASH" != "$REMOTE_HASH" ]; then
-  if [ -f "/data/openpilot/prebuilt" ]; then
-    pkill -f thermald
-    rm -f /data/openpilot/prebuilt
+  if [ "$HASH" != "$REMOTE_HASH" ]; then
+    if [ -f "/data/openpilot/prebuilt" ]; then
+      pkill -f thermald
+      rm -f /data/openpilot/prebuilt
+    fi
+    reboot
   fi
-  reboot
 fi

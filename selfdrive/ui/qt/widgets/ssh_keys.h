@@ -549,6 +549,18 @@ public:
   }
 };
 
+class GitPullOnBootToggle : public ToggleControl {
+  Q_OBJECT
+
+public:
+  GitPullOnBootToggle() : ToggleControl("부팅 시 Git Pull 자동실행", "부탕 후 업데이트가 있는 경우에 Git Pull을 자동 실행 후 재부팅합니다.", "../assets/offroad/icon_shell.png", Params().getBool("GitPullOnBoot")) {
+    QObject::connect(this, &GitPullOnBootToggle::toggleFlipped, [=](int state) {
+      bool status = state ? true : false;
+      Params().putBool("GitPullOnBoot", status);
+    });
+  }
+};
+
 // 오픈파일럿 미리보기
 class OpenpilotView : public AbstractControl {
   Q_OBJECT

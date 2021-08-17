@@ -155,6 +155,7 @@ def manager_init():
     ("OpkrLiveTunePanelEnable", "0"),
     ("RadarLongHelper", "1"),
     ("FCAType", "0"),
+    ("GitPullOnBoot", "0"),
   ]
   if not PC:
     default_params.append(("LastUpdateTime", datetime.datetime.utcnow().isoformat().encode('utf8')))
@@ -226,6 +227,8 @@ def manager_init():
                    device=HARDWARE.get_device_type())
 
   os.system("/data/openpilot/gitcommit.sh")
+  if params.get_bool("GitPullOnBoot"):
+    os.system("/data/openpilot/gitpull.sh")
 
 def manager_prepare():
   for p in managed_processes.values():

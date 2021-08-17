@@ -6,13 +6,16 @@ export PATH=/usr/local/bin:/data/data/com.termux/files/usr/bin:/data/data/com.te
 export PYTHONPATH=/data/openpilot
 
 cd /data/openpilot
-/data/data/com.termux/files/usr/bin/git fetch --all
-/data/data/com.termux/files/usr/bin/git reset --hard HEAD
-/data/data/com.termux/files/usr/bin/git pull
+ping -c 1 -w 1 google.com &> /dev/null
+if [ "$?" == "0" ]; then
+  /data/data/com.termux/files/usr/bin/git fetch --all
+  /data/data/com.termux/files/usr/bin/git reset --hard HEAD
+  /data/data/com.termux/files/usr/bin/git pull
 
-if [ -f "/data/openpilot/prebuilt" ]; then
-  pkill -f thermald
-  rm -f /data/openpilot/prebuilt
+  if [ -f "/data/openpilot/prebuilt" ]; then
+    pkill -f thermald
+    rm -f /data/openpilot/prebuilt
+  fi
+
+  reboot
 fi
-
-reboot

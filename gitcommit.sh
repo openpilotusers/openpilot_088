@@ -7,8 +7,11 @@ export PYTHONPATH=/data/openpilot
 
 # acquire git hash from remote
 cd /data/openpilot
-CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
-LOCAL_HASH=$(git rev-parse HEAD)
-/data/data/com.termux/files/usr/bin/git fetch
-REMOTE_HASH=$(git rev-parse --verify origin/$CURRENT_BRANCH)
-echo -n "$REMOTE_HASH" > /data/params/d/GitCommitRemote
+ping -c 1 -w 1 google.com &> /dev/null
+if [ "$?" == "0" ]; then
+  CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+  LOCAL_HASH=$(git rev-parse HEAD)
+  /data/data/com.termux/files/usr/bin/git fetch
+  REMOTE_HASH=$(git rev-parse --verify origin/$CURRENT_BRANCH)
+  echo -n "$REMOTE_HASH" > /data/params/d/GitCommitRemote
+fi
