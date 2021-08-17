@@ -17,6 +17,8 @@ class Sidebar : public QFrame {
   Q_PROPERTY(int netStrength MEMBER net_strength NOTIFY valueChanged);
   Q_PROPERTY(QString iPAddress MEMBER wifi_IPAddress NOTIFY valueChanged);
   Q_PROPERTY(QString sSID MEMBER wifi_SSID NOTIFY valueChanged);
+  Q_PROPERTY(QString bATStatus MEMBER bat_Status NOTIFY valueChanged);
+  Q_PROPERTY(int bATPercent MEMBER bat_Percent NOTIFY valueChanged);
 
 public:
   explicit Sidebar(QWidget* parent = 0);
@@ -64,13 +66,12 @@ private:
   // opkr
   QString wifi_IPAddress = "N/A";
   QString wifi_SSID = "---";
+  QString bat_Status = "DisCharging";
+  int bat_Percent = 0;  
 
   // atom
   const QMap<int, QImage> battery_imgs = {
     {0, QImage("../assets/images/battery.png")},
     {1, QImage("../assets/images/battery_charging.png")},
   };  
-
-  int    m_batteryPercent = 0;
-  int    m_battery_img;  
 };

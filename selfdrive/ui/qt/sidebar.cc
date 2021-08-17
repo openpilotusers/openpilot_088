@@ -145,15 +145,14 @@ void Sidebar::updateState(const UIState &s) {
     iPAddress = QString::fromUtf8(m_strip.c_str());
     sSID = QString::fromUtf8(m_strssid.c_str());
   }
+  QString bATStatus = "DisCharging";
+  std::string m_battery_stat = s.scene.deviceState.getBatteryStatus();
+  bATStatus = QString::fromUtf8(m_battery_stat.c_str());
+
   setProperty("iPAddress", iPAddress);
   setProperty("sSID", sSID);
-
-  if (s.sm->updated("deviceState") || s.sm->updated("pandaState")) {
-    // atom
-    m_battery_img = s.scene.deviceState.getBatteryStatus() == "Charging" ? 1 : 0;
-    m_batteryPercent = s.scene.deviceState.getBatteryPercent();
-    repaint();
-  }
+  setProperty("bATStatus", bATStatus);
+  setProperty("bATPercent", (int)deviceState.getBatteryPercent());
 }
 
 void Sidebar::paintEvent(QPaintEvent *event) {
@@ -188,7 +187,7 @@ void Sidebar::paintEvent(QPaintEvent *event) {
   drawMetric(p, "네트워크\n" + connect_str, "", connect_status, 716);
 
   // atom - ip
-  if( m_batteryPercent <= 1) return;
+  if( bat_Percent <= 1) return;
   const QRect r2 = QRect(35, 295, 230, 50);
   configFont(p, "Open Sans", 28, "Bold");
   p.setPen(Qt::yellow);
@@ -202,15 +201,15 @@ void Sidebar::paintEvent(QPaintEvent *event) {
 
   // atom - battery
   QRect  rect(160, 247, 76, 36);
-  QRect  bq(rect.left() + 6, rect.top() + 5, int((rect.width() - 19) * m_batteryPercent * 0.01), rect.height() - 11 );
+  QRect  bq(rect.left() + 6, rect.top() + 5, int((rect.width() - 19) * bat_Percent * 0.01), rect.height() - 11 );
   QBrush bgBrush("#149948");
-  p.fillRect(bq, bgBrush);  
-  p.drawImage(rect, battery_imgs[m_battery_img]);
+  p.fillRect(bq, bgBrush);
+  p.drawImage(rect, battery_imgs[bat_Status == "Charging" ? 1 : 0]);
 
   p.setPen(Qt::white);
   configFont(p, "Open Sans", 25, "Regular");
 
   char temp_value_str1[32];
-  snprintf(temp_value_str1, sizeof(temp_value_str1), "%d%%", m_batteryPercent );
+  snprintf(temp_value_str1, sizeof(temp_value_str1), "%d%%", bat_Percent );
   p.drawText(rect, Qt::AlignCenter, temp_value_str1);
 }
