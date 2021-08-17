@@ -732,6 +732,7 @@ SettingsWindow::SettingsWindow(QWidget *parent) : QFrame(parent) {
     QObject::connect(btn, &QPushButton::clicked, [=, w = panel_frame]() {
       btn->setChecked(true);
       panel_widget->setCurrentWidget(w);
+      repaint();
     });
   }
   sidebar_layout->setContentsMargins(50, 50, 100, 50);
