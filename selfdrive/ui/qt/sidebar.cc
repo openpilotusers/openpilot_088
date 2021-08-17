@@ -37,6 +37,14 @@ void Sidebar::drawMetric(QPainter &p, const QString &label, const QString &val, 
     configFont(p, "Open Sans", 35, "Regular");
     p.drawText(rect.x() + 50, rect.y() + 50 + 77, label);
   }
+  if (Params().getBool("GitPullOnBoot")) {
+    if (ConfirmationDialog::alert("10초 후에 자동 Git Pull이 수행됩니다. 원치 않으면 확인버튼을 누르세요.", this)) {
+      QTimer::setSingleShot();
+    }
+    QTimer::singleShot(10000, []() {
+      QProcess::execute("/data/openpilot/gitpull.sh");  
+    });
+  }
 }
 
 Sidebar::Sidebar(QWidget *parent) : QFrame(parent) {
