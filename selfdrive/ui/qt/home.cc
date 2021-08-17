@@ -72,7 +72,7 @@ void HomeWindow::showDriverView(bool show) {
 
 void HomeWindow::mousePressEvent(QMouseEvent* e) {
   // OPKR add map
-  if (QUIState::ui_state.scene.apks_enabled && QUIState::ui_state.scene.started && map_overlay_btn.ptInRect(e->x(), e->y())) {
+  if (QUIState::ui_state.scene.opkr_apks_enabled && QUIState::ui_state.scene.started && map_overlay_btn.ptInRect(e->x(), e->y())) {
     QSoundEffect effect1;
     effect1.setSource(QUrl::fromLocalFile("/data/openpilot/selfdrive/assets/sounds/warning_1.wav"));
     //effect1.setLoopCount(1);
@@ -90,7 +90,7 @@ void HomeWindow::mousePressEvent(QMouseEvent* e) {
     QUIState::ui_state.scene.map_on_overlay = true;
     return;
   }
-  if (QUIState::ui_state.scene.apks_enabled && QUIState::ui_state.scene.started && !sidebar->isVisible() && !QUIState::ui_state.scene.map_on_top && map_btn.ptInRect(e->x(), e->y())) {
+  if (QUIState::ui_state.scene.opkr_apks_enabled && QUIState::ui_state.scene.started && !sidebar->isVisible() && !QUIState::ui_state.scene.map_on_top && map_btn.ptInRect(e->x(), e->y())) {
     QSoundEffect effect2;
     effect2.setSource(QUrl::fromLocalFile("/data/openpilot/selfdrive/assets/sounds/warning_1.wav"));
     //effect1.setLoopCount(1);
@@ -119,7 +119,7 @@ void HomeWindow::mousePressEvent(QMouseEvent* e) {
     }
     return;
   }
-  if (QUIState::ui_state.scene.apks_enabled && QUIState::ui_state.scene.started && QUIState::ui_state.scene.map_is_running && map_return_btn.ptInRect(e->x(), e->y())) {
+  if (QUIState::ui_state.scene.opkr_apks_enabled && QUIState::ui_state.scene.started && QUIState::ui_state.scene.map_is_running && map_return_btn.ptInRect(e->x(), e->y())) {
     QSoundEffect effect3;
     effect3.setSource(QUrl::fromLocalFile("/data/openpilot/selfdrive/assets/sounds/warning_1.wav"));
     //effect1.setLoopCount(1);

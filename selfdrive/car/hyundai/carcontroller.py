@@ -136,7 +136,7 @@ class CarController():
     self.opkr_maxanglelimit = float(int(self.params.get("OpkrMaxAngleLimit", encoding="utf8")))
     self.mad_mode_enabled = self.params.get_bool("MadModeEnabled")
     self.ldws_fix = self.params.get_bool("LdwsCarFix")
-    self.apks_enabled = self.params.get_bool("OpkrApksEnable")
+    self.opkr_apksenabled = self.params.get_bool("OpkrApksEnable")
     self.radar_helper_enabled = self.params.get_bool("RadarLongHelper")
 
     self.steer_mode = ""
@@ -569,7 +569,7 @@ class CarController():
       self.scc11cnt = CS.scc11init["AliveCounterACC"]
 
     aq_value = CS.scc12["aReqValue"] if CS.CP.sccBus == 0 else apply_accel
-    if self.apks_enabled:
+    if self.opkr_apksenabled:
       str_log1 = 'M/C={:03.0f}/{:03.0f}  TQ={:03.0f}  ST={:03.0f}/{:01.0f}/{:01.0f}  AQ={:+04.2f}'.format(abs(self.model_speed), self.curve_speed, \
        abs(new_steer), max(self.steerMax, abs(new_steer)), self.steerDeltaUp, self.steerDeltaDown, aq_value)
     else:
