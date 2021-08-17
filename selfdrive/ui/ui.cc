@@ -286,12 +286,6 @@ static void update_state(UIState *s) {
         if (gyro.totalSize().wordCount) {
           scene.gyro_sensor = gyro[1];
         }
-      } else if (scene.started && sensor.which() == cereal::SensorEventData::ACCELERATION) {
-        auto accel2 = sensor.getAcceleration().getV();
-        scene.accel_sensor2 = accel2[2];
-        if ((scene.accel_sensor2 < -1) && Params().getBool("OpkrSpeedBump")) {
-          Params().putBool("OpkrSpeedBump", false);
-        }
       }
     }
   }

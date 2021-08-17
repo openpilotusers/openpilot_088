@@ -18,8 +18,8 @@ typedef struct LiveMapDataResult {
       float roadCurvature;    // Float32;
       float turnInfo;    // Float32;
       float distanceToTurn;    // Float32;
-      bool  mapValid;    // bool;
-      bool  mapEnable;    // bool;
+      //bool  mapValid;    // bool;
+      //bool  mapEnable;    // bool;
       long  tv_sec;
       long  tv_nsec;
 } LiveMapDataResult;
@@ -27,11 +27,10 @@ typedef struct LiveMapDataResult {
 
 int main() {
   setpriority(PRIO_PROCESS, 0, -15);
-  long  nLastTime = 0, nDelta2 = 0;
   long  nDelta_nsec = 0;
-  bool  sBump = false;
   long  tv_nsec;
   float tv_nsec2;
+  bool  sBump = false;
 
   ExitHandler do_exit;
   PubMaster pm({"liveMapData"});
@@ -75,15 +74,6 @@ int main() {
       MessageBuilder msg;
       auto framed = msg.initEvent().initLiveMapData();
 
-      nDelta2 = entry.tv_sec - nLastTime;
-      if( nDelta2 >= 1 )
-      {
-        nLastTime = entry.tv_sec;
-        res.mapEnable = Params().getBool("OpkrMapEnable");
-        res.mapValid = Params().getBool("OpkrApksEnable");
-        sBump = Params().getBool("OpkrSpeedBump");
-      }
-
    //  opkrspdlimit, opkrspddist, opkrsigntype, opkrcurvangle
 
       // code based from atom
@@ -106,7 +96,6 @@ int main() {
         res.tv_nsec = tv_nsec;
         res.safetySign = atoi( entry.message );
         if (res.safetySign == 124) {
-          Params().put("OpkrSpeedBump", "1", 1);
           sBump = true;
         }
       }
@@ -159,8 +148,8 @@ int main() {
       framed.setTurnInfo( res.turnInfo );  // Float32;
       framed.setDistanceToTurn( res.distanceToTurn );  // Float32;
       framed.setTs( res.tv_sec );
-      framed.setMapEnable( res.mapEnable );
-      framed.setMapValid( res.mapValid );
+      //framed.setMapEnable( res.mapEnable );
+      //framed.setMapValid( res.mapValid );
 
     /*
     signtype
