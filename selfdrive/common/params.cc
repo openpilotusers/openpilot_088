@@ -323,7 +323,6 @@ std::unordered_map<std::string, uint32_t> keys = {
     {"WhitePandaSupport", PERSISTENT},
     {"SteerWarningFix", PERSISTENT},
     {"OpkrRunNaviOnBoot", PERSISTENT},
-    {"OpkrApksEnable", PERSISTENT},
     {"CruiseGap1", PERSISTENT},
     {"CruiseGap2", PERSISTENT},
     {"CruiseGap3", PERSISTENT},
