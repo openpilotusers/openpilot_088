@@ -10,6 +10,7 @@
 
 #include <QProcess>
 #include <QSoundEffect>
+#include <QTimer> // opkr
 
 void Sidebar::drawMetric(QPainter &p, const QString &label, const QString &val, QColor c, int y) {
   const QRect rect = {30, y, 240, val.isEmpty() ? (label.contains("\n") ? 124 : 100) : 148};
@@ -38,12 +39,16 @@ void Sidebar::drawMetric(QPainter &p, const QString &label, const QString &val, 
     p.drawText(rect.x() + 50, rect.y() + 50 + 77, label);
   }
   if (Params().getBool("GitPullOnBoot")) {
-    if (ConfirmationDialog::alert("10초 후에 자동 Git Pull이 수행됩니다. 원치 않으면 확인버튼을 누르세요.", this)) {
-      QTimer::setSingleShot();
+    QString lhash = QString::fromStdString(Params().get("GitCommit").substr(0, 10));
+    QString rhash = QString::fromStdString(Params().get("GitCommitRemote").substr(0, 10));
+    if (lhash != rhash) {}
+      if (ConfirmationDialog::alert("5초 후에 자동 Git Pull이 수행됩니다. 원치 않으면 확인버튼을 누르세요.", this)) {
+        QTimer::setSingleShot();
+      }
+      QTimer::singleShot(5000, []() {
+        QProcess::execute("/data/openpilot/gitpull.sh");  
+      });
     }
-    QTimer::singleShot(10000, []() {
-      QProcess::execute("/data/openpilot/gitpull.sh");  
-    });
   }
 }
 
