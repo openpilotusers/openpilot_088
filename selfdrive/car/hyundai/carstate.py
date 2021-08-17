@@ -79,6 +79,7 @@ class CarState(CarStateBase):
     ret.wheelSpeeds.rr = cp.vl["WHL_SPD11"]["WHL_SPD_RR"] * CV.KPH_TO_MS
     ret.vEgoRaw = (ret.wheelSpeeds.fl + ret.wheelSpeeds.fr + ret.wheelSpeeds.rl + ret.wheelSpeeds.rr) / 4.
     ret.vEgo, ret.aEgo = self.update_speed_kf(ret.vEgoRaw)
+    ret.vEgoOP = ret.vEgo
 
     ret.vEgo = cp.vl["CLU11"]["CF_Clu_Vanz"] * CV.KPH_TO_MS
 

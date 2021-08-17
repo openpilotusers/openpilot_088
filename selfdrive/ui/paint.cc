@@ -921,17 +921,17 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
     if (lead_one.getProb() > .5) {
       //show Orange if negative speed (approaching)
       //show Orange if negative speed faster than 5mph (approaching fast)
-      if((int)((lead_one.getV()[0] - s->scene.car_state.getVEgo()) * 3.6) < 0) {
+      if((int)((lead_one.getV()[0] - s->scene.car_state.getVEgoOP()) * 3.6) < 0) {
         val_color = nvgRGBA(255, 188, 3, 200);
       }
-      if((int)((lead_one.getV()[0] - s->scene.car_state.getVEgo()) * 3.6) < -5) {
+      if((int)((lead_one.getV()[0] - s->scene.car_state.getVEgoOP()) * 3.6) < -5) {
         val_color = nvgRGBA(255, 0, 0, 200);
       }
       // lead car relative speed is always in meters
       if (s->scene.is_metric) {
-         snprintf(val_str, sizeof(val_str), "%d", (int)((lead_one.getV()[0] - s->scene.car_state.getVEgo()) * 3.6));
+         snprintf(val_str, sizeof(val_str), "%d", (int)((lead_one.getV()[0] - s->scene.car_state.getVEgoOP()) * 3.6));
       } else {
-         snprintf(val_str, sizeof(val_str), "%d", (int)((lead_one.getV()[0] - s->scene.car_state.getVEgo()) * 2.2374144));
+         snprintf(val_str, sizeof(val_str), "%d", (int)((lead_one.getV()[0] - s->scene.car_state.getVEgoOP()) * 2.2374144));
       }
     } else {
        snprintf(val_str, sizeof(val_str), "-");

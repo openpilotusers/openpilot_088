@@ -226,6 +226,8 @@ struct CarState {
   safetyDist @49 :Float32;
   safetySign @50 :Float32;
 
+  vEgoOP @51 :Float32;  # openpilot speed
+
   struct WheelSpeeds {
     # optional wheel speeds
     fl @0 :Float32;
