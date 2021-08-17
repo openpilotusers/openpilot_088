@@ -75,7 +75,7 @@ if __name__ == "__main__":
       s.update("Comfort")
       time.sleep(1.5)
       s.update("Now Booting...")
-      time.sleep(4.0)
+      time.sleep(3.0)
   else:
     with Spinner() as s:
       s.update("Spinner text")
