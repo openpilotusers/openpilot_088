@@ -332,7 +332,7 @@ static void update_params(UIState *s) {
       scene.map_on_overlay = false;
       params.putBool("OpkrMapEnable", true);
       system("am start com.mnsoft.mappyobn/com.mnsoft.mappy.MainActivity");
-    } else if (frame - scene.started_frame > 15*UI_FREQ) {
+    } else if (frame - scene.started_frame > 20*UI_FREQ) {
       scene.navi_on_boot = true;
     }
   }
@@ -342,8 +342,16 @@ static void update_params(UIState *s) {
       scene.map_on_top = false;
       scene.map_on_overlay = true;
       system("am start --activity-task-on-home com.opkr.maphack/com.opkr.maphack.MainActivity");
-    } else if (frame - scene.started_frame > 15*UI_FREQ) {
+    } else if (frame - scene.started_frame > 20*UI_FREQ) {
       scene.move_to_background = true;
+    }
+  }
+  if (!scene.auto_gitpull && (frame - scene.started_frame > 15*UI_FREQ)) {
+    if (params.getBool("GitPullOnBoot")) {
+      scene.auto_gitpull = true;
+      system("/data/openpilot/gitpull.sh");
+    } else if (frame - scene.started_frame > 20*UI_FREQ) {
+      scene.auto_gitpull = true;
     }
   }
 

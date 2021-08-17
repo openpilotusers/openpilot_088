@@ -214,6 +214,7 @@ typedef struct UIScene {
   bool nDebugUi1;
   bool nDebugUi2;
   bool nOpkrBlindSpotDetect;
+  bool auto_gitpull = false;
 
   cereal::DeviceState::Reader deviceState;
   cereal::RadarState::LeadData::Reader lead_data[2];
