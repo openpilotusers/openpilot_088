@@ -196,6 +196,7 @@ class Controls:
     self.new_steerRatio_prev = self.CP.steerRatio
     self.steerRatio_to_send = 0
     self.live_sr = params.get_bool("OpkrLiveSteerRatio")
+    self.live_sr_percent = int(Params().get("LiveSteerRatioPercent", encoding="utf8"))
 
     self.second = 0.0
     self.map_enabled = False
@@ -287,6 +288,8 @@ class Controls:
     self.second += DT_CTRL
     if self.second > 1.0:
       self.map_enabled = Params().get_bool("OpkrMapEnable")
+      self.live_sr = Params().get_bool("OpkrLiveSteerRatio")
+      self.live_sr_percent = int(Params().get("LiveSteerRatioPercent", encoding="utf8"))
       self.second = 0.0
     if len(self.sm['radarState'].radarErrors):
       self.events.add(EventName.radarFault)
@@ -526,6 +529,8 @@ class Controls:
     x = max(params.stiffnessFactor, 0.1)
     if self.live_sr:
       sr = max(params.steerRatio, 0.1)
+      if self.live_sr_percent != 0:
+        sr = sr * (1+(0.01*self.live_sr_percent))
     else:
      sr = max(self.new_steerRatio, 0.1)
     self.VM.update_params(x, sr)

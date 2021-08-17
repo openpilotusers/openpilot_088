@@ -4972,3 +4972,67 @@ void LCTimingFactorUD::refresh2() {
   )");
   }
 }
+
+LiveSRPercent::LiveSRPercent() : AbstractControl("LiveSR 비율조정(%)", "LiveSR 사용시 학습된 값을 임의로 조정(%)하여 사용합니다. -값:학습된값에서 낮춤, +값:학습된값에서 높임", "../assets/offroad/icon_shell.png") {
+
+  label.setAlignment(Qt::AlignVCenter|Qt::AlignRight);
+  label.setStyleSheet("color: #e0e879");
+  hlayout->addWidget(&label);
+
+  btnminus.setStyleSheet(R"(
+    padding: 0;
+    border-radius: 50px;
+    font-size: 35px;
+    font-weight: 500;
+    color: #E4E4E4;
+    background-color: #393939;
+  )");
+  btnplus.setStyleSheet(R"(
+    padding: 0;
+    border-radius: 50px;
+    font-size: 35px;
+    font-weight: 500;
+    color: #E4E4E4;
+    background-color: #393939;
+  )");
+  btnminus.setFixedSize(150, 100);
+  btnplus.setFixedSize(150, 100);
+  hlayout->addWidget(&btnminus);
+  hlayout->addWidget(&btnplus);
+
+  QObject::connect(&btnminus, &QPushButton::clicked, [=]() {
+    auto str = QString::fromStdString(params.get("LiveSteerRatioPercent"));
+    int value = str.toInt();
+    value = value - 1;
+    if (value <= -50 ) {
+      value = -50;
+    }
+    QString values = QString::number(value);
+    params.put("LiveSteerRatioPercent", values.toStdString());
+    refresh();
+  });
+  
+  QObject::connect(&btnplus, &QPushButton::clicked, [=]() {
+    auto str = QString::fromStdString(params.get("LiveSteerRatioPercent"));
+    int value = str.toInt();
+    value = value + 1;
+    if (value >= 50 ) {
+      value = 50;
+    }
+    QString values = QString::number(value);
+    params.put("LiveSteerRatioPercent", values.toStdString());
+    refresh();
+  });
+  refresh();
+}
+
+void LiveSRPercent::refresh() {
+  QString option = QString::fromStdString(params.get("LiveSteerRatioPercent"));
+  if (option == "0") {
+    label.setText(QString::fromStdString("기본값"));
+  } else {
+    label.setText(QString::fromStdString(params.get("LiveSteerRatioPercent")));
+  }
+  btnminus.setText("-");
+  btnplus.setText("+");
+}
