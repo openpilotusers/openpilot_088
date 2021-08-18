@@ -22,8 +22,8 @@
 #include "selfdrive/hardware/hw.h"
 
 #include "selfdrive/ui/ui.h"
-#include  <time.h> // opkr
-#include  <string.h> // opkr
+#include <time.h> // opkr
+#include <string.h> // opkr
 
 static void ui_print(UIState *s, int x, int y,  const char* fmt, ... )
 {
