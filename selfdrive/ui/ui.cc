@@ -1,7 +1,7 @@
 #include "selfdrive/ui/ui.h"
 
 #include <unistd.h>
-#include <string>  //opkr
+#include <string.h>  //opkr
 
 #include <cassert>
 #include <cmath>
@@ -137,7 +137,7 @@ static void update_state(UIState *s) {
     scene.dm_active = sm["driverMonitoringState"].getDriverMonitoringState().getIsActiveMode();
   }
 
-  if (scene.started && sm.updated("controlsState")) {
+  if (sm.updated("controlsState")) {
     scene.controls_state = sm["controlsState"].getControlsState();
     scene.lateralControlMethod = scene.controls_state.getLateralControlMethod();
     if (scene.lateralControlMethod == 0) {
