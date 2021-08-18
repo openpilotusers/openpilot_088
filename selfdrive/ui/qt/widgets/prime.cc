@@ -85,9 +85,9 @@ PrimeUserWidget::PrimeUserWidget(QWidget* parent) : QWidget(parent) {
   hkg->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
   mainLayout->addWidget(hkg, 0, Qt::AlignCenter);
 
-  username = new QLabel();
-  username->setStyleSheet("font-size: 55px;"); // TODO: fit width
-  //mainLayout->addWidget(username, 0, Qt::AlignTop);
+  opusername = new QLabel();
+  opusername->setStyleSheet("font-size: 55px;"); // TODO: fit width
+  //mainLayout->addWidget(opusername, 0, Qt::AlignTop);
 
   //mainLayout->addSpacing(10);
 
@@ -130,12 +130,12 @@ void PrimeUserWidget::replyFinished(const QString &response) {
 
   QJsonObject json = doc.object();
   QString points_str = QString::number(json["points"].toInt());
-  QString username_str = json["username"].toString();
+  QString username_str = json["opusername"].toString();
   if (username_str.length()) {
     username_str = "@" + username_str;
   }
 
-  username->setText(username_str);
+  opusername->setText(username_str);
   points->setText(points_str);
 }
 
