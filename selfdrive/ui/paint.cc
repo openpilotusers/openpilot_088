@@ -192,7 +192,7 @@ static void ui_draw_vision_lane_lines(UIState *s) {
       }
       NVGcolor color = nvgRGBAf(1.0, 1.0, 1.0, scene.lane_line_probs[i]);
       if (!scene.comma_stock_ui) {
-        color = color = nvgRGBAf(red_lvl_line, green_lvl_line, 0, 1);
+        color = nvgRGBAf(red_lvl_line, green_lvl_line, 0, 1);
       }
       ui_draw_line(s, scene.lane_line_vertices[i], &color, nullptr);
     }
@@ -203,7 +203,7 @@ static void ui_draw_vision_lane_lines(UIState *s) {
       ui_draw_line(s, scene.road_edge_vertices[i], &color, nullptr);
     }
   }
-  if (s->scene.controls_state.getEnabled() && !s->scene.comma_stock_ui) {
+  if (scene.controls_state.getEnabled() && !scene.comma_stock_ui) {
     if (steerOverride) {
       track_bg = nvgLinearGradient(s->vg, s->fb_w, s->fb_h, s->fb_w, s->fb_h*.4,
         COLOR_BLACK_ALPHA(80), COLOR_BLACK_ALPHA(20));
@@ -425,30 +425,29 @@ static void ui_draw_gear( UIState *s ) {
 }
 
 static void ui_draw_vision_maxspeed_org(UIState *s) {
-  const UIScene &scene = s->scene;  
   const int SET_SPEED_NA = 255;
-  float maxspeed = scene.controls_state.getVCruise();
-  float cruise_speed = scene.vSetDis;
+  float maxspeed = s->scene.controls_state.getVCruise();
+  float cruise_speed = s->scene.vSetDis;
   const bool is_cruise_set = maxspeed != 0 && maxspeed != SET_SPEED_NA;
-  scene.is_speed_over_limit = scene.limitSpeedCamera > 29 && ((scene.limitSpeedCamera+round(scene.limitSpeedCamera*0.01*scene.speed_lim_off))+1 < s->scene.car_state.getVEgo()*3.6);
-  if (is_cruise_set && !scene.is_metric) { maxspeed *= 0.6225; }
+  s->scene.is_speed_over_limit = s->scene.limitSpeedCamera > 29 && ((s->scene.limitSpeedCamera+round(s->scene.limitSpeedCamera*0.01*s->scene.speed_lim_off))+1 < s->scene.car_state.getVEgo()*3.6);
+  if (is_cruise_set && !s->scene.is_metric) { maxspeed *= 0.6225; }
 
   const Rect rect = {bdr_s, bdr_s, 184, 202};
   NVGcolor color = COLOR_BLACK_ALPHA(100);
-  if (scene.is_speed_over_limit) {
+  if (s->scene.is_speed_over_limit) {
     color = COLOR_OCHRE_ALPHA(100);
-  } else if (scene.limitSpeedCamera > 29 && !scene.is_speed_over_limit) {
+  } else if (s->scene.limitSpeedCamera > 29 && !s->scene.is_speed_over_limit) {
     color = nvgRGBA(0, 120, 0, 100);
-  } else if (scene.cruiseAccStatus) {
+  } else if (s->scene.cruiseAccStatus) {
     color = nvgRGBA(0, 100, 200, 100);
-  } else if (scene.controls_state.getEnabled()) {
+  } else if (s->scene.controls_state.getEnabled()) {
     color = COLOR_WHITE_ALPHA(75);
   }
   ui_fill_rect(s->vg, rect, color, 30.);
   ui_draw_rect(s->vg, rect, COLOR_WHITE_ALPHA(100), 10, 20.);
 
   nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_BASELINE);
-  if (cruise_speed >= 30 && scene.controls_state.getEnabled()) {
+  if (cruise_speed >= 30 && s->scene.controls_state.getEnabled()) {
     const std::string cruise_speed_str = std::to_string((int)std::nearbyint(cruise_speed));
     ui_draw_text(s, rect.centerX(), bdr_s+65, cruise_speed_str.c_str(), 26 * 2.8, COLOR_WHITE_ALPHA(is_cruise_set ? 200 : 100), "sans-bold");
   } else {
@@ -519,7 +518,7 @@ static void ui_draw_vision_cruise_speed(UIState *s) {
 static void ui_draw_vision_speed(UIState *s) {
   const float speed = std::max(0.0, (*s->sm)["carState"].getCarState().getVEgo() * (s->scene.is_metric ? 3.6 : 2.2369363));
   const std::string speed_str = std::to_string((int)std::nearbyint(speed));
-  const UIScene &scene = s->scene;  
+  UIScene &scene = s->scene;  
   const int viz_speed_w = 250;
   const int viz_speed_x = s->fb_w/2 - viz_speed_w/2;
   const int header_h2 = 400;
@@ -1100,7 +1099,7 @@ static void ui_draw_vision_header(UIState *s) {
 
 //blind spot warning by OPKR
 static void ui_draw_vision_car(UIState *s) {
-  const UIScene &scene = s->scene;
+  UIScene &scene = s->scene;
   const int car_size = 350;
   const int car_x_left = (s->fb_w/2 - 400);
   const int car_x_right = (s->fb_w/2 + 400);
@@ -1315,14 +1314,14 @@ static void ui_draw_vision(UIState *s) {
   ui_draw_vision_header(s);
   if ((*s->sm)["controlsState"].getControlsState().getAlertSize() == cereal::ControlsState::AlertSize::NONE) {
     ui_draw_vision_face(s);
-    if (!s->scene.comma_stock_ui) {
+    if (!scene->scene.comma_stock_ui) {
       ui_draw_vision_car(s);
     }
   }
-  if (s->scene.live_tune_panel_enable) {
+  if (scene->live_tune_panel_enable) {
     ui_draw_live_tune_panel(s);
   }
-  if (s->scene.kr_date_show || s->scene.kr_time_show) {
+  if (scene->kr_date_show || scene->kr_time_show) {
     draw_kr_date_time(s);
   }
 }
