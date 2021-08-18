@@ -14,7 +14,7 @@
 #include "selfdrive/hardware/hw.h"
 #include "selfdrive/ui/paint.h"
 #include "selfdrive/ui/qt/qt_window.h"
-#include "dashcam.h"
+//#include "dashcam.h"
 
 #define BACKLIGHT_DT 0.05
 #define BACKLIGHT_TS 10.00
@@ -486,7 +486,7 @@ void QUIState::update() {
   update_sockets(&ui_state);
   update_state(&ui_state);
   update_status(&ui_state);
-  dashcam(&ui_state);
+  //dashcam(&ui_state);
   update_vision(&ui_state);
 
   if (ui_state.scene.started != started_prev || ui_state.sm->frame == 1) {
