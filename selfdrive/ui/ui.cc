@@ -218,12 +218,12 @@ static void update_state(UIState *s) {
   }
   if (sm.updated("deviceState")) {
     scene.deviceState = sm["deviceState"].getDeviceState();
-    s->scene.cpuPerc = scene.deviceState.getCpuUsagePercent();
-    s->scene.cpuTemp = (scene.deviceState.getCpuTempC()[0] + scene.deviceState.getCpuTempC()[1] + scene.deviceState.getCpuTempC()[2] + scene.deviceState.getCpuTempC()[3])/4;
-    s->scene.batTemp = scene.deviceState.getBatteryTempC();
-    s->scene.ambientTemp = scene.deviceState.getAmbientTempC();
-    s->scene.fanSpeed = scene.deviceState.getFanSpeedPercentDesired();
-    s->scene.batPercent = scene.deviceState.getBatteryPercent();
+    scene.cpuPerc = scene.deviceState.getCpuUsagePercent();
+    scene.cpuTemp = (scene.deviceState.getCpuTempC()[0] + scene.deviceState.getCpuTempC()[1] + scene.deviceState.getCpuTempC()[2] + scene.deviceState.getCpuTempC()[3])/4;
+    scene.batTemp = scene.deviceState.getBatteryTempC();
+    scene.ambientTemp = scene.deviceState.getAmbientTempC();
+    scene.fanSpeed = scene.deviceState.getFanSpeedPercentDesired();
+    scene.batPercent = scene.deviceState.getBatteryPercent();
   }
   if (sm.updated("pandaState")) {
     auto pandaState = sm["pandaState"].getPandaState();
