@@ -24,6 +24,7 @@
 #include "selfdrive/ui/ui.h"
 #include <time.h> // opkr
 #include <string.h> // opkr
+#include "selfdrive/ui/dashcam.h"
 
 static void ui_print(UIState *s, int x, int y,  const char* fmt, ... )
 {
@@ -1339,6 +1340,7 @@ void ui_draw(UIState *s, int w, int h) {
   nvgBeginFrame(s->vg, s->fb_w, s->fb_h, 1.0f);
   if (draw_vision) {
     ui_draw_vision(s);
+    update_dashcam(s);
   }
   nvgEndFrame(s->vg);
   glDisable(GL_BLEND);

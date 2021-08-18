@@ -14,7 +14,6 @@
 #include "selfdrive/hardware/hw.h"
 #include "selfdrive/ui/paint.h"
 #include "selfdrive/ui/qt/qt_window.h"
-#include "selfdrive/ui/dashcam.h"
 
 #define BACKLIGHT_DT 0.05
 #define BACKLIGHT_TS 10.00
@@ -309,8 +308,8 @@ static void update_state(UIState *s) {
 static void update_params(UIState *s) {
   const uint64_t frame = s->sm->frame;
   UIScene &scene = s->scene;
-  Params params;
   if (frame % (5*UI_FREQ) == 0) {
+    Params params;
     scene.is_metric = params.getBool("IsMetric");
     scene.is_OpenpilotViewEnabled = params.getBool("IsOpenpilotViewEnabled");
   }
@@ -486,7 +485,6 @@ void QUIState::update() {
   update_sockets(&ui_state);
   update_state(&ui_state);
   update_status(&ui_state);
-  dashcam(&ui_state);
   update_vision(&ui_state);
 
   if (ui_state.scene.started != started_prev || ui_state.sm->frame == 1) {

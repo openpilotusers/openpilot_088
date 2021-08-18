@@ -1,8 +1,5 @@
 #include <time.h>
 #include <dirent.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include "selfdrive/ui/ui.h"
 
 #define CAPTURE_STATE_NONE 0
 #define CAPTURE_STATE_CAPTURING 1
