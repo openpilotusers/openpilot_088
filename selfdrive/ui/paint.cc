@@ -403,7 +403,7 @@ static void ui_draw_gear( UIState *s ) {
   NVGcolor nColor = COLOR_WHITE;
   int x_pos = s->fb_w - (90 + bdr_s);
   int y_pos = bdr_s + 140;
-  int  ngetGearShifter = int(scene.getGearShifter);
+  int ngetGearShifter = int(scene.getGearShifter);
   //int  x_pos = 1795;
   //int  y_pos = 155;
   char str_msg[512];
@@ -1314,7 +1314,7 @@ static void ui_draw_vision(UIState *s) {
   ui_draw_vision_header(s);
   if ((*s->sm)["controlsState"].getControlsState().getAlertSize() == cereal::ControlsState::AlertSize::NONE) {
     ui_draw_vision_face(s);
-    if (!scene->scene.comma_stock_ui) {
+    if (!scene->comma_stock_ui) {
       ui_draw_vision_car(s);
     }
   }
