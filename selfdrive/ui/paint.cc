@@ -88,9 +88,9 @@ static void ui_draw_circle_image(const UIState *s, int center_x, int center_y, i
   float bg_alpha = active ? 0.3f : 0.1f;
   float img_alpha = active ? 1.0f : 0.15f;
   if (s->scene.monitoring_mode) {
-    ui_draw_circle_image(s, center_x, center_y, radius, image, nvgRGBA(10, 120, 20, (255 * bg_alpha * 1.1)), img_alpha);
+    ui_draw_circle_image_rotation(s, center_x, center_y, radius, image, nvgRGBA(10, 120, 20, (255 * bg_alpha * 1.1)), img_alpha);
   } else {
-    ui_draw_circle_image(s, center_x, center_y, radius, image, nvgRGBA(0, 0, 0, (255 * bg_alpha)), img_alpha);
+    ui_draw_circle_image_rotation(s, center_x, center_y, radius, image, nvgRGBA(0, 0, 0, (255 * bg_alpha)), img_alpha);
   }
 }
 
@@ -430,7 +430,7 @@ static void ui_draw_vision_maxspeed_org(UIState *s) {
   float maxspeed = scene.controls_state.getVCruise();
   float cruise_speed = scene.vSetDis;
   const bool is_cruise_set = maxspeed != 0 && maxspeed != SET_SPEED_NA;
-  scene.is_speed_over_limit = scene.limitSpeedCamera > 29 && ((scene.limitSpeedCamera+round(scene.limitSpeedCamera*0.01*scene.speed_lim_off))+1 < scene.car_state.getVEgo()*3.6);
+  scene.is_speed_over_limit = scene.limitSpeedCamera > 29 && ((scene.limitSpeedCamera+round(scene.limitSpeedCamera*0.01*scene.speed_lim_off))+1 < s->scene.car_state.getVEgo()*3.6);
   if (is_cruise_set && !scene.is_metric) { maxspeed *= 0.6225; }
 
   const Rect rect = {bdr_s, bdr_s, 184, 202};
@@ -566,7 +566,7 @@ static void ui_draw_vision_speed(UIState *s) {
     nvgLineTo(s->vg, viz_speed_x + viz_speed_w, header_h2/4 + header_h2/2);
     nvgLineTo(s->vg, viz_speed_x + viz_speed_w + viz_speed_w/4, header_h2/2);
     nvgClosePath(s->vg);
-    nvgFillColor(s->vg, nvgRGBA(255,230,70,(scene.blinker_blinkingrate<=120 && scene,blinker_blinkingrate>=50)?70:0));
+    nvgFillColor(s->vg, nvgRGBA(255,230,70,(scene.blinker_blinkingrate<=120 && scene.blinker_blinkingrate>=50)?70:0));
     nvgFill(s->vg);
     nvgBeginPath(s->vg);
     nvgMoveTo(s->vg, viz_speed_x + viz_speed_w + 125, header_h2/4);
@@ -591,7 +591,7 @@ static void ui_draw_vision_speed(UIState *s) {
     }
   if (scene.leftBlinker || scene.rightBlinker) {
     scene.blinker_blinkingrate -= 5;
-    if(scene.blinker_blinkingrate<0) scene.blinker_blinkingrate = 120;
+    if(scene.blinker_blinkingrate < 0) scene.blinker_blinkingrate = 120;
   }
 
   NVGcolor val_color = COLOR_WHITE;
