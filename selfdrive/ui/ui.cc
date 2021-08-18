@@ -399,7 +399,6 @@ static void update_params(UIState *s) {
 static void update_vision(UIState *s) {
   if (!s->vipc_client->connected && s->scene.started) {
     if (s->vipc_client->connect(false)) {
-      util::sleep_for(1000. / UI_FREQ);
       ui_init_vision(s);
     }
   }
