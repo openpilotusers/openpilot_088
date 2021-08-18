@@ -1,7 +1,8 @@
 #include "selfdrive/ui/ui.h"
 
 #include <unistd.h>
-#include <string.h>  //opkr
+#include <string>  //opkr
+#include <iostream>
 
 #include <cassert>
 #include <cmath>
@@ -308,8 +309,8 @@ static void update_state(UIState *s) {
 static void update_params(UIState *s) {
   const uint64_t frame = s->sm->frame;
   UIScene &scene = s->scene;
+  Params params;
   if (frame % (5*UI_FREQ) == 0) {
-    Params params;
     scene.is_metric = params.getBool("IsMetric");
     scene.is_OpenpilotViewEnabled = params.getBool("IsOpenpilotViewEnabled");
   }
