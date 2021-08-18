@@ -36,12 +36,17 @@ Panda::Panda() {
   if (err != 0) { goto fail; }
 
   hw_type = get_hw_type();
+
   is_pigeon =
     (hw_type == cereal::PandaState::PandaType::WHITE_PANDA) ||
     (hw_type == cereal::PandaState::PandaType::GREY_PANDA) ||
     (hw_type == cereal::PandaState::PandaType::BLACK_PANDA) ||
     (hw_type == cereal::PandaState::PandaType::UNO) ||
     (hw_type == cereal::PandaState::PandaType::DOS);
+    
+  //assert((hw_type != cereal::PandaState::PandaType::WHITE_PANDA) &&
+  //       (hw_type != cereal::PandaState::PandaType::GREY_PANDA));
+
   has_rtc = (hw_type == cereal::PandaState::PandaType::UNO) ||
             (hw_type == cereal::PandaState::PandaType::DOS);
 
@@ -99,9 +104,9 @@ int Panda::usb_read(uint8_t bRequest, uint16_t wValue, uint16_t wIndex, unsigned
   int err;
   const uint8_t bmRequestType = LIBUSB_ENDPOINT_IN | LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_RECIPIENT_DEVICE;
 
-//  if (!connected) {
-//    return LIBUSB_ERROR_NO_DEVICE;
-//  }
+  if (!connected) {
+    return LIBUSB_ERROR_NO_DEVICE;
+  }
 
   std::lock_guard lk(usb_lock);
   do {

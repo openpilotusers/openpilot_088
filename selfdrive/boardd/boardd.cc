@@ -38,10 +38,11 @@
 Panda * panda = nullptr;
 std::atomic<bool> safety_setter_thread_running(false);
 std::atomic<bool> ignition(false);
-volatile sig_atomic_t do_exit = 0;
+
+ExitHandler do_exit;
+
 bool spoofing_started = false;
 bool fake_send = false;
-bool connected_once = false;
 
 void safety_setter_thread() {
   LOGD("Starting safety setter thread");
@@ -91,7 +92,7 @@ void safety_setter_thread() {
   cereal::CarParams::Reader car_params = cmsg.getRoot<cereal::CarParams>();
   cereal::CarParams::SafetyModel safety_model = car_params.getSafetyModel();
 
-  //panda->set_unsafe_mode(0);  // see safety_declarations.h for allowed values
+  panda->set_unsafe_mode(0);  // see safety_declarations.h for allowed values
 
   auto safety_param = car_params.getSafetyParam();
   LOGW("setting safety model: %d with param %d", (int)safety_model, safety_param);
@@ -132,8 +133,6 @@ bool usb_connect() {
 
     params.put("PandaFirmwareHex", fw_sig_hex_buf, 16);
     LOGW("fw signature: %.*s", 16, fw_sig_hex_buf);
-
-    delete[] fw_sig_buf;
   } else { return false; }
 
   // get panda serial
@@ -173,10 +172,13 @@ bool usb_connect() {
 }
 
 // must be called before threads or with mutex
-void usb_retry_connect() {
+static bool usb_retry_connect() {
   LOGW("attempting to connect");
-  while (!usb_connect()) { util::sleep_for(100); }
-  LOGW("connected to board");
+  while (!do_exit && !usb_connect()) { util::sleep_for(100); }
+  if (panda) {
+    LOGW("connected to board");
+  }
+  return !do_exit;
 }
 
 void can_recv(PubMaster &pm) {
@@ -260,7 +262,7 @@ void panda_state_thread() {
   Params params = Params();
 
   // Broadcast empty pandaState message when panda is not yet connected
-  while (!panda) {
+  while (!do_exit && !panda) {
     MessageBuilder msg;
     auto pandaState  = msg.initEvent().initPandaState();
 
@@ -282,7 +284,7 @@ void panda_state_thread() {
       panda->set_safety_model(cereal::CarParams::SafetyModel::NO_OUTPUT);
     }
 
-    bool ignition = ((pandaState.ignition_line != 0) || (pandaState.ignition_can != 0));
+    ignition = ((pandaState.ignition_line != 0) || (pandaState.ignition_can != 0));
 
     if (ignition) {
       no_ignition_cnt = 0;
@@ -542,12 +544,12 @@ void pigeon_thread() {
       for (const auto& [msg_cls, dt] : cls_max_dt) {
         last_recv_time[msg_cls] = t;
       }
+    // } else if (!ignition && ignition_last) {
+    //   // power off on falling edge of ignition
+    //   LOGD("powering off pigeon\n");
+    //   pigeon->stop();
+    //   pigeon->set_power(false);
     }
-    //} else if (!ignition && ignition_last) {
-    //  // power off on falling edge of ignition
-    //  LOGD("powering off pigeon\n");
-    //  pigeon->set_power(false);
-    //}
 
     ignition_last = ignition;
 
@@ -579,17 +581,17 @@ int main() {
     fake_send = true;
   }
 
-  while (!do_exit){
+  while (!do_exit) {
     std::vector<std::thread> threads;
     threads.push_back(std::thread(panda_state_thread));
 
     // connect to the board
-    usb_retry_connect();
-
-    threads.push_back(std::thread(can_send_thread));
-    threads.push_back(std::thread(can_recv_thread));
-    threads.push_back(std::thread(hardware_control_thread));
-    if (!Params().getBool("WhitePandaSupport")) threads.push_back(std::thread(pigeon_thread));
+    if (usb_retry_connect()) {
+      threads.push_back(std::thread(can_send_thread));
+      threads.push_back(std::thread(can_recv_thread));
+      threads.push_back(std::thread(hardware_control_thread));
+      if (!Params().getBool("WhitePandaSupport")) threads.push_back(std::thread(pigeon_thread));
+    }
 
     for (auto &t : threads) t.join();
 
