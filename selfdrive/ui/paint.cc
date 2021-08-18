@@ -1323,7 +1323,7 @@ static void ui_draw_vision(UIState *s) {
   if (scene->live_tune_panel_enable) {
     ui_draw_live_tune_panel(s);
   }
-  if (scene->kr_date_show || scene->kr_time_show) {
+  if ((scene->kr_date_show || scene->kr_time_show) && !scene->comma_stock_ui) {
     draw_kr_date_time(s);
   }
 }
