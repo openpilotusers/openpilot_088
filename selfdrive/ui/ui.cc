@@ -486,7 +486,6 @@ void QUIState::update() {
   update_sockets(&ui_state);
   update_state(&ui_state);
   update_status(&ui_state);
-  dashcam(&ui_state);
   update_vision(&ui_state);
 
   if (ui_state.scene.started != started_prev || ui_state.sm->frame == 1) {
@@ -500,6 +499,7 @@ void QUIState::update() {
 
   watchdog_kick();
   emit uiUpdate(ui_state);
+  dashcam(&ui_state);
 }
 
 Device::Device(QObject *parent) : brightness_filter(BACKLIGHT_OFFROAD, BACKLIGHT_TS, BACKLIGHT_DT), QObject(parent) {
