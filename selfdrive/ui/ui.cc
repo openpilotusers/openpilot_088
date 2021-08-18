@@ -160,39 +160,39 @@ static void update_state(UIState *s) {
   }
   if (sm.updated("carState")) {
     scene.car_state = sm["carState"].getCarState();
-    auto data = sm["carState"].getCarState();
+    auto cs_data = sm["carState"].getCarState();
     auto cruiseState = scene.car_state.getCruiseState();
     scene.awake = cruiseState.getCruiseSwState();
 
-    if(scene.leftBlinker!=data.getLeftBlinker() || scene.rightBlinker!=data.getRightBlinker()){
+    if (scene.leftBlinker!=cs_data.getLeftBlinker() || scene.rightBlinker!=cs_data.getRightBlinker()) {
       scene.blinker_blinkingrate = 120;
     }
-    scene.brakePress = data.getBrakePressed();
-    scene.brakeLights = data.getBrakeLights();
-    scene.getGearShifter = data.getGearShifter();
-    scene.leftBlinker = data.getLeftBlinker();
-    scene.rightBlinker = data.getRightBlinker();
-    scene.leftblindspot = data.getLeftBlindspot();
-    scene.rightblindspot = data.getRightBlindspot();
-    scene.tpmsPressureFl = data.getTpmsPressureFl();
-    scene.tpmsPressureFr = data.getTpmsPressureFr();
-    scene.tpmsPressureRl = data.getTpmsPressureRl();
-    scene.tpmsPressureRr = data.getTpmsPressureRr();
-    scene.radarDistance = data.getRadarDistance();
-    scene.standStill = data.getStandStill();
-    scene.vSetDis = data.getVSetDis();
-    scene.cruiseAccStatus = data.getCruiseAccStatus();
-    scene.angleSteers = data.getSteeringAngleDeg();
-    scene.cruise_gap = data.getCruiseGapSet();
+    scene.brakePress = cs_data.getBrakePressed();
+    scene.brakeLights = cs_data.getBrakeLights();
+    scene.getGearShifter = cs_data.getGearShifter();
+    scene.leftBlinker = cs_data.getLeftBlinker();
+    scene.rightBlinker = cs_data.getRightBlinker();
+    scene.leftblindspot = cs_data.getLeftBlindspot();
+    scene.rightblindspot = cs_data.getRightBlindspot();
+    scene.tpmsPressureFl = cs_data.getTpmsPressureFl();
+    scene.tpmsPressureFr = cs_data.getTpmsPressureFr();
+    scene.tpmsPressureRl = cs_data.getTpmsPressureRl();
+    scene.tpmsPressureRr = cs_data.getTpmsPressureRr();
+    scene.radarDistance = cs_data.getRadarDistance();
+    scene.standStill = cs_data.getStandStill();
+    scene.vSetDis = cs_data.getVSetDis();
+    scene.cruiseAccStatus = cs_data.getCruiseAccStatus();
+    scene.angleSteers = cs_data.getSteeringAngleDeg();
+    scene.cruise_gap = cs_data.getCruiseGapSet();
   }
 
   if (sm.updated("liveParameters")) {
     //scene.liveParams = sm["liveParameters"].getLiveParameters();
-    auto data = sm["liveParameters"].getLiveParameters();
-    scene.liveParams.angleOffset = data.getAngleOffsetDeg();
-    scene.liveParams.angleOffsetAverage = data.getAngleOffsetAverageDeg();
-    scene.liveParams.stiffnessFactor = data.getStiffnessFactor();
-    scene.liveParams.steerRatio = data.getSteerRatio();
+    auto live_data = sm["liveParameters"].getLiveParameters();
+    scene.liveParams.angleOffset = live_data.getAngleOffsetDeg();
+    scene.liveParams.angleOffsetAverage = live_data.getAngleOffsetAverageDeg();
+    scene.liveParams.stiffnessFactor = live_data.getStiffnessFactor();
+    scene.liveParams.steerRatio = live_data.getSteerRatio();
   }
   if (sm.updated("modelV2") && s->vg) {
     auto model = sm["modelV2"].getModelV2();
@@ -233,17 +233,17 @@ static void update_state(UIState *s) {
     scene.pandaType = cereal::PandaState::PandaType::UNKNOWN;
   }
   if (sm.updated("ubloxGnss")) {
-    auto data = sm["ubloxGnss"].getUbloxGnss();
-    if (data.which() == cereal::UbloxGnss::MEASUREMENT_REPORT) {
-      scene.satelliteCount = data.getMeasurementReport().getNumMeas();
+    auto ub_data = sm["ubloxGnss"].getUbloxGnss();
+    if (ub_data.which() == cereal::UbloxGnss::MEASUREMENT_REPORT) {
+      scene.satelliteCount = ub_data.getMeasurementReport().getNumMeas();
     }
-    auto data2 = sm["gpsLocationExternal"].getGpsLocationExternal();
-      scene.gpsAccuracyUblox = data2.getAccuracy();
-      scene.altitudeUblox = data2.getAltitude();
-      scene.bearingUblox = data2.getBearingDeg();
   }
   if (sm.updated("gpsLocationExternal")) {
     scene.gpsAccuracy = sm["gpsLocationExternal"].getGpsLocationExternal().getAccuracy();
+    auto ge_data = sm["gpsLocationExternal"].getGpsLocationExternal();
+    scene.gpsAccuracyUblox = ge_data.getAccuracy();
+    scene.altitudeUblox = ge_data.getAltitude();
+    scene.bearingUblox = ge_data.getBearingDeg();
   }
   if (sm.updated("carParams")) {
     scene.longitudinal_control = sm["carParams"].getCarParams().getOpenpilotLongitudinalControl();
@@ -252,27 +252,25 @@ static void update_state(UIState *s) {
   }
   if (sm.updated("lateralPlan")) {
     scene.lateral_plan = sm["lateralPlan"].getLateralPlan();
-    auto data = sm["lateralPlan"].getLateralPlan();
-
-    scene.lateralPlan.laneWidth = data.getLaneWidth();
-    scene.lateralPlan.dProb = data.getDProb();
-    scene.lateralPlan.lProb = data.getLProb();
-    scene.lateralPlan.rProb = data.getRProb();
-    scene.lateralPlan.steerRateCost = data.getSteerRateCost();
-    scene.lateralPlan.standstillElapsedTime = data.getStandstillElapsedTime();
-    scene.lateralPlan.lanelessModeStatus = data.getLanelessMode();
+    auto lp_data = sm["lateralPlan"].getLateralPlan();
+    scene.lateralPlan.laneWidth = lp_data.getLaneWidth();
+    scene.lateralPlan.dProb = lp_data.getDProb();
+    scene.lateralPlan.lProb = lp_data.getLProb();
+    scene.lateralPlan.rProb = lp_data.getRProb();
+    scene.lateralPlan.steerRateCost = lp_data.getSteerRateCost();
+    scene.lateralPlan.standstillElapsedTime = lp_data.getStandstillElapsedTime();
+    scene.lateralPlan.lanelessModeStatus = lp_data.getLanelessMode();
   }
   // opkr
   if (sm.updated("liveMapData")) {
     scene.live_map_data = sm["liveMapData"].getLiveMapData();
-    auto data = sm["liveMapData"].getLiveMapData();
-
-    scene.liveMapData.opkrspeedlimit = data.getSpeedLimit();
-    scene.liveMapData.opkrspeedlimitdist = data.getSpeedLimitDistance();
-    scene.liveMapData.opkrspeedsign = data.getSafetySign();
-    scene.liveMapData.opkrcurveangle = data.getRoadCurvature();
-    scene.liveMapData.opkrturninfo = data.getTurnInfo();
-    scene.liveMapData.opkrdisttoturn = data.getDistanceToTurn();
+    auto lm_data = sm["liveMapData"].getLiveMapData();
+    scene.liveMapData.opkrspeedlimit = lm_data.getSpeedLimit();
+    scene.liveMapData.opkrspeedlimitdist = lm_data.getSpeedLimitDistance();
+    scene.liveMapData.opkrspeedsign = lm_data.getSafetySign();
+    scene.liveMapData.opkrcurveangle = lm_data.getRoadCurvature();
+    scene.liveMapData.opkrturninfo = lm_data.getTurnInfo();
+    scene.liveMapData.opkrdisttoturn = lm_data.getDistanceToTurn();
   }
   if (sm.updated("sensorEvents")) {
     for (auto sensor : sm["sensorEvents"].getSensorEvents()) {
