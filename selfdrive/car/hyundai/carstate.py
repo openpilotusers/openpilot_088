@@ -657,6 +657,8 @@ class CarState(CarStateBase):
         ("SCC11", 50),
         ("SCC12", 50),
       ]
+      if CP.fcaBus == 2:
+        checks += [("FCA11", 50)]
 
     return CANParser(DBC[CP.carFingerprint]["pt"], signals, checks, 2, enforce_checks=False)
 
