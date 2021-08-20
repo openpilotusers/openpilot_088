@@ -108,6 +108,7 @@ struct CarEvent @0x9b1657f34caf3ad3 {
     driverCameraError @101;
     wideRoadCameraError @102;
     localizerMalfunction @103;
+    highCpuUsage @105;
 
     driverMonitorLowAccDEPRECATED @68;
     radarCanErrorDEPRECATED @15;
@@ -129,18 +130,18 @@ struct CarEvent @0x9b1657f34caf3ad3 {
     neosUpdateRequiredDEPRECATED @88;
     modelLagWarningDEPRECATED @93;
     startupOneplusDEPRECATED @82;
-    laneChangeManual @105;
-    emgButtonManual @106;
-    driverSteering @107;
-    modeChangeOpenpilot @108;
-    modeChangeDistcurv @109;
-    modeChangeDistance @110;
-    modeChangeOneway @111;
-    modeChangeMaponly @112;
-    needBrake @113;
-    standStill @114;
-    modelLongAlert @115;
-	isgActive @116;
+    laneChangeManual @106;
+    emgButtonManual @107;
+    driverSteering @108;
+    modeChangeOpenpilot @109;
+    modeChangeDistcurv @110;
+    modeChangeDistance @111;
+    modeChangeOneway @112;
+    modeChangeMaponly @113;
+    needBrake @114;
+    standStill @115;
+    modelLongAlert @116;
+	isgActive @117;
   }
 }
 
@@ -168,6 +169,7 @@ struct CarState {
 
   # steering wheel
   steeringAngleDeg @7 :Float32;
+  steeringAngleOffsetDeg @37 :Float32; # Offset betweens sensors in case there multiple
   steeringRateDeg @15 :Float32;
   steeringTorque @8 :Float32;      # TODO: standardize units
   steeringTorqueEps @27 :Float32;  # TODO: standardize units
@@ -208,25 +210,25 @@ struct CarState {
 
   brakeLights @19 :Bool;
   # opkr-tpms
-  tpmsPressureFl @37 :Float32;
-  tpmsPressureFr @38 :Float32;
-  tpmsPressureRl @39 :Float32;
-  tpmsPressureRr @40 :Float32;
+  tpmsPressureFl @38 :Float32;
+  tpmsPressureFr @39 :Float32;
+  tpmsPressureRl @40 :Float32;
+  tpmsPressureRr @41 :Float32;
 
-  radarDistance @41 :Float32;
-  standStill @42 :Bool;
-  vSetDis @43 :Float32;
-  cruiseButtons @44 :Float32;
-  cruiseAccStatus @45 :Bool;
-  driverAcc @46 :Bool;
-  brakeHold @47 :Bool;    # AutoHold
-  cruiseGapSet @48 :UInt8;
+  radarDistance @42 :Float32;
+  standStill @43 :Bool;
+  vSetDis @44 :Float32;
+  cruiseButtons @45 :Float32;
+  cruiseAccStatus @46 :Bool;
+  driverAcc @47 :Bool;
+  brakeHold @48 :Bool;    # AutoHold
+  cruiseGapSet @49 :UInt8;
 
   # opkr
-  safetyDist @49 :Float32;
-  safetySign @50 :Float32;
+  safetyDist @50 :Float32;
+  safetySign @51 :Float32;
 
-  vEgoOP @51 :Float32;  # openpilot speed
+  vEgoOP @52 :Float32;  # openpilot speed
 
   struct WheelSpeeds {
     # optional wheel speeds
@@ -337,6 +339,7 @@ struct CarControl {
     # range from -1.0 - 1.0
     steer @2: Float32;
     steeringAngleDeg @3: Float32;
+    accel @4: Float32; # m/s^2
   }
 
   struct CruiseControl {

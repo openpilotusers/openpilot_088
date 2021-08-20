@@ -2,11 +2,7 @@
 
 #include <QMouseEvent>
 
-#include "selfdrive/common/util.h"
-#include "selfdrive/hardware/hw.h"
 #include "selfdrive/ui/qt/util.h"
-#include "selfdrive/ui/qt/widgets/input.h" // opkr
-#include "selfdrive/common/params.h" // opkr
 
 #include <QProcess>
 #include <QSoundEffect>
@@ -97,39 +93,33 @@ void Sidebar::updateState(const UIState &s) {
   int strength = (int)deviceState.getNetworkStrength();
   setProperty("netStrength", strength > 0 ? strength + 1 : 0);
 
+  ItemStatus connectstatus;
   auto last_ping = deviceState.getLastAthenaPingTime();
   if (last_ping == 0) {
-    setProperty("connectStr", "오프라인");
-    setProperty("connectStatus", warning_color);
+    connectstatus = ItemStatus{"네트워크\n오프라인", warning_color};
   } else {
-    bool online = nanos_since_boot() - last_ping < 80e9;
-    setProperty("connectStr",  online ? "온라인" : "오류");
-    setProperty("connectStatus", online ? good_color : danger_color);
+    connectstatus = nanos_since_boot() - last_ping < 80e9 ? ItemStatus{"네트워크\n온라인", good_color} : ItemStatus{"네트워크\n오류", danger_color};
   }
+  setProperty("connectStatus", QVariant::fromValue(connectstatus));
 
-  QColor tempStatus = danger_color;
+  QColor tempColor = danger_color;
   auto ts = deviceState.getThermalStatus();
   if (ts == cereal::DeviceState::ThermalStatus::GREEN) {
-    tempStatus = good_color;
+    tempColor = good_color;
   } else if (ts == cereal::DeviceState::ThermalStatus::YELLOW) {
-    tempStatus = warning_color;
+    tempColor = warning_color;
   }
-  setProperty("tempStatus", tempStatus);
-  setProperty("tempVal", (int)deviceState.getAmbientTempC());
+  setProperty("tempStatus", QVariant::fromValue(ItemStatus{QString("%1°C").arg((int)deviceState.getAmbientTempC()), tempColor}));
 
-  QString pandaStr = "차량\n연결됨";
-  QColor pandaStatus = good_color;
+  ItemStatus pandaStatus = {"차량\n연결됨", good_color};
   if (s.scene.pandaType == cereal::PandaState::PandaType::UNKNOWN) {
-    pandaStatus = danger_color;
-    pandaStr = "차량\n연결안됨";
+    pandaStatus = {"차량\n연결안됨", danger_color};
   } else if (s.scene.started && !sm["liveLocationKalman"].getLiveLocationKalman().getGpsOK() && s.scene.gpsAccuracyUblox != 0.00) {
-    pandaStatus = warning_color;
-    pandaStr = "차량연결됨\nGPS검색중";
+    pandaStatus = {"차량연결됨\nGPS검색중", warning_color};
   } else if (s.scene.satelliteCount > 0) {
-  	pandaStr = QString("차량연결됨\nSAT : %1").arg(s.scene.satelliteCount);
+  	pandaStatus = {QString("차량연결됨\nSAT : %1").arg(s.scene.satelliteCount), good_color};
   }
-  setProperty("pandaStr", pandaStr);
-  setProperty("pandaStatus", pandaStatus);
+  setProperty("pandaStatus", QVariant::fromValue(pandaStatus));
 
   // opkr
   QString iPAddress = "N/A";
@@ -177,9 +167,9 @@ void Sidebar::paintEvent(QPaintEvent *event) {
   p.drawText(r, Qt::AlignHCenter, net_type);
 
   // metrics
-  drawMetric(p, "시스템온도", QString("%1°C").arg(temp_val), temp_status, 378);
-  drawMetric(p, panda_str, "", panda_status, 558);
-  drawMetric(p, "네트워크\n" + connect_str, "", connect_status, 716);
+  drawMetric(p, "시스템온도", temp_status.first, temp_status.second, 378);
+  drawMetric(p, panda_status.first, "", panda_status.second, 558);
+  drawMetric(p, connect_status.first, "", connect_status.second, 716);
 
   // atom - ip
   if( bat_Percent <= 1) return;

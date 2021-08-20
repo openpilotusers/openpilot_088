@@ -3,16 +3,17 @@
 #include <QFrame>
 #include <QMap>
 
+//#include "selfdrive/common/params.h"
 #include "selfdrive/ui/ui.h"
+
+typedef QPair<QString, QColor> ItemStatus;
+Q_DECLARE_METATYPE(ItemStatus);
 
 class Sidebar : public QFrame {
   Q_OBJECT
-  Q_PROPERTY(QString connectStr MEMBER connect_str NOTIFY valueChanged);
-  Q_PROPERTY(QColor connectStatus MEMBER connect_status NOTIFY valueChanged);
-  Q_PROPERTY(QString pandaStr MEMBER panda_str NOTIFY valueChanged);
-  Q_PROPERTY(QColor pandaStatus MEMBER panda_status NOTIFY valueChanged);
-  Q_PROPERTY(int tempVal MEMBER temp_val NOTIFY valueChanged);
-  Q_PROPERTY(QColor tempStatus MEMBER temp_status NOTIFY valueChanged);
+  Q_PROPERTY(ItemStatus connectStatus MEMBER connect_status NOTIFY valueChanged);
+  Q_PROPERTY(ItemStatus pandaStatus MEMBER panda_status NOTIFY valueChanged);
+  Q_PROPERTY(ItemStatus tempStatus MEMBER temp_status NOTIFY valueChanged);
   Q_PROPERTY(QString netType MEMBER net_type NOTIFY valueChanged);
   Q_PROPERTY(int netStrength MEMBER net_strength NOTIFY valueChanged);
   Q_PROPERTY(QString iPAddress MEMBER wifi_IPAddress NOTIFY valueChanged);
@@ -33,8 +34,6 @@ public slots:
 protected:
   void paintEvent(QPaintEvent *event) override;
   void mousePressEvent(QMouseEvent *event) override;
-
-private:
   void drawMetric(QPainter &p, const QString &label, const QString &val, QColor c, int y);
 
   QImage home_img, settings_img;
@@ -55,12 +54,8 @@ private:
   const QColor warning_color = QColor(218, 202, 37);
   const QColor danger_color = QColor(201, 34, 49);
 
-  QString connect_str = "오프라인";
-  QColor connect_status = warning_color;
-  QString panda_str = "차량\n연결안됨";
-  QColor panda_status = warning_color;
-  int temp_val = 0;
-  QColor temp_status = warning_color;
+  //Params params;
+  ItemStatus connect_status, panda_status, temp_status;
   QString net_type;
   int net_strength = 0;
   // opkr

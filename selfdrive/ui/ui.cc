@@ -218,7 +218,7 @@ static void update_state(UIState *s) {
   }
   if (sm.updated("deviceState")) {
     scene.deviceState = sm["deviceState"].getDeviceState();
-    scene.cpuPerc = scene.deviceState.getCpuUsagePercent();
+    scene.cpuPerc = (scene.deviceState.getCpuUsagePercent()[0] + scene.deviceState.getCpuUsagePercent()[1] + scene.deviceState.getCpuUsagePercent()[2] + scene.deviceState.getCpuUsagePercent()[3])/4;
     scene.cpuTemp = (scene.deviceState.getCpuTempC()[0] + scene.deviceState.getCpuTempC()[1] + scene.deviceState.getCpuTempC()[2] + scene.deviceState.getCpuTempC()[3])/4;
     scene.batTemp = scene.deviceState.getBatteryTempC();
     scene.ambientTemp = scene.deviceState.getAmbientTempC();
@@ -294,9 +294,8 @@ static void update_state(UIState *s) {
     float max_gain = Hardware::EON() ? 1.0: 10.0;
     float max_ev = max_lines * max_gain;
 
-    // C3 camera only uses about 10% of available gain at night
     if (Hardware::TICI) {
-      max_ev /= 10;
+      max_ev /= 6;
     }
 
     float ev = camera_state.getGain() * float(camera_state.getIntegLines());
