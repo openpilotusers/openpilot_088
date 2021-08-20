@@ -842,6 +842,13 @@ EVENTS: Dict[int, Dict[str, Union[Alert, Callable[[Any, messaging.SubMaster, boo
                                audible_alert=AudibleAlert.chimeDisengage),
   },
 
+  EventName.highCpuUsage: {
+    #ET.SOFT_DISABLE: SoftDisableAlert("System Malfunction: Reboot Your Device"),
+    #ET.PERMANENT: NormalPermanentAlert("System Malfunction", "Reboot your Device"),
+    ET.NO_ENTRY: NoEntryAlert("시스템오작동: 장치를 재시작 하세요",
+                              audible_alert=AudibleAlert.chimeDisengage),
+  },
+
   EventName.accFaulted: {
     ET.IMMEDIATE_DISABLE: ImmediateDisableAlert("크루즈 오류"),
     ET.PERMANENT: NormalPermanentAlert("크루즈 오류", ""),
