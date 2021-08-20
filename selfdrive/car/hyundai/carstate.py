@@ -285,6 +285,7 @@ class CarState(CarStateBase):
 
     self.scc11init = copy.copy(cp.vl["SCC11"])
     self.scc12init = copy.copy(cp.vl["SCC12"])
+    self.fca11init = copy.copy(cp.vl["FCA11"])
 
     ret.brakeHold = cp.vl["TCS15"]["AVH_LAMP"] == 2 # 0 OFF, 1 ERROR, 2 ACTIVE, 3 READY
     self.brakeHold = ret.brakeHold
@@ -353,6 +354,9 @@ class CarState(CarStateBase):
       ("ESC_Off_Step", "TCS15", 0),
       ("AVH_LAMP", "TCS15", 0),
 
+      ("CF_Lvr_CruiseSet", "LVR12", 0),
+      ("CRUISE_LAMP_M", "EMS16", 0),
+
       ("MainMode_ACC", "SCC11", 1),
       ("SCCInfoDisplay", "SCC11", 0),
       ("AliveCounterACC", "SCC11", 0),
@@ -410,8 +414,6 @@ class CarState(CarStateBase):
       ("OPKR_S_Dist", "NAVI", 0),
       ("OPKR_S_Sign", "NAVI", 31),
       ("OPKR_SBR_Dist", "NAVI", 0),
-      ("CRUISE_LAMP_M", "EMS16", 0),
-      ("CF_Lvr_CruiseSet", "LVR12", 0),
     ]
 
     checks = [
@@ -436,6 +438,7 @@ class CarState(CarStateBase):
         ("CF_VSM_Warn", "FCA11", 0),
       ]
       checks += [("FCA11", 50)]
+
     if CP.mdpsBus == 0:
       signals += [
         ("CR_Mdps_StrColTq", "MDPS12", 0),
@@ -477,7 +480,7 @@ class CarState(CarStateBase):
         ]
       else:
         signals += [
-          ("Accel_Pedal_Pos", "E_EMS11", 0),
+          ("Accel_Pedal_Pos", "E_EMS11", 0)
         ]
       checks += [
         ("E_EMS11", 50),
@@ -628,6 +631,7 @@ class CarState(CarStateBase):
         ("ComfortBandLower", "SCC14", 0),
         ("ACCMode", "SCC14", 0),
         ("ObjGap", "SCC14", 0),
+
         ("CF_VSM_Prefill", "FCA11", 0),
         ("CF_VSM_HBACmd", "FCA11", 0),
         ("CF_VSM_Warn", "FCA11", 0),
