@@ -544,8 +544,9 @@ class CarController():
           else:
             stock_weight = 0.
           apply_accel = apply_accel * (1. - stock_weight) + aReqValue * stock_weight
-        elif 0 < CS.out.radarDistance <= 3: # use radar by force to stop anyway at 3m
-          apply_accel = aReqValue
+        elif 0 < CS.out.radarDistance <= 4: # use radar by force to stop anyway below 4m
+          stock_weight = interp(CS.out.radarDistance, [3., 4.], [1., 0.])
+          apply_accel = apply_accel * (1. - stock_weight) + aReqValue * stock_weight
         else:
           stock_weight = 0.
         can_sends.append(create_scc11(self.packer, frame, set_speed, lead_visible, self.scc_live, lead_dist, lead_vrel, lead_yrel, 
