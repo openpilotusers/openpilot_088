@@ -6,7 +6,7 @@ from selfdrive.car import apply_std_steer_torque_limits
 from selfdrive.car.hyundai.carstate import GearShifter
 from selfdrive.car.hyundai.hyundaican import create_lkas11, create_clu11, create_lfahda_mfc, \
                                              create_scc11, create_scc12, create_scc13, create_scc14, \
-                                             create_scc42a, create_scc7d0, create_fca11, create_fca12, create_mdps12
+                                             create_scc42a, create_scc7d0, create_mdps12
 from selfdrive.car.hyundai.values import Buttons, CarControllerParams, CAR, FEATURES
 from opendbc.can.packer import CANPacker
 from selfdrive.config import Conversions as CV
@@ -98,9 +98,7 @@ class CarController():
     self.accel_lim_prev = 0.
     self.accel_lim = 0.
     self.lastresumeframe = 0
-    self.fca11supcnt = self.fca11inc = self.fca11alivecnt = self.fca11cnt13 = self.scc11cnt = self.scc12cnt = 0
     self.counter_init = False
-    self.fca11maxcnt = 0xD
 
     self.resume_cnt = 0
     self.last_lead_distance = 0
@@ -531,20 +529,6 @@ class CarController():
         self.scc12cnt %= 0xF
         self.scc11cnt += 1
         self.scc11cnt %= 0x10
-        if self.car_fingerprint in [CAR.NIRO_EV]:
-          self.fca11supcnt += 1
-          self.fca11supcnt %= 0xF
-          if self.fca11alivecnt == 1:
-            self.fca11inc = 0
-            if self.fca11cnt13 == 3:
-              self.fca11maxcnt = 0x9
-              self.fca11cnt13 = 0
-            else:
-              self.fca11maxcnt = 0xD
-              self.fca11cnt13 += 1
-          else:
-            self.fca11inc += 4
-          self.fca11alivecnt = self.fca11maxcnt - self.fca11inc
         lead_objspd = CS.lead_objspd  # vRel (km/h)
         aReqValue = CS.scc12["aReqValue"]
         if 0 < CS.out.radarDistance <= 149 and self.radar_helper_enabled:
@@ -574,21 +558,14 @@ class CarController():
            CS.out.stockAeb, self.car_fingerprint, CS.out.vEgo * CV.MS_TO_KPH, CS.scc12))
         can_sends.append(create_scc14(self.packer, enabled, CS.scc14, CS.out.stockAeb, lead_visible, lead_dist, 
          CS.out.vEgo, self.acc_standstill, self.car_fingerprint))
-        if CS.CP.fcaBus == -1 and self.car_fingerprint in [CAR.NIRO_EV]:
-          can_sends.append(create_fca11(self.packer, CS.fca11, self.fca11alivecnt, self.fca11supcnt))
       if frame % 20 == 0:
         can_sends.append(create_scc13(self.packer, CS.scc13))
-        if CS.CP.fcaBus == -1 and self.car_fingerprint in [CAR.NIRO_EV]:
-          can_sends.append(create_fca12(self.packer))
       if frame % 50 == 0:
         can_sends.append(create_scc42a(self.packer))
     elif CS.CP.sccBus == 2 and self.longcontrol:
       self.counter_init = True
       self.scc12cnt = CS.scc12init["CR_VSM_Alive"]
       self.scc11cnt = CS.scc11init["AliveCounterACC"]
-      if self.car_fingerprint in [CAR.NIRO_EV]:
-        self.fca11alivecnt = CS.fca11init["CR_FCA_Alive"]
-        self.fca11supcnt = CS.fca11init["Supplemental_Counter"]
 
     aq_value = CS.scc12["aReqValue"] if CS.CP.sccBus == 0 else apply_accel
     str_log1 = 'M/C={:03.0f}/{:03.0f}  TQ={:03.0f}  ST={:03.0f}/{:01.0f}/{:01.0f}  AQ={:+04.2f}  S={:.0f}/{:.0f}'.format(abs(self.model_speed), self.curve_speed,
