@@ -281,6 +281,7 @@ class CarState(CarStateBase):
     self.scc12 = copy.copy(cp_scc.vl["SCC12"])
     self.scc13 = copy.copy(cp_scc.vl["SCC13"])
     self.scc14 = copy.copy(cp_scc.vl["SCC14"])
+    self.fca11 = copy.copy(cp_fca.vl["FCA11"])
     self.mdps12 = copy.copy(cp_mdps.vl["MDPS12"])
 
     self.scc11init = copy.copy(cp.vl["SCC11"])
@@ -356,6 +357,8 @@ class CarState(CarStateBase):
 
       ("CF_Lvr_CruiseSet", "LVR12", 0),
       ("CRUISE_LAMP_M", "EMS16", 0),
+      ("CR_FCA_Alive", "FCA11", 0),
+      ("Supplemental_Counter", "FCA11", 0),
 
       ("MainMode_ACC", "SCC11", 1),
       ("SCCInfoDisplay", "SCC11", 0),
