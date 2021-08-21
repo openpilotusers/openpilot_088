@@ -117,6 +117,7 @@ class Spdctrl(SpdController):
               self.seq_step_debug = "운전자가속"
               lead_wait_cmd = 10
         elif int(round(self.target_speed)) < int(CS.VSetDis) and self.map_enable and ((int(round(self.target_speed)) < int(round(self.cruise_set_speed_kph))) and self.target_speed != 0):
+            Events().add(EventName.camSpeedDown)
             self.seq_step_debug = "맵기반감속"
             lead_wait_cmd, lead_set_speed = self.get_tm_speed(CS, 8, -1)
         elif CC.res_speed != 0 and CC.res_speed < int(CS.VSetDis):

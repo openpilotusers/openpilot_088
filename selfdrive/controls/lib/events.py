@@ -696,6 +696,22 @@ EVENTS: Dict[int, Dict[str, Union[Alert, Callable[[Any, messaging.SubMaster, boo
       Priority.LOW, VisualAlert.none, AudibleAlert.none, .0, .1, .1, alert_rate=0.75),
   },
 
+  EventName.camSpeedDown: {
+    ET.WARNING: Alert(
+      "안전구간 감속 제어 중",
+      "",
+      AlertStatus.normal, AlertSize.small,
+      Priority.LOW, VisualAlert.none, AudibleAlert.none, .0, .1, .1, alert_rate=0.75),
+  },
+
+  EventName.gapAdjusting: {
+    ET.WARNING: Alert(
+      "크루즈 갭 조정 중",
+      "",
+      AlertStatus.normal, AlertSize.small,
+      Priority.LOW, VisualAlert.none, AudibleAlert.none, .0, .1, .1, alert_rate=0.75),
+  },
+
   EventName.outOfSpace: {
     ET.PERMANENT: Alert(
       "저장공간 부족",

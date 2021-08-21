@@ -141,7 +141,9 @@ struct CarEvent @0x9b1657f34caf3ad3 {
     needBrake @114;
     standStill @115;
     modelLongAlert @116;
-	isgActive @117;
+    isgActive @117;
+    camSpeedDown @118;
+    gapAdjusting @119;
   }
 }
 
