@@ -11,6 +11,7 @@ import common.log as trace1
 
 from selfdrive.controls.lib.events import Events
 
+EventName = car.CarEvent.EventName
 LaneChangeState = log.LateralPlan.LaneChangeState
 
 
