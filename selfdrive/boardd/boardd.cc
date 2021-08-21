@@ -39,10 +39,11 @@ Panda * panda = nullptr;
 std::atomic<bool> safety_setter_thread_running(false);
 std::atomic<bool> ignition(false);
 
-ExitHandler do_exit;
+volatile sig_atomic_t do_exit = 0;
 
 bool spoofing_started = false;
 bool fake_send = false;
+bool connected_once = false;
 
 void safety_setter_thread() {
   LOGD("Starting safety setter thread");
@@ -92,7 +93,7 @@ void safety_setter_thread() {
   cereal::CarParams::Reader car_params = cmsg.getRoot<cereal::CarParams>();
   cereal::CarParams::SafetyModel safety_model = car_params.getSafetyModel();
 
-  panda->set_unsafe_mode(0);  // see safety_declarations.h for allowed values
+  //panda->set_unsafe_mode(0);  // see safety_declarations.h for allowed values
 
   auto safety_param = car_params.getSafetyParam();
   LOGW("setting safety model: %d with param %d", (int)safety_model, safety_param);
@@ -133,6 +134,8 @@ bool usb_connect() {
 
     params.put("PandaFirmwareHex", fw_sig_hex_buf, 16);
     LOGW("fw signature: %.*s", 16, fw_sig_hex_buf);
+
+    delete[] fw_sig_buf;
   } else { return false; }
 
   // get panda serial
@@ -172,13 +175,10 @@ bool usb_connect() {
 }
 
 // must be called before threads or with mutex
-static bool usb_retry_connect() {
+void usb_retry_connect() {
   LOGW("attempting to connect");
-  while (!do_exit && !usb_connect()) { util::sleep_for(100); }
-  if (panda) {
-    LOGW("connected to board");
-  }
-  return !do_exit;
+  while (!usb_connect()) { util::sleep_for(100); }
+  LOGW("connected to board");
 }
 
 void can_recv(PubMaster &pm) {
@@ -262,7 +262,7 @@ void panda_state_thread() {
   Params params = Params();
 
   // Broadcast empty pandaState message when panda is not yet connected
-  while (!do_exit && !panda) {
+  while (!panda) {
     MessageBuilder msg;
     auto pandaState  = msg.initEvent().initPandaState();
 
@@ -284,7 +284,7 @@ void panda_state_thread() {
       panda->set_safety_model(cereal::CarParams::SafetyModel::NO_OUTPUT);
     }
 
-    ignition = ((pandaState.ignition_line != 0) || (pandaState.ignition_can != 0));
+    bool ignition = ((pandaState.ignition_line != 0) || (pandaState.ignition_can != 0));
 
     if (ignition) {
       no_ignition_cnt = 0;
@@ -406,6 +406,9 @@ void hardware_control_thread() {
   LOGD("start hardware control thread");
   SubMaster sm({"deviceState", "driverCameraState"});
 
+  // Other pandas don't have hardware to control
+  if (panda->hw_type != cereal::PandaState::PandaType::UNO && panda->hw_type != cereal::PandaState::PandaType::DOS) return;
+
   uint64_t last_front_frame_t = 0;
   uint16_t prev_fan_speed = 999;
   uint16_t ir_pwr = 0;
@@ -419,7 +422,14 @@ void hardware_control_thread() {
     cnt++;
     sm.update(1000); // TODO: what happens if EINTR is sent while in sm.update?
 
-    if (!Hardware::PC() && sm.updated("deviceState")) {
+#if defined(QCOM) || defined(QCOM2)
+    if (sm.updated("deviceState")) {
+      // Fan speed
+      uint16_t fan_speed = sm["deviceState"].getDeviceState().getFanSpeedPercentDesired();
+      if (fan_speed != prev_fan_speed || cnt % 100 == 0){
+        panda->set_fan_speed(fan_speed);
+        prev_fan_speed = fan_speed;
+      }
       // Charging mode
       bool charging_disabled = sm["deviceState"].getDeviceState().getChargingDisabled();
       if (charging_disabled != prev_charging_disabled) {
@@ -433,17 +443,8 @@ void hardware_control_thread() {
         prev_charging_disabled = charging_disabled;
       }
     }
+#endif
 
-    // Other pandas don't have fan/IR to control
-    if (panda->hw_type != cereal::PandaState::PandaType::UNO && panda->hw_type != cereal::PandaState::PandaType::DOS) continue;
-    if (sm.updated("deviceState")) {
-      // Fan speed
-      uint16_t fan_speed = sm["deviceState"].getDeviceState().getFanSpeedPercentDesired();
-      if (fan_speed != prev_fan_speed || cnt % 100 == 0) {
-        panda->set_fan_speed(fan_speed);
-        prev_fan_speed = fan_speed;
-      }
-    }
     if (sm.updated("driverCameraState")) {
       auto event = sm["driverCameraState"];
       int cur_integ_lines = event.getDriverCameraState().getIntegLines();
@@ -586,12 +587,12 @@ int main() {
     threads.push_back(std::thread(panda_state_thread));
 
     // connect to the board
-    if (usb_retry_connect()) {
-      threads.push_back(std::thread(can_send_thread));
-      threads.push_back(std::thread(can_recv_thread));
-      threads.push_back(std::thread(hardware_control_thread));
-      if (!Params().getBool("WhitePandaSupport")) threads.push_back(std::thread(pigeon_thread));
-    }
+    usb_retry_connect();
+
+    threads.push_back(std::thread(can_send_thread));
+    threads.push_back(std::thread(can_recv_thread));
+    threads.push_back(std::thread(hardware_control_thread));
+    if (!Params().getBool("WhitePandaSupport")) threads.push_back(std::thread(pigeon_thread));
 
     for (auto &t : threads) t.join();
 
