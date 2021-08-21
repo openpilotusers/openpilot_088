@@ -538,7 +538,7 @@ class CarController():
           elif 3.5 < CS.out.radarDistance and aReqValue < 0. and CS.out.vEgo * CV.MS_TO_KPH <= 1.5 and not CS.out.cruiseState.standstill:
             stock_weight *= 0.5
           elif 0 < CS.out.radarDistance <= 3.5:
-            stock_weight = interp(CS.out.radarDistance, [2.5., 3.5], [1., 0.])
+            stock_weight = interp(CS.out.radarDistance, [2.5, 3.5], [1., 0.])
             apply_accel = apply_accel * (1. - stock_weight) + aReqValue * stock_weight
           elif aReqValue < 0.:
             stock_weight = interp(CS.out.radarDistance, [3., 25.], [1., 0.])
