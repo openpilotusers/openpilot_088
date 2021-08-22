@@ -8,6 +8,8 @@
 #include <QMenu> // opkr
 #include <QDateTime> // opkr
 #include <QInputDialog> // opkr
+#include <QLineEdit> // opkr
+#include <QDir> // opkr
 
 #include "selfdrive/common/params.h"
 #include "selfdrive/ui/qt/api.h"
