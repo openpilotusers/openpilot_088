@@ -880,6 +880,7 @@ private:
   QPushButton btndigit;
   QPushButton btnminus;
   QPushButton btnplus;
+  QPushButton btndirect;
   QLabel label;
   Params params;
   float digit = 0.01;
