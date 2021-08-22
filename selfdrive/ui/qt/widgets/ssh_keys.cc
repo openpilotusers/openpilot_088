@@ -2709,7 +2709,7 @@ SRBaseControl::SRBaseControl() : AbstractControl("SteerRatio", "SteerRatio ê¸°ë³
     QPushButton:pressed {
       background-color: #ababab;
     }
-  )");z
+  )");
   btndigit.setFixedSize(100, 100);
   btnminus.setFixedSize(100, 100);
   btnplus.setFixedSize(100, 100);
