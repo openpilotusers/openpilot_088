@@ -701,7 +701,7 @@ EVENTS: Dict[int, Dict[str, Union[Alert, Callable[[Any, messaging.SubMaster, boo
       "안전구간 감속 제어 중",
       "",
       AlertStatus.normal, AlertSize.small,
-      Priority.LOW, VisualAlert.none, AudibleAlert.none, .0, .1, .1, alert_rate=0.75),
+      Priority.LOW, VisualAlert.none, AudibleAlert.none, 1.5, 1.5, 1.5, alert_rate=0.75),
   },
 
   EventName.gapAdjusting: {
