@@ -7,8 +7,6 @@
 #include <QAction> // opkr
 #include <QMenu> // opkr
 #include <QDateTime> // opkr
-#include <QInputDialog> // opkr
-#include <QLineEdit> // opkr
 
 #include "selfdrive/common/params.h"
 #include "selfdrive/ui/qt/api.h"
@@ -2711,39 +2709,16 @@ SRBaseControl::SRBaseControl() : AbstractControl("SteerRatio", "SteerRatio ê¸°ë³
     QPushButton:pressed {
       background-color: #ababab;
     }
-  )");
-  btndirect.setStyleSheet(R"(
-    QPushButton {
-      padding: 0;
-      border-radius: 50px;
-      font-size: 35px;
-      font-weight: 500;
-      color: #E4E4E4;
-      background-color: #393939;
-    }
-    QPushButton:pressed {
-      background-color: #ababab;
-    }
-  )");
-  btndirect.setFixedSize(100, 100);
+  )");z
   btndigit.setFixedSize(100, 100);
   btnminus.setFixedSize(100, 100);
   btnplus.setFixedSize(100, 100);
-  hlayout->addWidget(&btndirect);
   hlayout->addWidget(&btndigit);
   hlayout->addWidget(&btnminus);
   hlayout->addWidget(&btnplus);
-  btndirect.setText("S");
   btndigit.setText("0.01");
   btnminus.setText("-");
   btnplus.setText("+");
-
-  QObject::connect(&btndirect, &QPushButton::clicked, [=]() {
-    bool ok;
-    QString text = QInputDialog::getText(this,
-            "Test", "SR:", QLineEdit::Normal,
-            QString::null, &ok);
-  });
 
   QObject::connect(&btndigit, &QPushButton::clicked, [=]() {
     digit = digit * 10;
