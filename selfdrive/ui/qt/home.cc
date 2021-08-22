@@ -512,6 +512,7 @@ void OffroadHome::refresh() {
   lcd->setDecMode();
   lcd->setSegmentStyle(QLCDNumber::Flat);
   lcd->display(date_kr + " " + time_kr);
+  lcd->show();
 
   bool updateAvailable = update_widget->refresh();
   int alerts = alerts_widget->refresh();
