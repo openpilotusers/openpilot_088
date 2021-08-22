@@ -2740,7 +2740,7 @@ SRBaseControl::SRBaseControl() : AbstractControl("SteerRatio", "SteerRatio ê¸°ë³
 
   QObject::connect(&btndirect, &QPushButton::clicked, [=]() {
     bool ok;
-    QString text = QInputDialog::getText(
+    QString text = QInputDialog::getText(this,
             "Test", "SR:", QLineEdit::Normal,
             QString::null, &ok);
   });
