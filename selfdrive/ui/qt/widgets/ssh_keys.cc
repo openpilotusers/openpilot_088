@@ -9,7 +9,6 @@
 #include <QDateTime> // opkr
 #include <QInputDialog> // opkr
 #include <QLineEdit> // opkr
-#include <QDir> // opkr
 
 #include "selfdrive/common/params.h"
 #include "selfdrive/ui/qt/api.h"
@@ -2743,12 +2742,7 @@ SRBaseControl::SRBaseControl() : AbstractControl("SteerRatio", "SteerRatio ê¸°ë³
     bool ok;
     QString text = QInputDialog::getText(
             "Test", "SR:", QLineEdit::Normal,
-            QString::null, &ok, this);
-    if ( ok && !text.isEmpty() ) {
-        // user entered something and pressed OK
-    } else {
-        // user entered nothing or pressed Cancel
-    }
+            QString::null, &ok, 0);
   });
 
   QObject::connect(&btndigit, &QPushButton::clicked, [=]() {
