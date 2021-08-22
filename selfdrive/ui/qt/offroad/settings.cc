@@ -620,6 +620,7 @@ TuningPanel::TuningPanel(QWidget* parent) : QWidget(parent) {
     layout->addWidget(new PidKf());
     layout->addWidget(new IgnoreZone());
     layout->addWidget(new ShaneFeedForward());
+    PidKp()->setVisible(false);
   } else if (lat_control == "1") {
     layout->addWidget(new InnerLoopGain());
     layout->addWidget(new OuterLoopGain());
