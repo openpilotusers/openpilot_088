@@ -8,6 +8,7 @@
 #include <QVBoxLayout>
 #include <QProcess> // opkr
 #include <QSoundEffect> // opkr
+#include <QLCDNumber> // opkr
 
 #include "selfdrive/common/params.h"
 #include "selfdrive/ui/qt/util.h"
@@ -506,7 +507,11 @@ void OffroadHome::refresh() {
   QLocale::setDefault(QLocale::Korean);
   QString date_kr = QDate::currentDate().toString(Qt::DefaultLocaleLongDate);
   QString time_kr = QTime::currentTime().toString(Qt::DefaultLocaleShortDate);
-  date->setText(date_kr + " " + time_kr);
+  //date->setText(date_kr + " " + time_kr);
+  QLCDNumber *lcd = new QLCDNumber();
+  lcd->setDecMode();
+  lcd->setSegmentStyle(QLCDNumber::Flat);
+  lcd->display(date_kr + " " + time_kr)
 
   bool updateAvailable = update_widget->refresh();
   int alerts = alerts_widget->refresh();
