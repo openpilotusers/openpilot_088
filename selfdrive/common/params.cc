@@ -345,6 +345,7 @@ std::unordered_map<std::string, uint32_t> keys = {
     {"FCAType", PERSISTENT},
     {"GitPullOnBoot", PERSISTENT},
     {"LiveSteerRatioPercent", PERSISTENT},
+    {"StoppingDistAdj", PERSISTENT},
 };
 
 } // namespace

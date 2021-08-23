@@ -156,6 +156,7 @@ def manager_init():
     ("FCAType", "0"),
     ("GitPullOnBoot", "0"),
     ("LiveSteerRatioPercent", "0"),
+    ("StoppingDistAdj", "0"),
   ]
   if not PC:
     default_params.append(("LastUpdateTime", datetime.datetime.utcnow().isoformat().encode('utf8')))

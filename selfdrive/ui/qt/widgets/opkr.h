@@ -521,6 +521,18 @@ public:
   }
 };
 
+class StoppingDistAdjToggle : public ToggleControl {
+  Q_OBJECT
+
+public:
+  StoppingDistAdjToggle() : ToggleControl("정지거리 조정", "레이더 정지거리보다 조금 더 앞에 정지합니다. 일부 울컥거림 현상이 나타날 수 있으니 불편하신분들은 기능을 끄십시오.", "", Params().getBool("StoppingDistAdj")) {
+    QObject::connect(this, &StoppingDistAdjToggle::toggleFlipped, [=](int state) {
+      bool status = state ? true : false;
+      Params().putBool("StoppingDistAdj", status);
+    });
+  }
+};
+
 // 오픈파일럿 미리보기
 class OpenpilotView : public AbstractControl {
   Q_OBJECT
