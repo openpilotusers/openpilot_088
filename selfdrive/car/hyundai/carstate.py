@@ -55,7 +55,7 @@ class CarState(CarStateBase):
     self.safety_block_remain_dist = 0
     self.is_highway = False
     self.on_speed_control = False
-    self.safetycam_decel_dist_gain = int(self.params.get("SafetyCamDecelDistGain", encoding="utf8"))
+    self.safetycam_decel_dist_gain = int(Params().get("SafetyCamDecelDistGain", encoding="utf8"))
 
   def update(self, cp, cp2, cp_cam):
     cp_mdps = cp2 if self.CP.mdpsBus == 1 else cp
