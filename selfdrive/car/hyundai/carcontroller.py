@@ -200,6 +200,8 @@ class CarController():
     self.variable_steer_delta = self.params.get_bool("OpkrVariableSteerDelta")
 
     self.cc_timer = 0
+    self.on_speed_control = False
+    self.map_enabled = self.params.get_bool("OpkrMapEnable")
 
     if CP.lateralTuning.which() == 'pid':
       self.str_log2 = 'T={:0.2f}/{:0.3f}/{:0.2f}/{:0.5f}'.format(CP.lateralTuning.pid.kpV[1], CP.lateralTuning.pid.kiV[1], CP.lateralTuning.pid.kdV[0], CP.lateralTuning.pid.kf)
@@ -242,6 +244,7 @@ class CarController():
     self.yRel2 = int(plan.yRel2) #EON Lead
     self.vRel2 = int(plan.vRel2 * 3.6 + 0.5) #EON Lead
     self.lead2_status = plan.status2
+    self.on_speed_control = plan.onSpeedControl
 
     lateral_plan = sm['lateralPlan']
     self.outScale = lateral_plan.outputScale
@@ -591,6 +594,7 @@ class CarController():
     if self.cc_timer > 100:
       self.cc_timer = 0
       self.radar_helper_enabled = self.params.get_bool("RadarLongHelper")
+      self.map_enabled = self.params.get_bool("OpkrMapEnable")
       if self.params.get_bool("OpkrLiveTunePanelEnable"):
         if CS.CP.lateralTuning.which() == 'pid':
           self.str_log2 = 'T={:0.2f}/{:0.3f}/{:0.2f}/{:0.5f}'.format(float(Decimal(self.params.get("PidKp", encoding="utf8"))*Decimal('0.01')), \
