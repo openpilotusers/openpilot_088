@@ -137,7 +137,6 @@ class CarController():
     self.ldws_fix = self.params.get_bool("LdwsCarFix")
     self.radar_helper_enabled = self.params.get_bool("RadarLongHelper")
     self.stopping_dist_adj_enabled = self.params.get_bool("StoppingDistAdj")
-    self.stock_weight = 0
 
     self.steer_mode = ""
     self.mdps_status = ""
@@ -548,25 +547,25 @@ class CarController():
         if 0 < CS.out.radarDistance <= 149 and self.radar_helper_enabled:
           # neokii's logic, opkr mod
           if aReqValue > 0.:
-            self.stock_weight = interp(CS.out.radarDistance, [3., 25.], [0.8, 0.])
-          elif 3.5 < CS.out.radarDistance and aReqValue < 0. and CS.out.vEgo * CV.MS_TO_KPH <= 2. and not CS.out.cruiseState.standstill and self.stopping_dist_adj_enabled:
-            self.stock_weight *= 0.9
+            stock_weight = interp(CS.out.radarDistance, [3., 25.], [0.8, 0.])
+          elif 3.5 < CS.out.radarDistance and aReqValue < 0. and CS.out.vEgo * CV.MS_TO_KPH <= 1.5 and not CS.out.cruiseState.standstill and self.stopping_dist_adj_enabled:
+            stock_weight = 0
           elif 0 < CS.out.radarDistance <= 3.5 and self.stopping_dist_adj_enabled:
-            self.stock_weight = interp(CS.out.radarDistance, [2.5, 3.5], [1., 0.])
-            apply_accel = apply_accel * (1. - self.stock_weight) + aReqValue * self.stock_weight
+            stock_weight = interp(CS.out.radarDistance, [2.5, 3.5], [1., 0.])
+            apply_accel = apply_accel * (1. - stock_weight) + aReqValue * stock_weight
           elif aReqValue < 0.:
-            self.stock_weight = interp(CS.out.radarDistance, [3., 25.], [1., 0.])
+            stock_weight = interp(CS.out.radarDistance, [3., 25.], [1., 0.])
             # if lead_objspd < 0:
             #   vRel_weight = interp(abs(lead_objspd), [0, 25], [1, 2])
-            #   self.stock_weight = interp(CS.out.radarDistance, [3. ** vRel_weight, 25. * vRel_weight], [1., 0.])
+            #   stock_weight = interp(CS.out.radarDistance, [3. ** vRel_weight, 25. * vRel_weight], [1., 0.])
           else:
-            self.stock_weight = 0.
-          apply_accel = apply_accel * (1. - self.stock_weight) + aReqValue * self.stock_weight
+            stock_weight = 0.
+          apply_accel = apply_accel * (1. - stock_weight) + aReqValue * stock_weight
         elif 0 < CS.out.radarDistance <= 4: # use radar by force to stop anyway below 4m
-          self.stock_weight = interp(CS.out.radarDistance, [3., 4.], [1., 0.])
-          apply_accel = apply_accel * (1. - self.stock_weight) + aReqValue * self.stock_weight
+          stock_weight = interp(CS.out.radarDistance, [3., 4.], [1., 0.])
+          apply_accel = apply_accel * (1. - stock_weight) + aReqValue * stock_weight
         else:
-          self.stock_weight = 0.
+          stock_weight = 0.
         can_sends.append(create_scc11(self.packer, frame, set_speed, lead_visible, self.scc_live, lead_dist, lead_vrel, lead_yrel, 
          self.car_fingerprint, CS.out.vEgo * CV.MS_TO_KPH, self.acc_standstill, CS.scc11))
         if (CS.brake_check or CS.cancel_check) and self.car_fingerprint not in [CAR.NIRO_EV]:
