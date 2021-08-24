@@ -256,8 +256,10 @@ class CarState(CarStateBase):
       gear = cp.vl["TCU12"]["CUR_GR"]
     elif self.CP.carFingerprint in FEATURES["use_elect_gears"]:
       gear = cp.vl["ELECT_GEAR"]["Elect_Gear_Shifter"]
+      ret.electGearStep = cp.vl["ELECT_GEAR"]["Elect_Gear_Step"] # opkr
     else:
       gear = cp.vl["LVR12"]["CF_Lvr_Gear"]
+      ret.electGearStep = 0
 
     if self.gear_correction:
       ret.gearShifter = GearShifter.drive
@@ -512,7 +514,10 @@ class CarState(CarStateBase):
         ("TCU12", 100)
       ]
     elif CP.carFingerprint in FEATURES["use_elect_gears"]:
-      signals += [("Elect_Gear_Shifter", "ELECT_GEAR", 0)]
+      signals += [
+        ("Elect_Gear_Shifter", "ELECT_GEAR", 0)
+        ("Elect_Gear_Step", "ELECT_GEAR", 0)
+      ]
       checks += [("ELECT_GEAR", 20)]
     else:
       signals += [

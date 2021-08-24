@@ -1513,6 +1513,7 @@ BO_ 865 ADAS_PRK_11: 8 ADAS_PRK
 
 BO_ 882 ELECT_GEAR: 8 XXX
  SG_ Elect_Gear_Shifter : 16|16@1+ (1,0) [0|65535] ""  CLU
+ SG_ Elect_Gear_Step : 22|3@0+ (1,0) [0|7] "" XXX
 
 BO_ 881 E_EMS11: 8 XXX
  SG_ Brake_Pedal_Pos : 0|8@1+ (1,0) [0|127] "" XXX
