@@ -133,7 +133,7 @@ static int hyundai_rx_hook(CAN_FIFOMailBox_TypeDef *to_push) {
     int addr = GET_ADDR(to_push);
 
     if (addr == 593) {
-      int torque_driver_new = ((GET_BYTES_04(to_push) & 0x7ff) * 0.79) - 808; // scale down new driver torque signal to match previous one
+      int torque_driver_new = (GET_BYTES_04(to_push) & 0x7ff) - 1024; // scale down new driver torque signal to match previous one
       // update array of samples
       update_sample(&torque_driver, torque_driver_new);
     }
