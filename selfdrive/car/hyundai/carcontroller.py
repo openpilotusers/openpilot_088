@@ -548,11 +548,10 @@ class CarController():
           # neokii's logic, opkr mod
           if aReqValue > 0.:
             stock_weight = interp(CS.out.radarDistance, [3., 25.], [0.8, 0.])
-          elif 3.5 < CS.out.radarDistance and aReqValue < 0. and CS.out.vEgo * CV.MS_TO_KPH <= 1.5 and not CS.out.cruiseState.standstill and self.stopping_dist_adj_enabled:
-            stock_weight = 0.1
+          elif 3.5 < CS.out.radarDistance and aReqValue < 0. and CS.out.vEgo * CV.MS_TO_KPH <= 1.8 and not CS.out.cruiseState.standstill and self.stopping_dist_adj_enabled:
+            stok_weight = interp(CS.out.radarDistance, [4.5, 5.5], [0., 0.886])
           elif 0 < CS.out.radarDistance <= 3.5 and self.stopping_dist_adj_enabled:
-            stock_weight = interp(CS.out.radarDistance, [2.5, 3.5], [1., 0.1])
-            apply_accel = apply_accel * (1. - stock_weight) + aReqValue * stock_weight
+            stock_weight = interp(CS.out.radarDistance, [2.5, 3.5], [1., 0.])
           elif aReqValue < 0.:
             stock_weight = interp(CS.out.radarDistance, [3., 25.], [1., 0.])
             # if lead_objspd < 0:
