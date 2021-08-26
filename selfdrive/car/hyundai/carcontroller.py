@@ -591,6 +591,7 @@ class CarController():
     if self.cc_timer > 100:
       self.cc_timer = 0
       self.radar_helper_enabled = self.params.get_bool("RadarLongHelper")
+      self.stopping_dist_adj_enabled = self.params.get_bool("StoppingDistAdj")
       self.map_enabled = self.params.get_bool("OpkrMapEnable")
       if self.params.get_bool("OpkrLiveTunePanelEnable"):
         if CS.CP.lateralTuning.which() == 'pid':
