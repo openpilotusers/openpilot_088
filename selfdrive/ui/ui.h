@@ -140,6 +140,7 @@ typedef struct UIScene {
   bool map_is_running = false;
   bool move_to_background = false;
   bool navi_on_boot = false;
+  bool model_long_enabled = false;
 
   float gpsAccuracyUblox;
   float altitudeUblox;

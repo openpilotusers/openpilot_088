@@ -200,6 +200,7 @@ class Controls:
     self.live_sr = params.get_bool("OpkrLiveSteerRatio")
     self.live_sr_percent = int(Params().get("LiveSteerRatioPercent", encoding="utf8"))
 
+    self.model_long_alert_prev = True
     self.second = 0.0
     self.map_enabled = False
     self.lane_change_delay = int(Params().get("OpkrAutoLaneChangeDelay", encoding="utf8"))
@@ -295,6 +296,12 @@ class Controls:
       self.map_enabled = Params().get_bool("OpkrMapEnable")
       self.live_sr = Params().get_bool("OpkrLiveSteerRatio")
       self.live_sr_percent = int(Params().get("LiveSteerRatioPercent", encoding="utf8"))
+      # ModelLongAlert
+      if Params().get_bool("ModelLongEnabled") and self.model_long_alert_prev:
+        self.events.add(EventName.modelLongAlert)
+        self.model_long_alert_prev = not self.model_long_alert_prev
+      elif not Params().get_bool("ModelLongEnabled"):
+        self.model_long_alert_prev = True
       self.second = 0.0
     if len(self.sm['radarState'].radarErrors):
       self.events.add(EventName.radarFault)
@@ -371,6 +378,7 @@ class Controls:
     #if CS.brakePressed and v_future >= STARTING_TARGET_SPEED \
     #  and self.CP.openpilotLongitudinalControl and CS.vEgo < 0.3:
     #  self.events.add(EventName.noTarget)
+
       
     # atom
     if self.auto_enabled:

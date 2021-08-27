@@ -264,7 +264,7 @@ EVENTS: Dict[int, Dict[str, Union[Alert, Callable[[Any, messaging.SubMaster, boo
 
   EventName.modelLongAlert: {
     ET.PERMANENT: Alert(
-      "MODEL LONG 활성화 됨",
+      "E2E 모델 LONG 활성화 됨",
       "예기치 않게 작동할 수 있으니 주의하세요.",
       AlertStatus.normal, AlertSize.mid,
       Priority.LOW, VisualAlert.none, AudibleAlert.chimeWarning1, .4, 0., 2.),

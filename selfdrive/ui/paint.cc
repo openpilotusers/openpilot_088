@@ -1073,6 +1073,32 @@ static void draw_laneless_button(UIState *s) {
   }
 }
 
+// model long
+static void ui_draw_ml_button(UIState *s) {
+  if (s->vipc_client->connected || s->scene.is_OpenpilotViewEnabled) {
+    int btn_w = 140;
+    int btn_h = 140;
+    int btn_x1 = s->fb_w - btn_w - 515;
+    int btn_y = 1080 - btn_h - 35;
+    int btn_xc1 = btn_x1 + (btn_w/2);
+    int btn_yc = btn_y + (btn_h/2);
+    nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_MIDDLE);
+    nvgBeginPath(s->vg);
+    nvgRoundedRect(s->vg, btn_x1, btn_y, btn_w, btn_h, 100);
+    nvgStrokeColor(s->vg, nvgRGBA(255,255,255,80));
+    nvgStrokeWidth(s->vg, 6);
+    nvgStroke(s->vg);
+    nvgFontSize(s->vg, 45);
+    if (s->scene.model_long_enabled) {
+      NVGcolor fillColor = nvgRGBA(255,255,0,80);
+      nvgFillColor(s->vg, fillColor);
+      nvgFill(s->vg);
+    }
+    nvgFillColor(s->vg, nvgRGBA(255,255,255,200));
+    nvgText(s->vg,btn_xc1,btn_yc,"MDL",NULL);
+  }
+}
+
 static void ui_draw_vision_header(UIState *s) {
   NVGpaint gradient = nvgLinearGradient(s->vg, 0, header_h - (header_h / 2.5), 0, header_h,
                                         nvgRGBAf(0, 0, 0, 0.45), nvgRGBAf(0, 0, 0, 0));
@@ -1093,6 +1119,9 @@ static void ui_draw_vision_header(UIState *s) {
   }
   if (s->scene.end_to_end && !s->scene.comma_stock_ui) {
     draw_laneless_button(s);
+  }
+  if (s->scene.longitudinal_control && !s->scene.comma_stock_ui) {
+    ui_draw_ml_button(s);
   }
   if (s->scene.controls_state.getEnabled() && !s->scene.comma_stock_ui) {
     ui_draw_standstill(s);

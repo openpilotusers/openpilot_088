@@ -51,7 +51,8 @@ class Planner():
     self.mpcs = {}
     self.mpcs['lead0'] = LeadMpc(0)
     self.mpcs['lead1'] = LeadMpc(1)
-    self.mpcs['cruise'] = LongitudinalMpc()
+    self.mpcs['cruise'] = LongitudinalMpc(0)
+    self.mpcs['e2e'] = LongitudinalMpc(1)
 
     self.fcw = False
     self.fcw_checker = FCWChecker()
@@ -78,6 +79,7 @@ class Planner():
     self.second = 0
     self.map_enabled = False
     self.safetycam_decel_dist_gain = int(self.params.get("SafetyCamDecelDistGain", encoding="utf8"))
+    self.model_long_enabled = self.params.get_bool("ModelLongEnabled")
 
   def update(self, sm, CP):
     cur_time = sec_since_boot()
@@ -123,8 +125,9 @@ class Planner():
     next_a = np.inf
     for key in self.mpcs:
       self.mpcs[key].set_cur_state(self.v_desired, self.a_desired)
-      self.mpcs[key].update(sm['carState'], sm['radarState'], v_cruise)
-      if self.mpcs[key].status and self.mpcs[key].a_solution[5] < next_a:  # picks slowest solution from accel in ~0.2 seconds
+      self.mpcs[key].update(sm['carState'], sm['radarState'], sm['modelV2'], v_cruise)
+      if (self.mpcs[key].status and self.mpcs[key].a_solution[5] < next_a and  # picks slowest solution from accel in ~0.2 seconds
+              ((key == 'e2e' and self.model_long_enabled) or key != 'e2e')):
         self.longitudinalPlanSource = key
         self.v_desired_trajectory = self.mpcs[key].v_solution[:CONTROL_N]
         self.a_desired_trajectory = self.mpcs[key].a_solution[:CONTROL_N]
@@ -153,6 +156,7 @@ class Planner():
     self.second += 1
     if self.second > 30:
       self.map_enabled = self.params.get_bool("OpkrMapEnable")
+      self.model_long_enabled = self.params.get_bool("ModelLongEnabled")
       self.second = 0
     if self.map_enabled and v_ego > 0.3:
       self.map_sign = sm['liveMapData'].safetySign
