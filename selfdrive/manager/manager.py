@@ -113,7 +113,7 @@ def manager_init():
     ("JustDoGearD", "0"),
     ("LanelessMode", "0"),
     ("ComIssueGone", "0"),
-    ("MaxSteer", "384"),
+    ("MaxSteer", "512"),
     ("MaxRTDelta", "112"),
     ("MaxRateUp", "3"),
     ("MaxRateDown", "7"),
