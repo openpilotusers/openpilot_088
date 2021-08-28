@@ -2277,8 +2277,8 @@ MaxSteer::MaxSteer() : AbstractControl("MAX_STEER", "판다 MAX_STEER 값을 수
     auto str = QString::fromStdString(params.get("MaxSteer"));
     int value = str.toInt();
     value = value + 2;
-    if (value >= 1000 ) {
-      value = 1000;
+    if (value >= 1024 ) {
+      value = 1024;
     }
     QString values = QString::number(value);
     params.put("MaxSteer", values.toStdString());
@@ -3088,8 +3088,8 @@ SteerMaxBase::SteerMaxBase() : AbstractControl("SteerMax기본값", "SteerMax기
     auto str = QString::fromStdString(params.get("SteerMaxBaseAdj"));
     int value = str.toInt();
     value = value + 2;
-    if (value >= 450 ) {
-      value = 450;
+    if (value >= 512 ) {
+      value = 512;
     }
     QString values = QString::number(value);
     params.put("SteerMaxBaseAdj", values.toStdString());
@@ -3147,8 +3147,8 @@ SteerMaxMax::SteerMaxMax() : AbstractControl("SteerMax최대값", "SteerMax최�
     auto str = QString::fromStdString(params.get("SteerMaxAdj"));
     int value = str.toInt();
     value = value + 2;
-    if (value >= 1000 ) {
-      value = 1000;
+    if (value >= 1024 ) {
+      value = 1024;
     }
     QString values = QString::number(value);
     params.put("SteerMaxAdj", values.toStdString());
