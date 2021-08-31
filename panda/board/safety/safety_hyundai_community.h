@@ -78,7 +78,7 @@ static int hyundai_community_rx_hook(CAN_FIFOMailBox_TypeDef *to_push) {
 
   if (valid) {
     if (addr == 593 && bus == HKG_mdps_bus) {
-      int torque_driver_new = (GET_BYTES_04(to_push) & 0x7ff) - 1024; // scale down new driver torque signal to match previous one
+      int torque_driver_new = ((GET_BYTES_04(to_push) & 0x7ff) * 0.79) - 808; // scale down new driver torque signal to match previous one
       // update array of samples
       update_sample(&torque_driver, torque_driver_new);
     }
