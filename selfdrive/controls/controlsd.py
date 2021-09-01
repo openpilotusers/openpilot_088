@@ -416,26 +416,28 @@ class Controls:
     """Compute conditional state transitions and execute actions on state transitions"""
 
     # if stock cruise is completely disabled, then we can use our own set speed logic
+    t_speed = 20 if CS.isMph else 30
+    m_unit = CV.MS_TO_MPH if CS.isMph else CV.MS_TO_KPH
     if not self.CP.pcmCruise:
       self.v_cruise_kph = update_v_cruise(self.v_cruise_kph, CS.buttonEvents, self.enabled)
     elif self.CP.pcmCruise and CS.cruiseState.enabled:
-      if Params().get_bool('OpkrVariableCruise') and CS.cruiseState.modeSel != 0 and self.CP.vCruisekph > 30:
+      if Params().get_bool('OpkrVariableCruise') and CS.cruiseState.modeSel != 0 and self.CP.vCruisekph > t_speed:
         self.v_cruise_kph = self.CP.vCruisekph
         self.v_cruise_kph_last = self.v_cruise_kph
       elif CS.cruiseButtons == Buttons.RES_ACCEL and Params().get_bool('OpkrVariableCruise') and CS.cruiseState.modeSel != 0 and CS.vSetDis < (self.v_cruise_kph_last - 1):
         self.v_cruise_kph = self.v_cruise_kph_last
         if int(CS.vSetDis)-1 > self.v_cruise_kph:
           self.v_cruise_kph = int(CS.vSetDis)
-      elif CS.cruiseButtons == Buttons.RES_ACCEL and Params().get_bool('OpkrVariableCruise') and CS.cruiseState.modeSel != 0 and 30 <= self.v_cruise_kph_last <= round(CS.vEgo*CV.MS_TO_KPH):
-        self.v_cruise_kph = round(CS.vEgo*CV.MS_TO_KPH)
+      elif CS.cruiseButtons == Buttons.RES_ACCEL and Params().get_bool('OpkrVariableCruise') and CS.cruiseState.modeSel != 0 and t_speed <= self.v_cruise_kph_last <= round(CS.vEgo*m_unit):
+        self.v_cruise_kph = round(CS.vEgo*m_unit)
         if int(CS.vSetDis)-1 > self.v_cruise_kph:
           self.v_cruise_kph = int(CS.vSetDis)
         self.v_cruise_kph_last = self.v_cruise_kph
       elif CS.cruiseButtons == Buttons.RES_ACCEL or CS.cruiseButtons == Buttons.SET_DECEL:
-        self.v_cruise_kph = round(CS.cruiseState.speed * CV.MS_TO_KPH)
+        self.v_cruise_kph = round(CS.cruiseState.speed * m_unit)
         self.v_cruise_kph_last = self.v_cruise_kph
-      elif CS.driverAcc and Params().get_bool('OpkrVariableCruise') and Params().get_bool('CruiseOverMaxSpeed') and 30 <= self.v_cruise_kph < int(round(CS.vEgo*CV.MS_TO_KPH)):
-        self.v_cruise_kph = int(round(CS.vEgo*CV.MS_TO_KPH))
+      elif CS.driverAcc and Params().get_bool('OpkrVariableCruise') and Params().get_bool('CruiseOverMaxSpeed') and t_speed <= self.v_cruise_kph < int(round(CS.vEgo*m_unit)):
+        self.v_cruise_kph = int(round(CS.vEgo*m_unit))
         self.v_cruise_kph_last = self.v_cruise_kph
 
     # decrease the soft disable timer at every step, as it's reset on
