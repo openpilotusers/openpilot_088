@@ -156,6 +156,7 @@ def manager_init():
     ("GitPullOnBoot", "0"),
     ("LiveSteerRatioPercent", "-5"),
     ("StoppingDistAdj", "0"),
+    ("RadarDisabledForVOACC", "0"),
   ]
   if not PC:
     default_params.append(("LastUpdateTime", datetime.datetime.utcnow().isoformat().encode('utf8')))

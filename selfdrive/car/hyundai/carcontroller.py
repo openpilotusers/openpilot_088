@@ -6,7 +6,8 @@ from selfdrive.car import apply_std_steer_torque_limits
 from selfdrive.car.hyundai.carstate import GearShifter
 from selfdrive.car.hyundai.hyundaican import create_lkas11, create_clu11, create_lfahda_mfc, \
                                              create_scc11, create_scc12, create_scc13, create_scc14, \
-                                             create_scc42a, create_scc7d0, create_mdps12
+                                             create_scc42a, create_scc7d0, create_mdps12, \
+                                             create_acc_commands, create_acc_opt, create_frt_radar_opt
 from selfdrive.car.hyundai.values import Buttons, CarControllerParams, CAR, FEATURES
 from opendbc.can.packer import CANPacker
 from selfdrive.config import Conversions as CV
@@ -90,14 +91,12 @@ class CarController():
   def __init__(self, dbc_name, CP, VM):
     self.packer = CANPacker(dbc_name)
 
-    self.apply_steer_last = 0
+    self.apply_steer_last = self.accel_steady0
     self.car_fingerprint = CP.carFingerprint
     self.steer_rate_limited = False
-    self.steer_wind_down = 0
     self.accel_steady = 0
     self.accel_lim_prev = 0.
     self.accel_lim = 0.
-    self.lastresumeframe = 0
     self.counter_init = False
 
     self.resume_cnt = 0
@@ -131,12 +130,12 @@ class CarController():
     self.opkr_cruise_auto_res_condition = int(self.params.get("AutoResCondition", encoding="utf8"))
 
     self.opkr_turnsteeringdisable = self.params.get_bool("OpkrTurnSteeringDisable")
-    self.steer_wind_down_enabled = self.params.get_bool("SteerWindDown")
     self.opkr_maxanglelimit = float(int(self.params.get("OpkrMaxAngleLimit", encoding="utf8")))
     self.mad_mode_enabled = self.params.get_bool("MadModeEnabled")
     self.ldws_fix = self.params.get_bool("LdwsCarFix")
     self.radar_helper_enabled = self.params.get_bool("RadarLongHelper")
     self.stopping_dist_adj_enabled = self.params.get_bool("StoppingDistAdj")
+    self.voacc_enabled = self.params.get_bool("RadarDisabledForVOACC")
 
     self.steer_mode = ""
     self.mdps_status = ""
@@ -282,7 +281,7 @@ class CarController():
     self.steer_rate_limited = new_steer != apply_steer
 
     # disable if steer angle reach 90 deg, otherwise mdps fault in some models
-    if self.opkr_maxanglelimit >= 90 and not self.steer_wind_down_enabled:
+    if self.opkr_maxanglelimit >= 90:
       lkas_active = enabled and abs(CS.out.steeringAngleDeg) < self.opkr_maxanglelimit and CS.out.gearShifter == GearShifter.drive
     else:
       lkas_active = enabled and not CS.out.steerWarning and CS.out.gearShifter == GearShifter.drive
@@ -314,10 +313,6 @@ class CarController():
 
     if not lkas_active:
       apply_steer = 0
-      if self.apply_steer_last != 0:
-        self.steer_wind_down = 1
-    if lkas_active or CS.out.steeringPressed:
-      self.steer_wind_down = 0
 
     self.apply_accel_last = apply_accel
     self.apply_steer_last = apply_steer
@@ -341,14 +336,19 @@ class CarController():
       enabled_speed = clu11_speed
 
     can_sends = []
+    if self.voacc_enabled:
+      # TODO: radar disable hacked together to see if it works
+      if (frame % 10) == 0:
+        # tester present - w/ no response (keeps radar disabled)
+        can_sends.append([0x7D0, 0, b"\x02\x3E\x80\x00\x00\x00\x00\x00", 0])
     can_sends.append(create_lkas11(self.packer, frame, self.car_fingerprint, apply_steer, lkas_active,
-                                   self.steer_wind_down, CS.lkas11, sys_warning, sys_state, enabled, left_lane, right_lane,
-                                   left_lane_warning, right_lane_warning, 0, self.ldws_fix, self.steer_wind_down_enabled))
+                                   CS.lkas11, sys_warning, sys_state, enabled, left_lane, right_lane,
+                                   left_lane_warning, right_lane_warning, 0, self.ldws_fix))
 
     if CS.CP.mdpsBus: # send lkas11 bus 1 if mdps is bus 1
       can_sends.append(create_lkas11(self.packer, frame, self.car_fingerprint, apply_steer, lkas_active,
-                                   self.steer_wind_down, CS.lkas11, sys_warning, sys_state, enabled, left_lane, right_lane,
-                                   left_lane_warning, right_lane_warning, 1, self.ldws_fix, self.steer_wind_down_enabled))
+                                   CS.lkas11, sys_warning, sys_state, enabled, left_lane, right_lane,
+                                   left_lane_warning, right_lane_warning, 1, self.ldws_fix))
       if frame % 2: # send clu11 to mdps if it is not on bus 0
         can_sends.append(create_clu11(self.packer, frame, CS.clu11, Buttons.NONE, enabled_speed, CS.CP.mdpsBus))
 
@@ -411,7 +411,7 @@ class CarController():
     if pcm_cancel_cmd and self.longcontrol:
       can_sends.append(create_clu11(self.packer, frame, CS.clu11, Buttons.CANCEL, clu11_speed, CS.CP.sccBus))
 
-    if CS.out.cruiseState.standstill:
+    if CS.out.cruiseState.standstill and not self.voacc_enabled:
       self.standstill_status = 1
       if self.opkr_autoresume:
         # run only first time when the car stopped
@@ -451,9 +451,9 @@ class CarController():
           self.standstill_fault_reduce_timer += 1
           self.cruise_gap_adjusting = False
     # reset lead distnce after the car starts moving
-    elif self.last_lead_distance != 0:
+    elif self.last_lead_distance != 0 and not self.voacc_enabled:
       self.last_lead_distance = 0
-    elif run_speed_ctrl:
+    elif run_speed_ctrl and not self.voacc_enabled:
       is_sc_run = self.SC.update(CS, sm, self)
       if is_sc_run:
         can_sends.append(create_clu11(self.packer, self.resume_cnt, CS.clu11, self.SC.btn_type, self.SC.sc_clu_speed)) if not self.longcontrol \
@@ -493,7 +493,7 @@ class CarController():
     opkr_cruise_auto_res_condition = not self.opkr_cruise_auto_res_condition or CS.out.gasPressed
     t_speed = 20 if CS.is_set_speed_in_mph else 30
     if self.model_speed > 95 and self.cancel_counter == 0 and not CS.acc_active and not CS.out.brakeLights and int(CS.VSetDis) > t_speed and \
-     (CS.lead_distance < 149 or int(CS.clu_Vanz) > t_speed) and int(CS.clu_Vanz) >= 3 and self.auto_res_timer <= 0 and self.opkr_cruise_auto_res and opkr_cruise_auto_res_condition:
+     (CS.lead_distance < 149 or int(CS.clu_Vanz) > t_speed) and int(CS.clu_Vanz) >= 3 and self.auto_res_timer <= 0 and self.opkr_cruise_auto_res and opkr_cruise_auto_res_condition and not self.voacc_enabled:
       if self.opkr_cruise_auto_res_option == 0:
         can_sends.append(create_clu11(self.packer, frame, CS.clu11, Buttons.RES_ACCEL)) if not self.longcontrol \
          else can_sends.append(create_clu11(self.packer, frame, CS.clu11, Buttons.RES_ACCEL, clu11_speed, CS.CP.sccBus))  # auto res
@@ -506,7 +506,7 @@ class CarController():
         self.res_speed_timer = 50
       if self.auto_res_timer <= 0:
         self.auto_res_timer = randint(10, 15)
-    elif self.auto_res_timer > 0 and self.opkr_cruise_auto_res:
+    elif self.auto_res_timer > 0 and self.opkr_cruise_auto_res and not self.voacc_enabled:
       self.auto_res_timer -= 1
 
     if CS.out.brakeLights and CS.out.vEgo == 0 and not CS.acc_active:
@@ -588,6 +588,22 @@ class CarController():
       self.counter_init = True
       self.scc12cnt = CS.scc12init["CR_VSM_Alive"]
       self.scc11cnt = CS.scc11init["AliveCounterACC"]
+
+    if frame % 2 == 0 and self.voacc_enabled:
+      # rouding prevents alternating between very small positive and negative value when stopped
+      accel = round(actuators.gas - actuators.brake, 2)
+      stop_req = CS.out.vEgo <= 0.1 and self.sm['controlsState'].longControlState == LongCtrlState.stopping
+      apply_accel = interp(accel, CarControllerParams.ACCEL_LOOKUP_BP, CarControllerParams.ACCEL_LOOKUP_V)
+      set_speed_in_units = set_speed * (CV.MS_TO_MPH if CS.is_set_speed_in_mph else CV.MS_TO_KPH)
+      can_sends.extend(create_acc_commands(self.packer, enabled, apply_accel, int(frame / 2), lead_visible, set_speed_in_units, stop_req))
+
+    # 5 Hz ACC options
+    if frame % 20 == 0 and self.voacc_enabled:
+      can_sends.extend(create_acc_opt(self.packer))
+
+    # 2 Hz front radar options
+    if frame % 50 == 0 and self.voacc_enabled:
+      can_sends.append(create_frt_radar_opt(self.packer))
 
     aq_value = CS.scc12["aReqValue"] if CS.CP.sccBus == 0 else apply_accel
     str_log1 = 'M/C={:03.0f}/{:03.0f}  TQ={:03.0f}  ST={:03.0f}/{:01.0f}/{:01.0f}  GS={:.0f}  AQ={:+04.2f}  S={:.0f}/{:.0f}'.format(abs(self.model_speed), self.curve_speed,

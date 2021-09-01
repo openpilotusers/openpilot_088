@@ -8,6 +8,10 @@ Ecu = car.CarParams.Ecu
 # Steer torque limits
 class CarControllerParams:
   params = Params()
+  MAX_GAS = 1.05
+  MAX_BRAKE = 3.5
+  ACCEL_LOOKUP_BP = [-1., 0., MAX_GAS / MAX_BRAKE]
+  ACCEL_LOOKUP_V = [-MAX_BRAKE, 0., MAX_GAS]
   STEER_MAX = int(params.get("SteerMaxAdj", encoding="utf8"))   # default 384
   STEER_DELTA_UP = int(params.get("SteerDeltaUpAdj", encoding="utf8"))
   STEER_DELTA_DOWN = int(params.get("SteerDeltaDownAdj", encoding="utf8"))

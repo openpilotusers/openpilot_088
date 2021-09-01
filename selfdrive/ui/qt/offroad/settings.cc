@@ -635,6 +635,7 @@ TuningPanel::TuningPanel(QWidget* parent) : QWidget(parent) {
   layout->addWidget(horizontal_line());
 
   layout->addWidget(new LabelControl("롱컨트롤메뉴", ""));
+  layout->addWidget(new RadarDisableToggle());
   layout->addWidget(new DynamicTR());
   layout->addWidget(new CruiseGapTR());
   layout->addWidget(new RadarLongHelperToggle());

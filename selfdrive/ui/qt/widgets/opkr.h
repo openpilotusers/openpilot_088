@@ -525,10 +525,22 @@ class StoppingDistAdjToggle : public ToggleControl {
   Q_OBJECT
 
 public:
-  StoppingDistAdjToggle() : ToggleControl("정지거리 조정", "레이더 정지거리보다 조금 더 앞에 정지합니다. 일부 울컥거림 현상이 나타날 수 있으니 불편하신분들은 기능을 끄십시오.", "", Params().getBool("StoppingDistAdj")) {
+  StoppingDistAdjToggle() : ToggleControl("정지거리 조정", "레이더 정지거리보다 조금 더 앞에 정지합니다. 일부 울컥거림 현상이 나타날 수 있으니 불편하신분들은 기능을 끄십시오.", "../assets/offroad/icon_shell.png", Params().getBool("StoppingDistAdj")) {
     QObject::connect(this, &StoppingDistAdjToggle::toggleFlipped, [=](int state) {
       bool status = state ? true : false;
       Params().putBool("StoppingDistAdj", status);
+    });
+  }
+};
+
+class RadarDisableToggle : public ToggleControl {
+  Q_OBJECT
+
+public:
+  RadarDisableToggle() : ToggleControl("레이더 OFF for VOACC", "진단코드를 이용하여 레이더를 비활성화 합니다. 비전으로만 가감속이 이루어지니 사용에 주의 바랍니다.", "../assets/offroad/icon_shell.png", Params().getBool("RadarDisabledForVOACC")) {
+    QObject::connect(this, &RadarDisableToggle::toggleFlipped, [=](int state) {
+      bool status = state ? true : false;
+      Params().putBool("RadarDisabledForVOACC", status);
     });
   }
 };
