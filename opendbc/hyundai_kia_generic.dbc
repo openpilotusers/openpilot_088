@@ -1640,8 +1640,8 @@ BO_ 1042 ICM_412h: 8 ICM
 
 BO_ 1332 NAVI: 8 XXX
  SG_ OPKR_S_Dist : 15|10@0+ (1,0) [0|1023] "" XXX
- SG_ OPKR_S_Sign : 21|5@0+ (1,0) [0|3] "" XXX
- SG_ OPKR_SBR_Dist : 47|8@0+ (1,0) [0|31] "" XXX
+ SG_ OPKR_S_Sign : 21|5@0+ (1,0) [0|31] "" XXX
+ SG_ OPKR_SBR_Dist : 47|8@0+ (1,0) [0|255] "" XXX
 
 VAL_ 274 CUR_GR 1 "D" 2 "D" 3 "D" 4 "D" 5 "D" 6 "D" 7 "D" 8 "D" 14 "R" 0 "P";
 VAL_ 871 CF_Lvr_Gear 5 "D" 8 "S" 6 "N" 7 "R" 0 "P";

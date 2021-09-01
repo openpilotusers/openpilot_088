@@ -212,29 +212,7 @@ def thermald_thread():
   hotspot_on_boot = params.get_bool("OpkrHotspotOnBoot")
   hotspot_run = False
 
-  if int(params.get("OpkrAutoShutdown", encoding="utf8")) == 0:
-    opkrAutoShutdown = 0
-  elif int(params.get("OpkrAutoShutdown", encoding="utf8")) == 1:
-    opkrAutoShutdown = 5
-  elif int(params.get("OpkrAutoShutdown", encoding="utf8")) == 2:
-    opkrAutoShutdown = 30
-  elif int(params.get("OpkrAutoShutdown", encoding="utf8")) == 3:
-    opkrAutoShutdown = 60
-  elif int(params.get("OpkrAutoShutdown", encoding="utf8")) == 4:
-    opkrAutoShutdown = 180
-  elif int(params.get("OpkrAutoShutdown", encoding="utf8")) == 5:
-    opkrAutoShutdown = 300
-  elif int(params.get("OpkrAutoShutdown", encoding="utf8")) == 6:
-    opkrAutoShutdown = 600
-  elif int(params.get("OpkrAutoShutdown", encoding="utf8")) == 7:
-    opkrAutoShutdown = 1800
-  elif int(params.get("OpkrAutoShutdown", encoding="utf8")) == 8:
-    opkrAutoShutdown = 3600
-  elif int(params.get("OpkrAutoShutdown", encoding="utf8")) == 9:
-    opkrAutoShutdown = 10800
-  else:
-    opkrAutoShutdown = 18000
-
+  opkrAutoShutdown = interp(int(params.get("OpkrAutoShutdown", encoding="utf8")), [0,1,2,3,4,5,6,7,8,9], [0,5,30,60,180,300,600,1800,3600,10800])
   battery_charging_control = params.get_bool("OpkrBatteryChargingControl")
   battery_charging_min = int(params.get("OpkrBatteryChargingMin", encoding="utf8"))
   battery_charging_max = int(params.get("OpkrBatteryChargingMax", encoding="utf8"))
@@ -475,21 +453,13 @@ def thermald_thread():
 
       if (count % int(1. / DT_TRML)) == 0:
         if int(params.get("OpkrForceShutdown", encoding="utf8")) != 0 and not started_seen and msg.deviceState.batteryStatus == "Discharging":
-          shutdown_option = int(params.get("OpkrForceShutdown", encoding="utf8"))
-          if shutdown_option == 1:
-            opkrForceShutdown = 60
-          elif shutdown_option == 2:
-            opkrForceShutdown = 180
-          elif shutdown_option == 3:
-            opkrForceShutdown = 300
-          elif shutdown_option == 4:
-            opkrForceShutdown = 600
-          else:
-            opkrForceShutdown = 1800
-          if (sec_since_boot() - off_ts) > opkrForceShutdown and params.get_bool("OpkrForceShutdownTrigger"):
+          opkrForceShutdown = interp(int(params.get("OpkrForceShutdown", encoding="utf8")), [0,1,2,3,4,5], [0,60,180,300,600,1800])
+          if (sec_since_boot() - off_ts) > opkrForceShutdown and opkrForceShutdown and params.get_bool("OpkrForceShutdownTrigger"):
             os.system('LD_LIBRARY_PATH="" svc power shutdown')
           elif not params.get_bool("OpkrForceShutdownTrigger"):
             off_ts = sec_since_boot()
+        elif msg.deviceState.batteryPercent < 10 and not started_seen and msg.deviceState.batteryStatus == "Discharging":
+          os.system('LD_LIBRARY_PATH="" svc power shutdown')
 
 
     # opkr
