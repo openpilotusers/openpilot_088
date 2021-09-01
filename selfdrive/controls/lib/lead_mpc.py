@@ -68,7 +68,7 @@ class LeadMpc():
     self.cur_state[0].x_ego = 0.0
 
     if lead is not None and lead.status:
-      x_lead = lead.dRel
+      x_lead = lead.dRel - 2.5  # Distance to lead car is incorrect. Is this related to stopping distance on vision acc?
       v_lead = max(0.0, lead.vLead)
       a_lead = lead.aLeadK
 
