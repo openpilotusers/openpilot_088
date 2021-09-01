@@ -91,10 +91,10 @@ class CarController():
   def __init__(self, dbc_name, CP, VM):
     self.packer = CANPacker(dbc_name)
 
-    self.apply_steer_last = self.accel_steady0
+    self.apply_steer_last = 0.
     self.car_fingerprint = CP.carFingerprint
     self.steer_rate_limited = False
-    self.accel_steady = 0
+    self.accel_steady = 0.
     self.accel_lim_prev = 0.
     self.accel_lim = 0.
     self.counter_init = False
