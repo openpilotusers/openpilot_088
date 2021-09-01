@@ -79,7 +79,7 @@ PrimeUserWidget::PrimeUserWidget(QWidget* parent) : QWidget(parent) {
   QLabel* commaPrime = new QLabel("오픈파일럿");
   mainLayout->addWidget(commaPrime, 0, Qt::AlignCenter);
   mainLayout->addSpacing(15);
-  QPixmap hkgpix("../assets/offroad/hkg.png");
+  QPixmap hkgpix("../assets/addon/img/hkg.png");
   QLabel *hkg = new QLabel();
   hkg->setPixmap(hkgpix.scaledToWidth(470, Qt::SmoothTransformation));
   hkg->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
@@ -146,7 +146,7 @@ PrimeAdWidget::PrimeAdWidget(QWidget* parent) : QFrame(parent) {
 
   main_layout->addWidget(new QLabel("오픈파일럿"), 1, Qt::AlignCenter);
 
-  QPixmap hkgpix("../assets/offroad/hkg.png");
+  QPixmap hkgpix("../assets/addon/img/hkg.png");
   QLabel *hkg = new QLabel();
   hkg->setPixmap(hkgpix.scaledToWidth(430, Qt::SmoothTransformation));
   hkg->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
@@ -171,7 +171,7 @@ SetupWidget::SetupWidget(QWidget* parent) : QFrame(parent) {
   finishRegistationLayout->setMargin(30);
   finishRegistationLayout->setSpacing(10);
 
-  QPixmap hkgpix("../assets/offroad/hkg.png");
+  QPixmap hkgpix("../assets/addon/img/hkg.png");
   QLabel *hkg = new QLabel();
   hkg->setPixmap(hkgpix.scaledToWidth(450, Qt::SmoothTransformation));
   hkg->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));

@@ -596,7 +596,7 @@ EVENTS: Dict[int, Dict[str, Union[Alert, Callable[[Any, messaging.SubMaster, boo
       "오픈파일럿 모드",
       "",
       AlertStatus.normal, AlertSize.small,
-      Priority.LOW, VisualAlert.none, AudibleAlert.chimeModeOpenpilot, 1., 0, 1.),
+      Priority.LOW, VisualAlert.none, AudibleAlert.chimeWarning1, 1., 0, 1.),
   },
   
   EventName.modeChangeDistcurv: {
@@ -604,28 +604,35 @@ EVENTS: Dict[int, Dict[str, Union[Alert, Callable[[Any, messaging.SubMaster, boo
       "차간+커브 제어 모드",
       "",
       AlertStatus.normal, AlertSize.small,
-      Priority.LOW, VisualAlert.none, AudibleAlert.chimeModeDistcurv, 1., 0, 1.),
+      Priority.LOW, VisualAlert.none, AudibleAlert.chimeWarning1, 1., 0, 1.),
   },
   EventName.modeChangeDistance: {
     ET.WARNING: Alert(
       "차간ONLY 제어 모드",
       "",
       AlertStatus.normal, AlertSize.small,
-      Priority.LOW, VisualAlert.none, AudibleAlert.chimeModeDistance, 1., 0, 1.),
+      Priority.LOW, VisualAlert.none, AudibleAlert.chimeWarning1, 1., 0, 1.),
+  },
+  EventName.modeChangeCurv: {
+    ET.WARNING: Alert(
+      "커브ONLY 제어 모드",
+      "",
+      AlertStatus.normal, AlertSize.small,
+      Priority.LOW, VisualAlert.none, AudibleAlert.chimeWarning1, 1., 0, 1.),
   },
   EventName.modeChangeOneway: {
     ET.WARNING: Alert(
       "편도1차선 모드",
       "",
       AlertStatus.normal, AlertSize.small,
-      Priority.LOW, VisualAlert.none, AudibleAlert.chimeModeOneway, 1., 0, 1.),
+      Priority.LOW, VisualAlert.none, AudibleAlert.chimeWarning1, 1., 0, 1.),
   },
   EventName.modeChangeMaponly: {
     ET.WARNING: Alert(
       "맵감속ONLY 모드",
       "",
       AlertStatus.normal, AlertSize.small,
-      Priority.LOW, VisualAlert.none, AudibleAlert.chimeModeMaponly, 1., 0, 1.),
+      Priority.LOW, VisualAlert.none, AudibleAlert.chimeWarning1, 1., 0, 1.),
   },
   EventName.needBrake: {
     ET.WARNING: Alert(

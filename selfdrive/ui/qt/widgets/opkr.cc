@@ -258,7 +258,7 @@ CarRecognition::CarRecognition() : AbstractControl("차량강제인식", "핑거
     if (btn.text() == "설정" && carname.length()) {
       params.put("CarModel", carname.toStdString());
       params.put("CarModelAbb", carname.toStdString());
-      QProcess::execute("/data/openpilot/car_force_set.sh");
+      QProcess::execute("/data/openpilot/selfdrive/assets/addon/script/car_force_set.sh");
       refresh(carname);
     } else {
       carname = "";
@@ -377,7 +377,7 @@ CarSelectCombo::CarSelectCombo() : AbstractControl("차량강제인식", "핑거
       if (ConfirmationDialog::confirm(str + "(으)로 강제 설정하시겠습니까?", this)) {
         params.put("CarModel", str.toStdString());
         params.put("CarModelAbb", str.toStdString());
-        QProcess::execute("/data/openpilot/car_force_set.sh");
+        QProcess::execute("/data/openpilot/selfdrive/assets/addon/script/car_force_set.sh");
       }
     }
     refresh();
@@ -1470,7 +1470,7 @@ void VariableCruiseProfile::refresh() {
   btnplus.setText("▶");
 }
 
-CruisemodeSelInit::CruisemodeSelInit() : AbstractControl("크루즈 시작모드 설정", "크루즈 시작모드를 설정합니다. 오파모드/차간+커브/차간Only/편도1차선/맵감속Only  오파모드:버튼속도제어 사용안함, 차간+커브:버튼속도제어를 차간거리와 커브구간에서 사용, 차간Only:버튼감속을 차간거리에서만 사용, 편도1차선:편도1차선 구간에서 카메라오프셋을 낮춰 오른쪽으로 붙여서 주행, 맵감속Only:티맵감속만 사용", "../assets/offroad/icon_shell.png") {
+CruisemodeSelInit::CruisemodeSelInit() : AbstractControl("크루즈 시작모드 설정", "크루즈 시작모드를 설정합니다. 오파모드/차간+커브/차간Only/커브Only/편도1차선/맵감속Only  오파모드:버튼속도제어 사용안함, 차간+커브:버튼속도제어를 차간거리와 커브구간에서 사용, 차간Only:버튼감속을 차간거리에서만 사용, 커브Only:버튼감속을 커브구간에서만 사용, 편도1차선:편도1차선 구간에서 카메라오프셋을 낮춰 오른쪽으로 붙여서 주행, 맵감속Only:맵피 감속만 사용", "../assets/offroad/icon_shell.png") {
 
   label.setAlignment(Qt::AlignVCenter|Qt::AlignRight);
   label.setStyleSheet("color: #e0e879");
@@ -1513,8 +1513,8 @@ CruisemodeSelInit::CruisemodeSelInit() : AbstractControl("크루즈 시작모드
     auto str = QString::fromStdString(params.get("CruiseStatemodeSelInit"));
     int value = str.toInt();
     value = value + 1;
-    if (value >= 4 ) {
-      value = 4;
+    if (value >= 5 ) {
+      value = 5;
     }
     QString values = QString::number(value);
     params.put("CruiseStatemodeSelInit", values.toStdString());
@@ -1532,6 +1532,8 @@ void CruisemodeSelInit::refresh() {
   } else if (option == "2") {
     label.setText(QString::fromStdString("차간Only"));
   } else if (option == "3") {
+    label.setText(QString::fromStdString("커브Only"));
+  } else if (option == "4") {
     label.setText(QString::fromStdString("편도1차선"));
   } else {
     label.setText(QString::fromStdString("맵감속Only"));

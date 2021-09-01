@@ -343,7 +343,7 @@ static void update_params(UIState *s) {
   if (!scene.auto_gitpull && (frame - scene.started_frame > 15*UI_FREQ)) {
     if (params.getBool("GitPullOnBoot")) {
       scene.auto_gitpull = true;
-      system("/data/openpilot/gitpull.sh");
+      system("/data/openpilot/selfdrive/assets/addon/script/gitpull.sh");
     } else if (frame - scene.started_frame > 20*UI_FREQ) {
       scene.auto_gitpull = true;
     }

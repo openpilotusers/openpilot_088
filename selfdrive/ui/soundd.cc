@@ -29,12 +29,7 @@ public:
       {AudibleAlert::CHIME_WARNING2_REPEAT, sound_asset_path + "warning_2.wav", false},
       {AudibleAlert::CHIME_WARNING_REPEAT, sound_asset_path + "warning_repeat.wav", false},
       {AudibleAlert::CHIME_ERROR, sound_asset_path + "error.wav", false},
-      {AudibleAlert::CHIME_PROMPT, sound_asset_path + "error.wav", false},
-      {AudibleAlert::CHIME_MODE_OPENPILOT, "../assets/sounds/modeopenpilot.wav", false},
-      {AudibleAlert::CHIME_MODE_DISTCURV, "../assets/sounds/modedistcurv.wav", false},
-      {AudibleAlert::CHIME_MODE_DISTANCE, "../assets/sounds/modedistance.wav", false},
-      {AudibleAlert::CHIME_MODE_ONEWAY, "../assets/sounds/modeoneway.wav", false},
-      {AudibleAlert::CHIME_MODE_MAPONLY, "../assets/sounds/modemaponly.wav", false}
+      {AudibleAlert::CHIME_PROMPT, sound_asset_path + "error.wav", false}
     };
     for (auto &[alert, fn, loops] : sound_list) {
       QSoundEffect *s = new QSoundEffect(this);

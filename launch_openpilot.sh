@@ -8,7 +8,7 @@ GET_PROP3=$(getprop persist.sys.timezone)
 if [ "$ALIAS_CHECK" == "" ]; then
     sleep 3
     mount -o remount,rw /system
-    echo "alias gi='/data/openpilot/gitpull.sh'" >> /system/comma/home/.bash_profile
+    echo "alias gi='/data/openpilot/selfdrive/assets/addon/script/gitpull.sh'" >> /system/comma/home/.bash_profile
     mount -o remount,r /system
 fi
 

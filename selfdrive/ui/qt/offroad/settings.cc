@@ -253,7 +253,7 @@ SoftwarePanel::SoftwarePanel(QWidget* parent) : QWidget(parent) {
       fs_watch->addPath(paramsPath + "/d/LastUpdateTime");
       fs_watch->addPath(paramsPath + "/d/UpdateFailedCount");
     }
-    std::system("/data/openpilot/gitcommit.sh");
+    std::system("/data/openpilot/selfdrive/assets/addon/script/gitcommit.sh");
     std::system("date '+%F %T' > /data/params/d/LastUpdateTime");
     QString last_ping = QString::fromStdString(params.get("LastAthenaPingTime"));
     QString desc = "";
@@ -270,7 +270,7 @@ SoftwarePanel::SoftwarePanel(QWidget* parent) : QWidget(parent) {
       desc += QString("업데이트가 있습니다. 적용하려면 확인버튼을 누르세요.");
     }
     if (ConfirmationDialog::confirm(desc, this)) {
-      std::system("/data/openpilot/gitpull.sh");
+      std::system("/data/openpilot/selfdrive/assets/addon/script/gitpull.sh");
     }
   });
 
@@ -306,7 +306,7 @@ SoftwarePanel::SoftwarePanel(QWidget* parent) : QWidget(parent) {
   presetone_layout->addWidget(presetoneload_btn);
   QObject::connect(presetoneload_btn, &QPushButton::clicked, [=]() {
     if (ConfirmationDialog::confirm("프리셋1을 불러올까요?", this)) {
-      QProcess::execute("/data/openpilot/load_preset1.sh");
+      QProcess::execute("/data/openpilot/selfdrive/assets/addon/script/load_preset1.sh");
     }
   });
 
@@ -315,7 +315,7 @@ SoftwarePanel::SoftwarePanel(QWidget* parent) : QWidget(parent) {
   presetone_layout->addWidget(presetonesave_btn);
   QObject::connect(presetonesave_btn, &QPushButton::clicked, [=]() {
     if (ConfirmationDialog::confirm("프리셋1을 저장할까요?", this)) {
-      QProcess::execute("/data/openpilot/save_preset1.sh");
+      QProcess::execute("/data/openpilot/selfdrive/assets/addon/script/save_preset1.sh");
     }
   });
 
@@ -328,7 +328,7 @@ SoftwarePanel::SoftwarePanel(QWidget* parent) : QWidget(parent) {
   presettwo_layout->addWidget(presettwoload_btn);
   QObject::connect(presettwoload_btn, &QPushButton::clicked, [=]() {
     if (ConfirmationDialog::confirm("프리셋2을 불러올까요?", this)) {
-      QProcess::execute("/data/openpilot/load_preset2.sh");
+      QProcess::execute("/data/openpilot/selfdrive/assets/addon/script/load_preset2.sh");
     }
   });
 
@@ -337,14 +337,14 @@ SoftwarePanel::SoftwarePanel(QWidget* parent) : QWidget(parent) {
   presettwo_layout->addWidget(presettwosave_btn);
   QObject::connect(presettwosave_btn, &QPushButton::clicked, [=]() {
     if (ConfirmationDialog::confirm("프리셋2을 저장할까요?", this)) {
-      QProcess::execute("/data/openpilot/save_preset2.sh");
+      QProcess::execute("/data/openpilot/selfdrive/assets/addon/script/save_preset2.sh");
     }
   });
 
   auto paraminit_btn = new ButtonControl("파라미터 초기화", "실행");
   QObject::connect(paraminit_btn, &ButtonControl::clicked, [=]() {
     if (ConfirmationDialog::confirm("파라미터를 초기화 합니다. 이온 메뉴의 각종 변경값들이 최초 설정된 값으로 바뀝니다. 진행하시겠습니까?", this)){
-      QProcess::execute("/data/openpilot/init_param.sh");
+      QProcess::execute("/data/openpilot/selfdrive/assets/addon/script/init_param.sh");
     }
   });
 
@@ -357,7 +357,7 @@ SoftwarePanel::SoftwarePanel(QWidget* parent) : QWidget(parent) {
 
   main_layout->addWidget(horizontal_line());
 
-  const char* git_reset = "/data/openpilot/git_reset.sh ''";
+  const char* git_reset = "/data/openpilot/selfdrive/assets/addon/script/git_reset.sh ''";
   auto gitresetbtn = new ButtonControl("Git Reset", "실행");
   QObject::connect(gitresetbtn, &ButtonControl::clicked, [=]() {
     if (ConfirmationDialog::confirm("로컬변경사항을 강제 초기화 후 리모트Git의 최신 커밋내역을 적용합니다. 진행하시겠습니까?", this)){
@@ -368,7 +368,7 @@ SoftwarePanel::SoftwarePanel(QWidget* parent) : QWidget(parent) {
 
   main_layout->addWidget(horizontal_line());
 
-  const char* gitpull_cancel = "/data/openpilot/gitpull_cancel.sh ''";
+  const char* gitpull_cancel = "/data/openpilot/selfdrive/assets/addon/script/gitpull_cancel.sh ''";
   auto gitpullcanceltbtn = new ButtonControl("Git Pull 취소", "실행");
   QObject::connect(gitpullcanceltbtn, &ButtonControl::clicked, [=]() {
     if (ConfirmationDialog::confirm("GitPull 이전 상태로 되돌립니다. 진행하시겠습니까?", this)){
@@ -379,7 +379,7 @@ SoftwarePanel::SoftwarePanel(QWidget* parent) : QWidget(parent) {
 
   main_layout->addWidget(horizontal_line());
 
-  const char* panda_flashing = "/data/openpilot/panda_flashing.sh ''";
+  const char* panda_flashing = "/data/openpilot/selfdrive/assets/addon/script/panda_flashing.sh ''";
   auto pandaflashingtbtn = new ButtonControl("판다 플래싱", "실행");
   QObject::connect(pandaflashingtbtn, &ButtonControl::clicked, [=]() {
     if (ConfirmationDialog::confirm("판다플래싱 진행중에는 판다의 녹색LED가 빠르게 깜빡입니다. 절대로 장치의 전원을 끄거나 임의로 분리하지 마십시오. 진행하시겠습니까?", this)) {
@@ -572,7 +572,7 @@ UserPanel::UserPanel(QWidget* parent) : QWidget(parent) {
   layout->addWidget(new MaxRTDelta());
   layout->addWidget(new MaxRateUp());
   layout->addWidget(new MaxRateDown());
-  const char* p_edit_go = "/data/openpilot/p_edit.sh ''";
+  const char* p_edit_go = "/data/openpilot/selfdrive/assets/addon/script/p_edit.sh ''";
   auto peditbtn = new ButtonControl("판다값 변경 적용", "실행");
   QObject::connect(peditbtn, &ButtonControl::clicked, [=]() {
     if (ConfirmationDialog::confirm("변경된 판다값을 적용합니다. 진행하시겠습니까? 자동 재부팅됩니다.", this)){

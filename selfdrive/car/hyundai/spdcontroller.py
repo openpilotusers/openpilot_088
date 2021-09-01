@@ -236,7 +236,7 @@ class SpdController():
             if self.prev_clu_CruiseSwState != CS.cruise_buttons:  # MODE 전환.
                 if CS.cruise_buttons == Buttons.GAP_DIST and not CS.acc_active and CS.out.cruiseState.available:
                     self.cruise_set_mode += 1
-                if self.cruise_set_mode > 4:
+                if self.cruise_set_mode > 5:
                     self.cruise_set_mode = 0
                 self.prev_clu_CruiseSwState = CS.cruise_buttons
             

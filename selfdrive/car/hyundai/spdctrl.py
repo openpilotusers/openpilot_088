@@ -37,7 +37,7 @@ class Spdctrl(SpdController):
 
     def update_lead(self, sm, CS, dRel, yRel, vRel, CC):
 
-        self.map_decel_only = CS.out.cruiseState.modeSel == 4
+        self.map_decel_only = CS.out.cruiseState.modeSel == 5
         plan = sm['longitudinalPlan']
         dRele = plan.dRel1 #EON Lead
         yRele = plan.yRel1 #EON Lead
@@ -121,7 +121,7 @@ class Spdctrl(SpdController):
             self.seq_step_debug = "RES속도조정"
             lead_wait_cmd, lead_set_speed = self.get_tm_speed(CS, 8, -1)
         # 거리 유지 조건
-        elif d_delta < 0 or d_delta2 < 0 and not self.map_decel_only: # 기준유지거리(현재속도*0.4)보다 가까이 있게 된 상황
+        elif CS.out.cruiseState.modeSel in [1,2,4] and d_delta < 0 or d_delta2 < 0 and not self.map_decel_only: # 기준유지거리(현재속도*0.4)보다 가까이 있게 된 상황
             if (int(CS.clu_Vanz)-1) <= int(CS.VSetDis) and dRele - dRelef > 3 and lead2_status:
                 self.seq_step_debug = "끼어들기감지"
                 #lead_wait_cmd, lead_set_speed = self.get_tm_speed(CS, 15, -5)
@@ -166,7 +166,7 @@ class Spdctrl(SpdController):
                 self.seq_step_debug = "거리유지"
                 self.cut_in = False
         # 선행차량이 멀리 있는 상태에서 감속 조건
-        elif 20 <= dRel < 149 and lead_objspd < -20 and not self.map_decel_only: #정지 차량 및 급감속 차량 발견 시
+        elif CS.out.cruiseState.modeSel in [1,2,4] and 20 <= dRel < 149 and lead_objspd < -20 and not self.map_decel_only: #정지 차량 및 급감속 차량 발견 시
             self.cut_in = False
             if dRel >= 50:
                 self.seq_step_debug = "정차차량 감속"
@@ -174,7 +174,7 @@ class Spdctrl(SpdController):
             elif dRel >= 30:
                 self.seq_step_debug = "정차차량 감속"
                 lead_wait_cmd, lead_set_speed = self.get_tm_speed(CS, 20, -10)
-        elif self.cruise_set_speed_kph > int(round((CS.clu_Vanz))) and not self.map_decel_only:  #이온설정속도가 차량속도보다 큰경우
+        elif CS.out.cruiseState.modeSel in [1,2,4] and self.cruise_set_speed_kph > int(round((CS.clu_Vanz))) and not self.map_decel_only:  #이온설정속도가 차량속도보다 큰경우
             self.cut_in = False
             if 10 > dRel > 3 and lead_objspd <= 0 and 1 < int(CS.clu_Vanz) <= 7 and CS.VSetDis < 45 and ((int(round(self.target_speed)) > int(CS.VSetDis) and self.target_speed != 0) or self.target_speed == 0):
                 self.seq_step_debug = "출발속도조정"
@@ -232,10 +232,10 @@ class Spdctrl(SpdController):
                 self.hesitant_timer = 0
             elif self.hesitant_status:
                 self.hesitant_timer += 1
-        elif lead_objspd >= 0 and CS.clu_Vanz >= int(CS.VSetDis) and int(CS.clu_Vanz * 0.5) < dRel < 149 and not self.map_decel_only:
+        elif CS.out.cruiseState.modeSel in [1,2,4] and lead_objspd >= 0 and CS.clu_Vanz >= int(CS.VSetDis) and int(CS.clu_Vanz * 0.5) < dRel < 149 and not self.map_decel_only:
             self.cut_in = False
             self.seq_step_debug = "속도유지"
-        elif lead_objspd < 0 and int(CS.clu_Vanz * 0.5) >= dRel > 1 and not self.map_decel_only:
+        elif CS.out.cruiseState.modeSel in [1,2,4] and  lead_objspd < 0 and int(CS.clu_Vanz * 0.5) >= dRel > 1 and not self.map_decel_only:
             self.cut_in = False
             self.seq_step_debug = "일반감속,-1"
             lead_wait_cmd, lead_set_speed = self.get_tm_speed( CS, 50, -1)
@@ -254,7 +254,7 @@ class Spdctrl(SpdController):
 
         # 2. 커브 감속.
         #if self.cruise_set_speed_kph >= 100:
-        if CS.out.cruiseState.modeSel == 1 and sm['lateralPlan'].laneChangeState == LaneChangeState.off and not (CS.out.leftBlinker or CS.out.rightBlinker)and not self.map_decel_only:
+        if CS.out.cruiseState.modeSel in [1,3,4] and sm['lateralPlan'].laneChangeState == LaneChangeState.off and not (CS.out.leftBlinker or CS.out.rightBlinker)and not self.map_decel_only:
             if curve_speed < 40 and CS.clu_Vanz > 40 and CS.lead_distance >= 15:
                 set_speed = min(45, self.cruise_set_speed_kph - int(CS.clu_Vanz * 0.25))
                 self.seq_step_debug = "커브감속-5"
@@ -287,8 +287,10 @@ class Spdctrl(SpdController):
         elif CS.out.cruiseState.modeSel == 2:
             self.steer_mode = "차간ONLY"
         elif CS.out.cruiseState.modeSel == 3:
-            self.steer_mode = "편도1차선"
+            self.steer_mode = "커브ONLY"
         elif CS.out.cruiseState.modeSel == 4:
+            self.steer_mode = "편도1차선"
+        elif CS.out.cruiseState.modeSel == 5:
             self.steer_mode = "맵감속ONLY"
 
         if self.cruise_gap != CS.cruiseGapSet:

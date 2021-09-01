@@ -136,14 +136,15 @@ struct CarEvent @0x9b1657f34caf3ad3 {
     modeChangeOpenpilot @109;
     modeChangeDistcurv @110;
     modeChangeDistance @111;
-    modeChangeOneway @112;
-    modeChangeMaponly @113;
-    needBrake @114;
-    standStill @115;
-    modelLongAlert @116;
-    isgActive @117;
-    camSpeedDown @118;
-    gapAdjusting @119;
+    modeChangeCurv @112;
+    modeChangeOneway @113;
+    modeChangeMaponly @114;
+    needBrake @115;
+    standStill @116;
+    modelLongAlert @117;
+    isgActive @118;
+    camSpeedDown @119;
+    gapAdjusting @120;
   }
 }
 
@@ -391,11 +392,6 @@ struct CarControl {
       chimeWarningRepeat @6;
       chimePrompt @7;
       chimeWarning2Repeat @8;
-      chimeModeOpenpilot @9;
-      chimeModeDistcurv @10;
-      chimeModeDistance @11;
-      chimeModeOneway @12;
-      chimeModeMaponly @13;
     }
   }
 

@@ -37,7 +37,7 @@ class SpdctrlRelaxed(SpdController):
 
     def update_lead(self, sm, CS, dRel, yRel, vRel, CC):
 
-        self.map_decel_only = CS.out.cruiseState.modeSel == 4
+        self.map_decel_only = CS.out.cruiseState.modeSel == 5
         plan = sm['longitudinalPlan']
         dRele = plan.dRel1 #EON Lead
         yRele = plan.yRel1 #EON Lead
@@ -121,7 +121,7 @@ class SpdctrlRelaxed(SpdController):
             self.seq_step_debug = "RES속도조정"
             lead_wait_cmd, lead_set_speed = self.get_tm_speed(CS, 8, -1)
         # 거리 유지 조건
-        elif d_delta < 0 or d_delta2 < 0 and not self.map_decel_only: # 기준유지거리(현재속도*0.4)보다 가까이 있게 된 상황
+        elif CS.out.cruiseState.modeSel in [1,2,4] and d_delta < 0 or d_delta2 < 0 and not self.map_decel_only: # 기준유지거리(현재속도*0.4)보다 가까이 있게 된 상황
             if (int(CS.clu_Vanz)-1) <= int(CS.VSetDis) and dRele - dRelef > 3 and lead2_status:
                 self.seq_step_debug = "끼어들기감지"
                 #lead_wait_cmd, lead_set_speed = self.get_tm_speed(CS, 15, -5)
@@ -162,7 +162,7 @@ class SpdctrlRelaxed(SpdController):
                 self.seq_step_debug = "거리유지"
                 self.cut_in = False
         # 선행차량이 멀리 있는 상태에서 감속 조건
-        elif 20 <= dRel < 149 and lead_objspd < -15 and not self.map_decel_only: #정지 차량 및 급감속 차량 발견 시
+        elif CS.out.cruiseState.modeSel in [1,2,4] and 20 <= dRel < 149 and lead_objspd < -15 and not self.map_decel_only: #정지 차량 및 급감속 차량 발견 시
             self.cut_in = False
             if int(CS.clu_Vanz//abs(lead_objspd)) <= int(CS.VSetDis//abs(lead_objspd)):
               self.seq_step_debug = "정차차량 감속"
@@ -226,12 +226,12 @@ class SpdctrlRelaxed(SpdController):
             elif self.hesitant_status:
                 self.hesitant_timer += 1
         # 유지거리 범위 박 점진 감속
-        elif 20 <= dRel < int(CS.clu_Vanz*0.75) and lead_objspd < -1 and not self.map_decel_only:
+        elif CS.out.cruiseState.modeSel in [1,2,4] and 20 <= dRel < int(CS.clu_Vanz*0.75) and lead_objspd < -1 and not self.map_decel_only:
             self.cut_in = False
             if int(CS.clu_Vanz//abs(lead_objspd)) <= int(CS.VSetDis//abs(lead_objspd)):
               self.seq_step_debug = "점진감속"
               lead_wait_cmd, lead_set_speed = self.get_tm_speed(CS, max(8, 200-(abs(lead_objspd**3))), -1)
-        elif lead_objspd >= 0 and CS.clu_Vanz >= int(CS.VSetDis) and int(CS.clu_Vanz * 0.5) < dRel < 149 and not self.map_decel_only:
+        elif CS.out.cruiseState.modeSel in [1,2,4] and lead_objspd >= 0 and CS.clu_Vanz >= int(CS.VSetDis) and int(CS.clu_Vanz * 0.5) < dRel < 149 and not self.map_decel_only:
             self.cut_in = False
             self.seq_step_debug = "속도유지"
         elif self.map_decel_only and self.cruise_set_speed_kph > int(round(CS.VSetDis)) and ((int(round(self.target_speed)) > int(CS.VSetDis) and self.target_speed != 0) or self.target_speed == 0):
@@ -249,7 +249,7 @@ class SpdctrlRelaxed(SpdController):
 
         # 2. 커브 감속.
         #if self.cruise_set_speed_kph >= 100:
-        if CS.out.cruiseState.modeSel == 1 and sm['lateralPlan'].laneChangeState == LaneChangeState.off and not (CS.out.leftBlinker or CS.out.rightBlinker)and not self.map_decel_only:
+        if CS.out.cruiseState.modeSel in [1,3,4] and sm['lateralPlan'].laneChangeState == LaneChangeState.off and not (CS.out.leftBlinker or CS.out.rightBlinker)and not self.map_decel_only:
             if curve_speed < 35 and int(CS.clu_Vanz) >= 40 and CS.lead_distance >= 15:
                 set_speed = min(45, self.cruise_set_speed_kph - int(CS.clu_Vanz * 0.3))
                 self.seq_step_debug = "커브감속-5"
@@ -282,8 +282,10 @@ class SpdctrlRelaxed(SpdController):
         elif CS.out.cruiseState.modeSel == 2:
             self.steer_mode = "차간ONLY"
         elif CS.out.cruiseState.modeSel == 3:
-            self.steer_mode = "편도1차선"
+            self.steer_mode = "커브ONLY"
         elif CS.out.cruiseState.modeSel == 4:
+            self.steer_mode = "편도1차선"
+        elif CS.out.cruiseState.modeSel == 5:
             self.steer_mode = "맵감속ONLY"
 
         if self.cruise_gap != CS.cruiseGapSet:

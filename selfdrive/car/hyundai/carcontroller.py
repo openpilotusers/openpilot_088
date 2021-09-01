@@ -352,7 +352,7 @@ class CarController():
       if frame % 2: # send clu11 to mdps if it is not on bus 0
         can_sends.append(create_clu11(self.packer, frame, CS.clu11, Buttons.NONE, enabled_speed, CS.CP.mdpsBus))
 
-    if CS.out.cruiseState.modeSel == 0 and self.mode_change_switch == 4:
+    if CS.out.cruiseState.modeSel == 0 and self.mode_change_switch == 5:
       self.mode_change_timer = 50
       self.mode_change_switch = 0
     elif CS.out.cruiseState.modeSel == 1 and self.mode_change_switch == 0:
@@ -367,6 +367,9 @@ class CarController():
     elif CS.out.cruiseState.modeSel == 4 and self.mode_change_switch == 3:
       self.mode_change_timer = 50
       self.mode_change_switch = 4
+    elif CS.out.cruiseState.modeSel == 5 and self.mode_change_switch == 4:
+      self.mode_change_timer = 50
+      self.mode_change_switch = 5
     if self.mode_change_timer > 0:
       self.mode_change_timer -= 1
 
@@ -379,8 +382,10 @@ class CarController():
       elif CS.out.cruiseState.modeSel == 2:
         self.steer_mode = "차간ONLY"
       elif CS.out.cruiseState.modeSel == 3:
-        self.steer_mode = "편도1차선"
+        self.steer_mode = "커브ONLY"
       elif CS.out.cruiseState.modeSel == 4:
+        self.steer_mode = "편도1차선"
+      elif CS.out.cruiseState.modeSel == 5:
         self.steer_mode = "맵감속ONLY"
       if CS.out.steerWarning == 0:
         self.mdps_status = "정상"

@@ -60,7 +60,7 @@ void Sidebar::mousePressEvent(QMouseEvent *event) {
       QUIState::ui_state.scene.homebtn_count = QUIState::ui_state.scene.homebtn_count + 1;
     if (QUIState::ui_state.scene.homebtn_count > 2) {
       QUIState::ui_state.scene.homebtn_count = 0;
-      QProcess::execute("/data/openpilot/run_mixplorer.sh");
+      QProcess::execute("/data/openpilot/selfdrive/assets/addon/script/run_mixplorer.sh");
     }
     return;
   }

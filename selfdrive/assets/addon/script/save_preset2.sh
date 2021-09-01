@@ -7,9 +7,13 @@ export PYTHONPATH=/data/openpilot
 
 cd /data/openpilot
 
-/data/data/com.termux/files/usr/bin/cat /data/openpilot/param_init_value | while read line
+if [ -e /data/preset2 ]; then
+rm -f /data/preset2
+fi
+
+/data/data/com.termux/files/usr/bin/cat /data/openpilot/selfdrive/assets/addon/script/param_init_value | while read line
 do
 ParamName=$(/data/data/com.termux/files/usr/bin/echo $line | /data/data/com.termux/files/usr/bin/applets/awk -F ':' '{print $1}')
-ParamValue=$(/data/data/com.termux/files/usr/bin/echo $line | /data/data/com.termux/files/usr/bin/applets/awk -F ':' '{print $2}')
-/data/data/com.termux/files/usr/bin/echo $ParamValue > /data/params/d/${ParamName}
+ParamValue=$(/data/data/com.termux/files/usr/bin/cat /data/params/d/${ParamName})
+/data/data/com.termux/files/usr/bin/echo "$ParamName:$ParamValue" >> /data/preset2
 done

@@ -51,11 +51,11 @@ int main(int argc, char *argv[]) {
   btn->setText("Git Pull");
   btn2->setText("MixPlorer");
   QObject::connect(btn, &QPushButton::clicked, [=]() {
-    QProcess::execute("/data/openpilot/gitpull.sh");
+    QProcess::execute("/data/openpilot/selfdrive/assets/addon/script/gitpull.sh");
     //Hardware::reboot();
   });
   QObject::connect(btn2, &QPushButton::clicked, [=]() {
-    QProcess::execute("/data/openpilot/run_mixplorer.sh");
+    QProcess::execute("/data/openpilot/selfdrive/assets/addon/script/run_mixplorer.sh");
     btn2->setEnabled(false);
   });
   main_layout->addWidget(btn2, 0, 0, Qt::AlignLeft | Qt::AlignBottom);
