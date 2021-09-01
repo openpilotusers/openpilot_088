@@ -241,9 +241,9 @@ class SpdController():
                 self.prev_clu_CruiseSwState = CS.cruise_buttons
             
 
-        if CS.is_set_speed_in_mph and set_speed_kph <= 20:
+        if set_speed_kph <= 20 and CS.is_set_speed_in_mph:
             set_speed_kph = 20
-        elif not CS.is_set_speed_in_mph and set_speed_kph <= 30:
+        elif set_speed_kph <= 30 and not CS.is_set_speed_in_mph:
             set_speed_kph = 30
 
         self.cruise_set_speed_kph = set_speed_kph
@@ -331,10 +331,10 @@ class SpdController():
 
         if set_speed >= int(round(self.cruise_set_speed_kph)):
             set_speed = int(round(self.cruise_set_speed_kph))
-        elif CS.is_set_speed_in_mph and set_speed_kph <= 20:
-            set_speed_kph = 20
-        elif not CS.is_set_speed_in_mph and set_speed_kph <= 30:
-            set_speed_kph = 30
+        elif set_speed <= 20 and CS.is_set_speed_in_mph:
+            set_speed = 20
+        elif set_speed <= 30 and not CS.is_set_speed_in_mph:
+            set_speed = 30
 
         # control process
         target_set_speed = set_speed
