@@ -82,7 +82,7 @@ class CarState(CarStateBase):
     ret.vEgo, ret.aEgo = self.update_speed_kf(ret.vEgoRaw)
     ret.vEgoOP = ret.vEgo
 
-    ret.vEgo = cp.vl["CLU11"]["CF_Clu_Vanz"] * CV.KPH_TO_MS
+    ret.vEgo = cp.vl["CLU11"]["CF_Clu_Vanz"] * CV.MPH_TO_MS if bool(cp.vl["CLU11"]["CF_Clu_SPEED_UNIT"]) else cp.vl["CLU11"]["CF_Clu_Vanz"] * CV.KPH_TO_MS
 
     ret.standstill = ret.vEgoRaw < 0.1
     ret.standStill = self.CP.standStill
