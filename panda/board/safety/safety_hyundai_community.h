@@ -117,12 +117,12 @@ static int hyundai_community_rx_hook(CAN_FIFOMailBox_TypeDef *to_push) {
       // engage for radar disabled car
       int cruise_engaged = (GET_BYTES_04(to_push) >> 3 & 0x1); // ACC main_on signal
       if (cruise_engaged && !cruise_engaged_prev) {
-        controls_allowed = 1;
+        if (!controls_allowed) {
+          controls_allowed = 1;
+        } else {
+          controls_allowed = 0;
+        }
         puts("  non-SCC w/ long control: controls allowed"); puts("\n");
-      }
-      if (!cruise_engaged) {
-        if (controls_allowed) {puts("  non-SCC w/ long control: controls not allowed"); puts("\n");}
-        controls_allowed = 0;
       }
       cruise_engaged_prev = cruise_engaged;
     }
