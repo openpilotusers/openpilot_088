@@ -436,7 +436,7 @@ class CarController():
       else:
         self.leadcar_status = "-"
 
-      str_log2 = 'BUS={:1.0f}/{:1.0f}/{:1.0f}  MODE={:s}  MDPS={:s}  LKAS={:s}  CSG={:1.0f}  LEAD={:s}  FR={:03.0f}'.format(self.steer_mode, \
+      str_log2 = 'BUS={}/{}/{}  MODE={:s}  MDPS={:s}  LKAS={:s}  CSG={:1.0f}  LEAD={:s}  FR={:03.0f}'.format(self.steer_mode, \
        CS.CP.mdpsBus, CS.CP.sccBus, CS.CP.fcaBus, self.mdps_status, self.lkas_switch, self.cruise_gap, self.leadcar_status, self.timer1.sampleTime())
       trace1.printf2( '{}'.format( str_log2 ) )
 
