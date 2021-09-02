@@ -102,7 +102,9 @@ class CarController():
     self.lead_visible = False
     self.lead_debounce = 0
     self.prev_cruiseButton = 0
-    self.scc11cnt = self.scc12cnt = 0
+    self.fca11supcnt = self.fca11inc = self.fca11alivecnt = self.fca11cnt13 = self.scc11cnt = self.scc12cnt = 0
+    self.counter_init = False
+    self.fca11maxcnt = 0xD
     self.radarDisableActivated = False
     self.radarDisableOverlapTimer = 0
     self.sendaccmode = False
@@ -684,6 +686,21 @@ class CarController():
           self.scc12cnt %= 0xF
           self.scc11cnt += 1
           self.scc11cnt %= 0x10
+          self.fca11supcnt += 1
+          self.fca11supcnt %= 0xF
+
+          if self.fca11alivecnt == 1:
+            self.fca11inc = 0
+            if self.fca11cnt13 == 3:
+              self.fca11maxcnt = 0x9
+              self.fca11cnt13 = 0
+            else:
+              self.fca11maxcnt = 0xD
+              self.fca11cnt13 += 1
+          else:
+            self.fca11inc += 4
+
+          self.fca11alivecnt = self.fca11maxcnt - self.fca11inc
           can_sends.append(create_scc11_noradar(self.packer, enabled,
                                         self.setspeed, self.lead_visible, lead_dist, lead_vrel, lead_yrel,
                                         self.gapsettingdance,
@@ -703,15 +720,20 @@ class CarController():
 
           can_sends.append(create_scc14_noradar(self.packer, enabled, self.usestockscc, CS.out.stockAeb, apply_accel,
                                         CS.scc14, self.objdiststat, CS.out.gasPressed, self.acc_standstill, CS.out.vEgo, self.lead_visible, lead_dist))
-
+          if CS.CP.fcaBus == -1:
+            can_sends.append(create_fca11(self.packer, CS.fca11, self.fca11alivecnt, self.fca11supcnt))
         if frame % 20 == 0:
           can_sends.append(create_scc13_noradar(self.packer, CS.scc13))
+          if CS.CP.fcaBus == -1:
+            can_sends.append(create_fca12(self.packer))
         if frame % 50 == 0:
           can_sends.append(create_scc42a(self.packer))
       else:
         self.counter_init = True
         self.scc12cnt = CS.scc12init["CR_VSM_Alive"]
         self.scc11cnt = CS.scc11init["AliveCounterACC"]
+        self.fca11alivecnt = CS.fca11init["CR_FCA_Alive"]
+        self.fca11supcnt = CS.fca11init["Supplemental_Counter"]
 
     aq_value = CS.scc12["aReqValue"] if CS.CP.sccBus == 0 else apply_accel
     str_log1 = 'M/C={:03.0f}/{:03.0f}  TQ={:03.0f}  ST={:03.0f}/{:01.0f}/{:01.0f}  GS={:.0f}  AQ={:+04.2f}  S={:.0f}/{:.0f}'.format(abs(self.model_speed), self.curve_speed,

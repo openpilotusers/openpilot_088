@@ -301,10 +301,12 @@ class CarState(CarStateBase):
     self.scc12 = copy.copy(cp_scc.vl["SCC12"])
     self.scc13 = copy.copy(cp_scc.vl["SCC13"])
     self.scc14 = copy.copy(cp_scc.vl["SCC14"])
+    self.fca11 = copy.copy(cp_fca.vl["FCA11"])
     self.mdps12 = copy.copy(cp_mdps.vl["MDPS12"])
 
     self.scc11init = copy.copy(cp.vl["SCC11"])
     self.scc12init = copy.copy(cp.vl["SCC12"])
+    self.fca11init = copy.copy(cp.vl["FCA11"])
 
     ret.brakeHold = cp.vl["TCS15"]["AVH_LAMP"] == 2 # 0 OFF, 1 ERROR, 2 ACTIVE, 3 READY
     self.brakeHold = ret.brakeHold
@@ -367,6 +369,8 @@ class CarState(CarStateBase):
       ("BrakeLight", "TCS13", 0),
       ("DriverBraking", "TCS13", 0),
       ("DriverOverride", "TCS13",0),
+      ("ACC_REQ", "TCS13", 0),
+      ("StandStill", "TCS13", 0),
       ("PBRAKE_ACT", "TCS13", 0),
       ("CF_VSM_Avail", "TCS13", 0),
 
@@ -375,6 +379,11 @@ class CarState(CarStateBase):
 
       ("CF_Lvr_CruiseSet", "LVR12", 0),
       ("CRUISE_LAMP_M", "EMS16", 0),
+
+      ("CR_VSM_Alive", "SCC12", 0),
+      ("AliveCounterACC", "SCC11", 0),
+      ("CR_FCA_Alive", "FCA11", 0),
+      ("Supplemental_Counter", "FCA11", 0),
 
       ("UNIT", "TPMS11", 0),
       ("PRESSURE_FL", "TPMS11", 0),
@@ -452,10 +461,31 @@ class CarState(CarStateBase):
         ("SCC11", 50),
         ("SCC12", 50),
       ]
+    if CP.sccBus == 0 and not CP.pcmCruise:
+      signals += [
+        ("MainMode_ACC", "SCC11", 0),
+        ("VSetDis", "SCC11", 0),
+        ("SCCInfoDisplay", "SCC11", 0),
+        ("ACC_ObjStatus", "SCC11", 0),
+        ("ACC_ObjDist", "SCC11", 0),
+        ("ObjValid", "SCC11", 0),
+        ("ACC_ObjRelSpd", "SCC11", 0),
+        ("AliveCounterACC", "SCC11", 0),
+        ("ACCMode", "SCC12", 1),
+        ("AEB_CmdAct", "SCC12", 0),
+        ("CF_VSM_Warn", "SCC12", 0),
+        ("CR_VSM_Alive", "SCC12", 0),
+      ]
+      checks += [
+        ("SCC11", 50),
+        ("SCC12", 50),
+      ]
     if CP.fcaBus == 0 or Params().get_bool("FCAType"):
       signals += [
         ("FCA_CmdAct", "FCA11", 0),
         ("CF_VSM_Warn", "FCA11", 0),
+        ("CR_FCA_Alive", "FCA11", 0),
+        ("Supplemental_Counter", "FCA11", 0),
       ]
       checks += [("FCA11", 50)]
 
