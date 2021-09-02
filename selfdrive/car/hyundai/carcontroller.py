@@ -107,6 +107,7 @@ class CarController():
     self.radarDisableOverlapTimer = 0
     self.sendaccmode = False
     self.counter_init = False
+    self.setspeed = 0.
 
     self.resume_cnt = 0
     self.last_lead_distance = 0
@@ -645,6 +646,7 @@ class CarController():
 
     # xps
     if self.voacc_type == 2:
+      self.setspeed = set_speed * (CV.MS_TO_MPH if CS.is_set_speed_in_mph else CV.MS_TO_KPH)
       if enabled:
         self.sendaccmode = enabled
 
