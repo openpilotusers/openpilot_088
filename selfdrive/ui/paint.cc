@@ -866,7 +866,7 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
     char val_str[16];
     char uom_str[6];
     NVGcolor val_color = COLOR_WHITE_ALPHA(200);
-    if (scene->lead_data[0].getStatus()) {
+    if (scene.lead_data[0].getStatus()) {
       //show RED if less than 5 meters
       //show orange if less than 15 meters
       if((int)(scene.lead_data[0].getDRel()) < 15) {

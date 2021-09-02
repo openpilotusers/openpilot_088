@@ -219,6 +219,9 @@ static void update_state(UIState *s) {
       }
     }
   }
+  if (sm.updated("modelV2") && s->vg) {
+    update_model(s, sm["modelV2"].getModelV2());
+  }
   if (sm.updated("deviceState")) {
     scene.deviceState = sm["deviceState"].getDeviceState();
     scene.cpuPerc = (scene.deviceState.getCpuUsagePercent()[0] + scene.deviceState.getCpuUsagePercent()[1] + scene.deviceState.getCpuUsagePercent()[2] + scene.deviceState.getCpuUsagePercent()[3])/4;
