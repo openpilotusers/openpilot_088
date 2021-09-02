@@ -113,16 +113,6 @@ static int hyundai_community_rx_hook(CAN_FIFOMailBox_TypeDef *to_push) {
       cruise_engaged_prev = cruise_engaged;
     }
 
-    if (addr == 1265 && HKG_scc_bus == -1 && !OP_SCC_live) {
-      // engage for radar disabled car
-      int cruise_engaged = (GET_BYTES_04(to_push) >> 3 & 0x1); // ACC main_on signal
-      if (cruise_engaged && !cruise_engaged_prev) {
-        controls_allowed = !controls_allowed;
-        puts("  non-SCC w/ long control: controls allowed"); puts("\n");
-      }
-      cruise_engaged_prev = cruise_engaged;
-    }
-
     // sample wheel speed, averaging opposite corners
     if (addr == 902 && bus == 0) {
       int hyundai_speed = GET_BYTES_04(to_push) & 0x3FFF;  // FL
