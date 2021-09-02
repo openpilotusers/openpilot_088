@@ -114,6 +114,10 @@ class CarState(CarStateBase):
     elif self.driverAcc_time:
       self.driverAcc_time -= 1
 
+    self.cruise_main_button = cp.vl["CLU11"]["CF_Clu_CruiseSwMain"]
+    self.cruise_buttons = cp.vl["CLU11"]["CF_Clu_CruiseSwState"]
+    ret.cruiseButtons = self.cruise_buttons
+
     # cruise state
     if not self.CP.pcmCruise:
       if self.cruise_main_button == 1 and self.prev_cruise_main_button != 1:
@@ -154,11 +158,6 @@ class CarState(CarStateBase):
     else:
       ret.cruiseState.speed = 0
       self.acc_enabled = False
-
-    self.cruise_main_button = cp.vl["CLU11"]["CF_Clu_CruiseSwMain"]
-    print('{}'.format(self.cruise_main_button))
-    self.cruise_buttons = cp.vl["CLU11"]["CF_Clu_CruiseSwState"]
-    ret.cruiseButtons = self.cruise_buttons
 
     # TODO: Find brake pressure
     ret.brake = 0
