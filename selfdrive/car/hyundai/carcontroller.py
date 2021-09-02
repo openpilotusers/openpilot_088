@@ -8,6 +8,7 @@ from selfdrive.car.hyundai.hyundaican import create_lkas11, create_clu11, create
                                              create_scc11, create_scc12, create_scc13, create_scc14, \
                                              create_scc42a, create_scc7d0, create_mdps12, \
                                              create_scc11_noradar, create_scc12_noradar, create_scc13_noradar, create_scc14_noradar, \
+                                             create_fca11, create_fca12, \
                                              create_acc_commands, create_acc_opt, create_frt_radar_opt
 from selfdrive.car.hyundai.values import Buttons, CarControllerParams, CAR, FEATURES
 from opendbc.can.packer import CANPacker
