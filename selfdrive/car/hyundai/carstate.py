@@ -453,7 +453,6 @@ class CarState(CarStateBase):
 
         ("JerkUpperLimit", "SCC14", 0),
         ("JerkLowerLimit", "SCC14", 0),
-        ("SCCMode2", "SCC14", 0),
         ("ComfortBandUpper", "SCC14", 0),
         ("ComfortBandLower", "SCC14", 0),
       ]
@@ -638,7 +637,7 @@ class CarState(CarStateBase):
         ("MainMode_ACC", "SCC11", 1),
         ("SCCInfoDisplay", "SCC11", 0),
         ("AliveCounterACC", "SCC11", 0),
-        ("VSetDis", "SCC11", 30),
+        ("VSetDis", "SCC11", 0),
         ("ObjValid", "SCC11", 0),
         ("DriverAlertDisplay", "SCC11", 0),
         ("TauGapSet", "SCC11", 4),
@@ -681,16 +680,15 @@ class CarState(CarStateBase):
 
         ("JerkUpperLimit", "SCC14", 0),
         ("JerkLowerLimit", "SCC14", 0),
-        ("SCCMode2", "SCC14", 0),
         ("ComfortBandUpper", "SCC14", 0),
         ("ComfortBandLower", "SCC14", 0),
         ("ACCMode", "SCC14", 0),
         ("ObjGap", "SCC14", 0),
       ]
-      checks += [
-        ("SCC11", 50),
-        ("SCC12", 50),
-      ]
+      if CP.sccBus == 2:
+        checks += [
+          ("SCC11", 50),
+          ("SCC12", 50),
       if CP.fcaBus in [2, -1]:
         signals += [
           ("CF_VSM_Prefill", "FCA11", 0),
@@ -711,7 +709,8 @@ class CarState(CarStateBase):
           ("Supplemental_Counter", "FCA11", 0),
           ("PAINT1_Status", "FCA11", 1),
         ]
-        checks += [("FCA11", 50)]
+        if CP.fcaBus == 2:
+          checks += [("FCA11", 50)]
 
     return CANParser(DBC[CP.carFingerprint]["pt"], signals, checks, 2, enforce_checks=False)
 
