@@ -17,6 +17,8 @@ const CanMsg HYUNDAI_COMMUNITY_TX_MSGS[] = {
   {905, 0, 8},  //   SCC14,  Bus 0
   {1186, 0, 8},  //   4a2SCC, Bus 0
   {790, 1, 8}, // EMS11, Bus 1
+  {1186, 0, 8}, //  4a2SCC,  Bus 0
+  {2000, 0, 8},  // SCC_DIAG, Bus 0
 };
 
 // older hyundai models have less checks due to missing counters and checksums
@@ -107,6 +109,18 @@ static int hyundai_community_rx_hook(CAN_FIFOMailBox_TypeDef *to_push) {
       }
       if (!cruise_engaged) {
         if (controls_allowed) {puts("  non-SCC w/ long control: controls not allowed"); puts("\n");}
+        controls_allowed = 0;
+      }
+      cruise_engaged_prev = cruise_engaged;
+    }
+
+    // engage for radar disabled car
+    if (addr == 1265 && HKG_scc_bus == -1) {
+      int cruise_engaged = GET_BYTES_04(to_push) >> 3 & 0x1; // ACC main_on signal
+      if (cruise_engaged && !cruise_engaged_prev) {
+        controls_allowed = 1;
+      }
+      if (!cruise_engaged) {
         controls_allowed = 0;
       }
       cruise_engaged_prev = cruise_engaged;

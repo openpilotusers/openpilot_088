@@ -254,7 +254,7 @@ class CarInterface(CarInterfaceBase):
     ret.emsAvailable = True if 608 and 809 in fingerprint[0] else False
 
     ret.radarOffCan = ret.sccBus == -1
-    ret.openpilotLongitudinalControl = ret.sccBus == 2
+    ret.openpilotLongitudinalControl = ret.sccBus in [2, -1]
     
     # pcmCruise is true
     ret.pcmCruise = not ret.radarOffCan
@@ -308,8 +308,8 @@ class CarInterface(CarInterfaceBase):
         be.type = ButtonType.decelCruise
       elif but == Buttons.GAP_DIST:
         be.type = ButtonType.gapAdjustCruise
-      #elif but == Buttons.CANCEL:
-      #  be.type = ButtonType.cancel
+      elif but == Buttons.CANCEL and not self.CP.pcmCruise:
+        be.type = ButtonType.cancel
       else:
         be.type = ButtonType.unknown
       buttonEvents.append(be)

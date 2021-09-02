@@ -4970,3 +4970,69 @@ void LiveSRPercent::refresh() {
   btnminus.setText("-");
   btnplus.setText("+");
 }
+
+VOACCType::VOACCType() : AbstractControl("VOACC 타입", "VOACC 타입을 설정합니다. 미사용/비전ONLY(comma)/비전ONLY(xps)", "../assets/offroad/icon_shell.png") {
+
+  label.setAlignment(Qt::AlignVCenter|Qt::AlignRight);
+  label.setStyleSheet("color: #e0e879");
+  hlayout->addWidget(&label);
+
+  btnminus.setStyleSheet(R"(
+    padding: 0;
+    border-radius: 50px;
+    font-size: 35px;
+    font-weight: 500;
+    color: #E4E4E4;
+    background-color: #393939;
+  )");
+  btnplus.setStyleSheet(R"(
+    padding: 0;
+    border-radius: 50px;
+    font-size: 35px;
+    font-weight: 500;
+    color: #E4E4E4;
+    background-color: #393939;
+  )");
+  btnminus.setFixedSize(150, 100);
+  btnplus.setFixedSize(150, 100);
+  hlayout->addWidget(&btnminus);
+  hlayout->addWidget(&btnplus);
+
+  QObject::connect(&btnminus, &QPushButton::clicked, [=]() {
+    auto str = QString::fromStdString(params.get("RadarDisabledForVOACC"));
+    int value = str.toInt();
+    value = value - 1;
+    if (value <= 0 ) {
+      value = 0;
+    }
+    QString values = QString::number(value);
+    params.put("RadarDisabledForVOACC", values.toStdString());
+    refresh();
+  });
+  
+  QObject::connect(&btnplus, &QPushButton::clicked, [=]() {
+    auto str = QString::fromStdString(params.get("RadarDisabledForVOACC"));
+    int value = str.toInt();
+    value = value + 1;
+    if (value >= 2 ) {
+      value = 2;
+    }
+    QString values = QString::number(value);
+    params.put("RadarDisabledForVOACC", values.toStdString());
+    refresh();
+  });
+  refresh();
+}
+
+void VOACCType::refresh() {
+  QString option = QString::fromStdString(params.get("RadarDisabledForVOACC"));
+  if (option == "0") {
+    label.setText(QString::fromStdString("미사용"));
+  } else if (option == "1") {
+    label.setText(QString::fromStdString("비전ONLY(comma)"));
+  } else {
+    label.setText(QString::fromStdString("비전ONLY(xps)"));
+  }
+  btnminus.setText("◀");
+  btnplus.setText("▶");
+}

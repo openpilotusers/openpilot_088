@@ -533,18 +533,6 @@ public:
   }
 };
 
-class RadarDisableToggle : public ToggleControl {
-  Q_OBJECT
-
-public:
-  RadarDisableToggle() : ToggleControl("레이더 OFF for VOACC", "진단코드를 이용하여 레이더를 비활성화 합니다. 비전으로만 가감속이 이루어지니 사용에 주의 바랍니다.", "../assets/offroad/icon_shell.png", Params().getBool("RadarDisabledForVOACC")) {
-    QObject::connect(this, &RadarDisableToggle::toggleFlipped, [=](int state) {
-      bool status = state ? true : false;
-      Params().putBool("RadarDisabledForVOACC", status);
-    });
-  }
-};
-
 // 오픈파일럿 미리보기
 class OpenpilotView : public AbstractControl {
   Q_OBJECT
@@ -1618,6 +1606,21 @@ class LiveSRPercent : public AbstractControl {
 
 public:
   LiveSRPercent();
+
+private:
+  QPushButton btnplus;
+  QPushButton btnminus;
+  QLabel label;
+  Params params;
+  
+  void refresh();
+};
+
+class VOACCType : public AbstractControl {
+  Q_OBJECT
+
+public:
+  VOACCType();
 
 private:
   QPushButton btnplus;

@@ -419,7 +419,9 @@ class Controls:
     t_speed = 20 if CS.isMph else 30
     m_unit = CV.MS_TO_MPH if CS.isMph else CV.MS_TO_KPH
     if not self.CP.pcmCruise:
-      self.v_cruise_kph = update_v_cruise(self.v_cruise_kph, CS.buttonEvents, self.enabled)
+      self.v_cruise_kph = update_v_cruise(self.v_cruise_kph, CS.vEgo, CS.gasPressed, CS.buttonEvents, self.enabled, self.is_metric)
+      if self.v_cruise_kph_last != self.v_cruise_kph:
+        self.v_cruise_kph_cluster = self.v_cruise_kph
     elif self.CP.pcmCruise and CS.cruiseState.enabled:
       if Params().get_bool('OpkrVariableCruise') and CS.cruiseState.modeSel != 0 and self.CP.vCruisekph > t_speed:
         self.v_cruise_kph = self.CP.vCruisekph
@@ -496,9 +498,11 @@ class Controls:
           else:
             self.state = State.enabled
           self.current_alert_types.append(ET.ENABLE)
-          #self.v_cruise_kph = initialize_v_cruise(CS.vEgo, CS.buttonEvents, self.v_cruise_kph_last)
-          self.v_cruise_kph = 0
-          self.v_cruise_kph_last = 0
+          if not self.CP.pcmCruise:
+            self.v_cruise_kph = initialize_v_cruise(CS.vEgo, CS.buttonEvents, self.v_cruise_kph_last)
+          else:
+            self.v_cruise_kph = 0
+            self.v_cruise_kph_last = 0
 
     # Check if actuators are enabled
     self.active = self.state == State.enabled or self.state == State.softDisabling
