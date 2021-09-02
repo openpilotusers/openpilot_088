@@ -689,6 +689,7 @@ class CarState(CarStateBase):
         checks += [
           ("SCC11", 50),
           ("SCC12", 50),
+        ]
       if CP.fcaBus in [2, -1]:
         signals += [
           ("CF_VSM_Prefill", "FCA11", 0),
