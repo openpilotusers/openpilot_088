@@ -534,7 +534,6 @@ UserPanel::UserPanel(QWidget* parent) : QWidget(parent) {
   layout->addWidget(new CruiseAutoResToggle());
   layout->addWidget(new RESChoice());
   layout->addWidget(new AutoResCondition());
-  layout->addWidget(new SteerWindDownToggle());
   layout->addWidget(new MadModeEnabledToggle());
 
   layout->addWidget(horizontal_line());
