@@ -239,7 +239,7 @@ class Spdctrl(SpdController):
             self.cut_in = False
             self.seq_step_debug = "일반감속,-1"
             lead_wait_cmd, lead_set_speed = self.get_tm_speed( CS, 50, -1)
-        elif self.map_decel_only and self.cruise_set_speed_kph > int(round(CS.VSetDis)) and ((int(round(self.target_speed)) > int(CS.VSetDis) and self.target_speed != 0) or self.target_speed == 0):
+        elif (self.map_decel_only or CS.out.cruiseState.modeSel == 3) and self.cruise_set_speed_kph > int(round(CS.VSetDis)) and ((int(round(self.target_speed)) > int(CS.VSetDis) and self.target_speed != 0) or self.target_speed == 0):
             self.seq_step_debug = "속도원복"
             lead_wait_cmd, lead_set_speed = self.get_tm_speed( CS, 10, 1)
         else:
@@ -256,23 +256,23 @@ class Spdctrl(SpdController):
         #if self.cruise_set_speed_kph >= 100:
         if CS.out.cruiseState.modeSel in [1,3,4] and sm['lateralPlan'].laneChangeState == LaneChangeState.off and not (CS.out.leftBlinker or CS.out.rightBlinker)and not self.map_decel_only:
             if curve_speed < 40 and CS.clu_Vanz > 40 and CS.lead_distance >= 15:
-                set_speed = min(45, self.cruise_set_speed_kph - int(CS.clu_Vanz * 0.25))
+                set_speed = min(max(self.target_speed, 45), self.cruise_set_speed_kph - int(CS.clu_Vanz * 0.25))
                 self.seq_step_debug = "커브감속-5"
                 wait_time_cmd = 10
             elif curve_speed < 60 and CS.clu_Vanz > 40 and CS.lead_distance >= 15:
-                set_speed = min(55, self.cruise_set_speed_kph - int(CS.clu_Vanz * 0.2))
+                set_speed = min(max(self.target_speed, 55), self.cruise_set_speed_kph - int(CS.clu_Vanz * 0.2))
                 self.seq_step_debug = "커브감속-4"
                 wait_time_cmd = 20
             elif curve_speed < 70 and CS.clu_Vanz > 40 and CS.lead_distance >= 15:
-                set_speed = min(65, self.cruise_set_speed_kph - int(CS.clu_Vanz * 0.15))
+                set_speed = min(max(self.target_speed, 65), self.cruise_set_speed_kph - int(CS.clu_Vanz * 0.15))
                 self.seq_step_debug = "커브감속-3"
                 wait_time_cmd = 30
             elif curve_speed < 80 and CS.clu_Vanz > 40 and CS.lead_distance >= 15:
-                set_speed = min(75, self.cruise_set_speed_kph - int(CS.clu_Vanz * 0.1))
+                set_speed = min(max(self.target_speed, 75), self.cruise_set_speed_kph - int(CS.clu_Vanz * 0.1))
                 self.seq_step_debug = "커브감속-2"
                 wait_time_cmd = 40
             elif curve_speed < 90 and CS.clu_Vanz > 40 and CS.lead_distance >= 15:
-                set_speed = min(85, self.cruise_set_speed_kph - int(CS.clu_Vanz * 0.05))
+                set_speed = min(max(self.target_speed, 85), self.cruise_set_speed_kph - int(CS.clu_Vanz * 0.05))
                 self.seq_step_debug = "커브감속-1"
                 wait_time_cmd = 50
 
