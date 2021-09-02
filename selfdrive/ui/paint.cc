@@ -96,15 +96,15 @@ static void ui_draw_circle_image(const UIState *s, int center_x, int center_y, i
   }
 }
 
-static void draw_lead(UIState *s, const cereal::ModelDataV2::LeadDataV3::Reader &lead_data, const vertex_data &vd) {
+static void draw_lead(UIState *s, const cereal::RadarState::LeadData::Reader &lead_data, const vertex_data &vd) {
   // Draw lead car indicator
   auto [x, y] = vd;
 
   float fillAlpha = 0;
   float speedBuff = 10.;
   float leadBuff = 40.;
-  float d_rel = lead_data.getX()[0];
-  float v_rel = lead_data.getV()[0];
+  float d_rel = lead_data.getDRel();
+  float v_rel = lead_data.getVRel();
   if (d_rel < leadBuff) {
     fillAlpha = 255*(1.0-(d_rel/leadBuff));
     if (v_rel < 0) {
@@ -232,12 +232,13 @@ static void ui_draw_world(UIState *s) {
   // Draw lead indicators if openpilot is handling longitudinal
   //if (s->scene.longitudinal_control) {
   if (true) {
-    auto lead_one = (*s->sm)["modelV2"].getModelV2().getLeadsV3()[0];
-    auto lead_two = (*s->sm)["modelV2"].getModelV2().getLeadsV3()[1];
-    if (lead_one.getProb() > .5) {
+    auto radar_state = (*s->sm)["radarState"].getRadarState();
+    auto lead_one = radar_state.getLeadOne();
+    auto lead_two = radar_state.getLeadTwo();
+    if (lead_one.getStatus()) {
       draw_lead(s, lead_one, s->scene.lead_vertices[0]);
     }
-    if (lead_two.getProb() > .5 && (std::abs(lead_one.getX()[0] - lead_two.getX()[0]) > 3.0)) {
+    if (lead_two.getStatus() && (std::abs(lead_one.getDRel() - lead_two.getDRel()) > 3.0)) {
       draw_lead(s, lead_two, s->scene.lead_vertices[1]);
     }
   }
@@ -725,7 +726,7 @@ static void bb_ui_draw_measures_left(UIState *s, int bb_x, int bb_y, int bb_w ) 
   //CPU TEMP
   if (true) {
     //char val_str[16];
-    char uom_str[16];
+    char uom_str[6];
     std::string cpu_temp_val = std::to_string(int(scene.cpuTemp)) + "°C";
     NVGcolor val_color = COLOR_WHITE_ALPHA(200);
     if(scene.cpuTemp > 75) {
@@ -745,7 +746,7 @@ static void bb_ui_draw_measures_left(UIState *s, int bb_x, int bb_y, int bb_w ) 
   //DEVICE TEMP
   if (scene.batt_less) {
     //char val_str[16];
-    char uom_str[16];
+    char uom_str[6];
     std::string device_temp_val = std::to_string(int(scene.ambientTemp)) + "°C";
     NVGcolor val_color = COLOR_WHITE_ALPHA(200);
     if(scene.ambientTemp > 45) {
@@ -766,7 +767,7 @@ static void bb_ui_draw_measures_left(UIState *s, int bb_x, int bb_y, int bb_w ) 
   //BAT TEMP
   if (!scene.batt_less) {
     //char val_str[16];
-    char uom_str[16];
+    char uom_str[6];
     std::string bat_temp_val = std::to_string(int(scene.batTemp)) + "°C";
     NVGcolor val_color = COLOR_WHITE_ALPHA(200);
     if(scene.batTemp > 40) {
@@ -787,7 +788,7 @@ static void bb_ui_draw_measures_left(UIState *s, int bb_x, int bb_y, int bb_w ) 
   //BAT LEVEL
   if(!scene.batt_less) {
     //char val_str[16];
-    char uom_str[16];
+    char uom_str[6];
     std::string bat_level_val = std::to_string(int(scene.batPercent)) + "%";
     NVGcolor val_color = COLOR_WHITE_ALPHA(200);
     snprintf(uom_str, sizeof(uom_str), "%s", scene.deviceState.getBatteryStatus() == "Charging" ? "++" : "--");
@@ -800,7 +801,7 @@ static void bb_ui_draw_measures_left(UIState *s, int bb_x, int bb_y, int bb_w ) 
   //add Ublox GPS accuracy
   if (scene.gpsAccuracyUblox != 0.00) {
     char val_str[16];
-    char uom_str[16];
+    char uom_str[6];
     NVGcolor val_color = COLOR_WHITE_ALPHA(200);
     //show red/orange if gps accuracy is low
       if(scene.gpsAccuracyUblox > 0.85) {
@@ -828,7 +829,7 @@ static void bb_ui_draw_measures_left(UIState *s, int bb_x, int bb_y, int bb_w ) 
   //add altitude
   if (scene.gpsAccuracyUblox != 0.00) {
     char val_str[16];
-    char uom_str[16];
+    char uom_str[6];
     NVGcolor val_color = COLOR_WHITE_ALPHA(200);
     snprintf(val_str, sizeof(val_str), "%.0f", (scene.altitudeUblox));
     snprintf(uom_str, sizeof(uom_str), "m");
@@ -859,27 +860,26 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
   int label_fontSize=15*0.8;
   int uom_fontSize = 15*0.8;
   int bb_uom_dx =  (int)(bb_w /2 - uom_fontSize*2.5);
-  auto lead_one = (*s->sm)["modelV2"].getModelV2().getLeadsV3()[0];
 
   //add visual radar relative distance
   if (true) {
     char val_str[16];
-    char uom_str[16];
+    char uom_str[6];
     NVGcolor val_color = COLOR_WHITE_ALPHA(200);
-    if (lead_one.getProb() > .5) {
+    if (scene->lead_data[0].getStatus()) {
       //show RED if less than 5 meters
       //show orange if less than 15 meters
-      if((int)(lead_one.getX()[0]) < 15) {
+      if((int)(scene.lead_data[0].getDRel()) < 15) {
         val_color = COLOR_ORANGE_ALPHA(200);
       }
-      if((int)(lead_one.getX()[0]) < 5) {
+      if((int)(scene.lead_data[0].getDRel()) < 5) {
         val_color = COLOR_RED_ALPHA(200);
       }
       // lead car relative distance is always in meters
-      if((float)(lead_one.getX()[0]) < 10) {
-        snprintf(val_str, sizeof(val_str), "%.1f", (float)lead_one.getX()[0]);
+      if((float)(scene.lead_data[0].getDRel()) < 10) {
+        snprintf(val_str, sizeof(val_str), "%.1f", (float)scene.lead_data[0].getDRel());
       } else {
-        snprintf(val_str, sizeof(val_str), "%d", (int)lead_one.getX()[0]);
+        snprintf(val_str, sizeof(val_str), "%d", (int)scene.lead_data[0].getDRel());
       }
 
     } else {
@@ -894,23 +894,23 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
   }
   //add visual radar relative speed
   if (true) {
-    char val_str[32];
-    char uom_str[16];
+    char val_str[16];
+    char uom_str[6];
     NVGcolor val_color = COLOR_WHITE_ALPHA(200);
-    if (lead_one.getProb() > .5) {
+    if (scene.lead_data[0].getStatus()) {
       //show Orange if negative speed (approaching)
       //show Orange if negative speed faster than 5mph (approaching fast)
-      if((int)((lead_one.getV()[0] - scene.car_state.getVEgoOP()) * 3.6) < 0) {
+      if((int)(scene.lead_data[0].getVRel()) < 0) {
         val_color = nvgRGBA(255, 188, 3, 200);
       }
-      if((int)((lead_one.getV()[0] - scene.car_state.getVEgoOP()) * 3.6) < -5) {
+      if((int)(scene.lead_data[0].getVRel()) < -5) {
         val_color = nvgRGBA(255, 0, 0, 200);
       }
       // lead car relative speed is always in meters
       if (scene.is_metric) {
-         snprintf(val_str, sizeof(val_str), "%d", (int)((lead_one.getV()[0] - scene.car_state.getVEgoOP()) * 3.6));
+         snprintf(val_str, sizeof(val_str), "%d", (int)(scene.lead_data[0].getVRel() * 3.6 + 0.5));
       } else {
-         snprintf(val_str, sizeof(val_str), "%d", (int)((lead_one.getV()[0] - scene.car_state.getVEgoOP()) * 2.2374144));
+         snprintf(val_str, sizeof(val_str), "%d", (int)(scene.lead_data[0].getVRel() * 2.2374144 + 0.5));
       }
     } else {
        snprintf(val_str, sizeof(val_str), "-");
@@ -929,7 +929,7 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
   //add steering angle
   if (true) {
     char val_str[16];
-    char uom_str[16];
+    char uom_str[6];
     //std::string angle_val = std::to_string(int(scene.angleSteers*10)/10) + "°";
     NVGcolor val_color = COLOR_GREEN_ALPHA(200);
     //show Orange if more than 30 degrees
@@ -954,7 +954,7 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
   //add steerratio from lateralplan
   if (true) {
     char val_str[16];
-    char uom_str[16];
+    char uom_str[6];
     NVGcolor val_color = COLOR_WHITE_ALPHA(200);
     if (scene.controls_state.getEnabled()) {
       snprintf(val_str, sizeof(val_str), "%.2f",(scene.steerRatio));
@@ -972,7 +972,7 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
   //cruise gap
   if (scene.longitudinal_control) {
     char val_str[16];
-    char uom_str[16];
+    char uom_str[6];
     NVGcolor val_color = COLOR_WHITE_ALPHA(200);
     if (scene.controls_state.getEnabled()) {
       if (scene.cruise_gap == scene.dynamic_tr_mode) {
