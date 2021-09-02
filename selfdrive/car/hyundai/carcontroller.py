@@ -648,7 +648,7 @@ class CarController():
         can_sends.append(create_frt_radar_opt(self.packer))
 
     # xps
-    if self.voacc_type == 2:
+    if True:
       self.setspeed = set_speed * (CV.MS_TO_MPH if CS.is_set_speed_in_mph else CV.MS_TO_KPH)
       if enabled:
         self.sendaccmode = enabled
