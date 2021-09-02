@@ -156,6 +156,7 @@ class CarState(CarStateBase):
       self.acc_enabled = False
 
     self.cruise_main_button = cp.vl["CLU11"]["CF_Clu_CruiseSwMain"]
+    print('{}'.format(self.cruise_main_button))
     self.cruise_buttons = cp.vl["CLU11"]["CF_Clu_CruiseSwState"]
     ret.cruiseButtons = self.cruise_buttons
 
