@@ -9,7 +9,6 @@ def get_radar_can_parser(CP):
   signals = [
     # sig_name, sig_address, default
     ("ObjValid", "SCC11", 0),
-    ("ACC_ObjStatus", "SCC11", 0),
     ("ACC_ObjLatPos", "SCC11", 0),
     ("ACC_ObjDist", "SCC11", 0),
     ("ACC_ObjRelSpd", "SCC11", 0),
@@ -18,7 +17,12 @@ def get_radar_can_parser(CP):
     # address, frequency
     ("SCC11", 50),
   ]
-  return CANParser(DBC[CP.carFingerprint]['pt'], signals, checks, CP.sccBus)
+  if CP.pcmCruise:
+    signals += [
+      ("ACC_ObjStatus", "SCC11", 0),
+    ]
+  
+  return CANParser(DBC[CP.carFingerprint]['pt'], signals, checks, 2)
 
 
 class RadarInterface(RadarInterfaceBase):
@@ -38,7 +42,7 @@ class RadarInterface(RadarInterfaceBase):
     self.updated_messages.update(vls)
 
     if self.trigger_msg not in self.updated_messages:
-      return None
+      return None if CP.pcmCruise else car.RadarData.new_message()
 
     rr = self._update(self.updated_messages)
     self.updated_messages.clear()
