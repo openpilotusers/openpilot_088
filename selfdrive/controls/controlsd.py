@@ -185,8 +185,6 @@ class Controls:
     # controlsd is driven by can recv, expected at 100Hz
     self.rk = Ratekeeper(100, print_delay_threshold=None)
     self.prof = Profiler(False)  # off by default
-
-    self.hyundai_lkas = self.read_only  #read_only
     
     self.mpc_frame = 0
     self.mpc_frame_sr = 0
@@ -625,7 +623,8 @@ class Controls:
     CC.actuators = actuators
 
     CC.cruiseControl.override = True
-    CC.cruiseControl.cancel = self.CP.pcmCruise and not self.enabled and CS.cruiseState.enabled
+    CC.cruiseControl.cancel = not self.CP.pcmCruise or (not self.enabled and CS.cruiseState.enabled)
+    #CC.cruiseControl.cancel = self.CP.pcmCruise and not self.enabled and CS.cruiseState.enabled
 
     if self.joystick_mode and self.sm.rcv_frame['testJoystick'] > 0 and self.sm['testJoystick'].buttons[0]:
       CC.cruiseControl.cancel = True
@@ -679,7 +678,7 @@ class Controls:
     self.AM.process_alerts(self.sm.frame, clear_event)
     CC.hudControl.visualAlert = self.AM.visual_alert
 
-    if not self.hyundai_lkas and self.enabled:
+    if not self.read_only and self.initialized:
       # send car controls over can
       can_sends = self.CI.apply(CC, self.sm)
       self.pm.send('sendcan', can_list_to_can_capnp(can_sends, msgtype='sendcan', valid=CS.canValid))
@@ -785,14 +784,9 @@ class Controls:
     CS = self.data_sample()
     self.prof.checkpoint("Sample")
 
-    if self.read_only:
-      self.hyundai_lkas = self.read_only
-    elif CS.cruiseState.enabled and self.hyundai_lkas:
-      self.hyundai_lkas = False
-
     self.update_events(CS)
 
-    if not self.hyundai_lkas:
+    if not self.read_only and self.initialized:
       # Update control state
       self.state_transition(CS)
       self.prof.checkpoint("State transition")
@@ -805,9 +799,6 @@ class Controls:
     # Publish data
     self.publish_logs(CS, start_time, actuators, lac_log)
     self.prof.checkpoint("Sent")
-
-    if not CS.cruiseState.enabled and not self.hyundai_lkas and not self.soft_disable_timer:
-      self.hyundai_lkas = True
 
   def controlsd_thread(self):
     while True:
