@@ -648,7 +648,7 @@ class CarController():
         can_sends.append(create_frt_radar_opt(self.packer))
 
     # xps
-    if True:
+    if self.voacc_type == 2:
       self.setspeed = set_speed * (CV.MS_TO_MPH if CS.is_set_speed_in_mph else CV.MS_TO_KPH)
       if enabled:
         self.sendaccmode = enabled
@@ -670,7 +670,6 @@ class CarController():
 
       if (frame % 50 == 0 or self.radarDisableOverlapTimer == 37) and self.radarDisableOverlapTimer >= 30:
         can_sends.append(create_scc7d0(b'\x02\x3E\x00\x00\x00\x00\x00\x00'))
-        print("radar disabled")
 
       if self.radarDisableOverlapTimer > 200:
         self.radarDisableOverlapTimer = 200
