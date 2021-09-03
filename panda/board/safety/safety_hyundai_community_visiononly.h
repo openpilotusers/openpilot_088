@@ -88,11 +88,9 @@ static int hyundai_community_rx_visiononly_hook(CAN_FIFOMailBox_TypeDef *to_push
     hyundai_community_mdps_harness_present = false;
   }
 
-  if (hyundai_community_vision_only_car) {
-    valid = addr_safety_check(to_push, hyundai_community_visiononly_rx_checks, HYUNDAI_COMMUNITY_VISIONONLY_RX_CHECK_LEN,
+  valid = addr_safety_check(to_push, hyundai_community_visiononly_rx_checks, HYUNDAI_COMMUNITY_VISIONONLY_RX_CHECK_LEN,
                             hyundai_community_get_checksum, hyundai_community_compute_checksum,
                             hyundai_community_get_counter);
-  }
 
   if ((bus == 1) && hyundai_community_mdps_harness_present) {
 
