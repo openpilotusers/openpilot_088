@@ -11,13 +11,6 @@ int prev_desired_accel = 0;
 int decel_not_ramping = 0;
 bool hyundai_community_mdps_harness_present = true;
 
-const CanMsg HYUNDAI_COMMUNITY_TX_MSGS[] = {
-  {832, 0, 8}, {832, 1, 8},    // LKAS11 Bus 0, 1
-  {1265, 0, 4}, {1265, 1, 4},  // CLU11 Bus 0, 1
-  {1157, 0, 4},                 // LFAHDA_MFC Bus 0
-  {1427, 0, 6},   // TPMS, Bus 0
- };
-
 const CanMsg HYUNDAI_COMMUNITY_VISIONONLY_TX_MSGS[] = {
   {832, 0, 8}, {832, 1, 8}, // LKAS11 Bus 0, 1
   {1265, 0, 4}, {1265, 1, 4}, {1265, 2, 4},// CLU11 Bus 0, 1, 2
@@ -30,17 +23,7 @@ const CanMsg HYUNDAI_COMMUNITY_VISIONONLY_TX_MSGS[] = {
   {1155, 0, 8}, //   FCA12,  Bus 0
   {909, 0, 8},  //   FCA11,  Bus 0
   {2000, 0, 8},  // SCC_DIAG, Bus 0
-  {1427, 0, 6},   // TPMS, Bus 0
- };
-
-// TODO: missing checksum for wheel speeds message,worst failure case is
-//       wheel speeds stuck at 0 and we don't disengage on brake press
-AddrCheckStruct hyundai_community_rx_checks[] = {
-  {.msg = {{902, 0, 8, .expected_timestep = 10000U}}},
-  {.msg = {{916, 0, 8, .expected_timestep = 10000U}}},
-  {.msg = {{1057, 0, 8, .check_checksum = true, .max_counter = 15U, .expected_timestep = 20000U}}},
 };
-const int HYUNDAI_COMMUNITY_RX_CHECK_LEN = sizeof(hyundai_community_rx_checks) / sizeof(hyundai_community_rx_checks[0]);
 
 // for non SCC hyundai vehicles
 AddrCheckStruct hyundai_community_visiononly_rx_checks[] = {
@@ -95,7 +78,7 @@ static uint8_t hyundai_community_compute_checksum(CAN_FIFOMailBox_TypeDef *to_pu
   return (16U - (chksum %  16U)) % 16U;
 }
 
-static int hyundai_community_rx_hook(CAN_FIFOMailBox_TypeDef *to_push) {
+static int hyundai_community_rx_visiononly_hook(CAN_FIFOMailBox_TypeDef *to_push) {
 
   bool valid;
   int bus = GET_BUS(to_push);
@@ -107,11 +90,6 @@ static int hyundai_community_rx_hook(CAN_FIFOMailBox_TypeDef *to_push) {
 
   if (hyundai_community_vision_only_car) {
     valid = addr_safety_check(to_push, hyundai_community_visiononly_rx_checks, HYUNDAI_COMMUNITY_VISIONONLY_RX_CHECK_LEN,
-                            hyundai_community_get_checksum, hyundai_community_compute_checksum,
-                            hyundai_community_get_counter);
-  }
-  else {
-    valid = addr_safety_check(to_push, hyundai_community_rx_checks, HYUNDAI_COMMUNITY_RX_CHECK_LEN,
                             hyundai_community_get_checksum, hyundai_community_compute_checksum,
                             hyundai_community_get_counter);
   }
@@ -183,7 +161,7 @@ static int hyundai_community_rx_hook(CAN_FIFOMailBox_TypeDef *to_push) {
   return valid;
 }
 
-static int hyundai_community_tx_hook(CAN_FIFOMailBox_TypeDef *to_send) {
+static int hyundai_community_tx_visiononly_hook(CAN_FIFOMailBox_TypeDef *to_send) {
   
   int tx = 1;
   int addr = GET_ADDR(to_send);
@@ -194,12 +172,6 @@ static int hyundai_community_tx_hook(CAN_FIFOMailBox_TypeDef *to_send) {
         tx = 0;
     }
   }
-  else {
-    if (!msg_allowed(to_send, HYUNDAI_COMMUNITY_TX_MSGS, sizeof(HYUNDAI_COMMUNITY_TX_MSGS)/sizeof(HYUNDAI_COMMUNITY_TX_MSGS[0]))) {
-        tx = 0;
-    }
-  }
-
 
   if (relay_malfunction) {
     tx = 0;
@@ -294,7 +266,7 @@ static int hyundai_community_tx_hook(CAN_FIFOMailBox_TypeDef *to_send) {
   return tx;
 }
 
-static int hyundai_community_fwd_hook(int bus_num, CAN_FIFOMailBox_TypeDef *to_fwd) {
+static int hyundai_community_fwd_visiononly_hook(int bus_num, CAN_FIFOMailBox_TypeDef *to_fwd) {
 
   int bus_fwd = -1;
   int addr = GET_ADDR(to_fwd);
@@ -324,13 +296,6 @@ static int hyundai_community_fwd_hook(int bus_num, CAN_FIFOMailBox_TypeDef *to_f
   return bus_fwd;
 }
 
-static void hyundai_community_init(int16_t param) {
-  UNUSED(param);
-  controls_allowed = false;
-  relay_malfunction_reset();
-  hyundai_community_vision_only_car = false;
-}
-
 static void hyundai_community_visiononly_init(int16_t param) {
   UNUSED(param);
   controls_allowed = false;
@@ -338,22 +303,12 @@ static void hyundai_community_visiononly_init(int16_t param) {
   hyundai_community_vision_only_car = true;
 }
 
-const safety_hooks hyundai_community_hooks = {
-  .init = hyundai_community_init,
-  .rx = hyundai_community_rx_hook,
-  .tx = hyundai_community_tx_hook,
-  .tx_lin = nooutput_tx_lin_hook,
-  .fwd = hyundai_community_fwd_hook,
-  .addr_check = hyundai_community_rx_checks,
-  .addr_check_len = sizeof(hyundai_community_rx_checks) / sizeof(hyundai_community_rx_checks[0]),
-};
-
 const safety_hooks hyundai_community_visiononly_hooks = {
   .init = hyundai_community_visiononly_init,
-  .rx = hyundai_community_rx_hook,
-  .tx = hyundai_community_tx_hook,
+  .rx = hyundai_community_rx_visiononly_hook,
+  .tx = hyundai_community_tx_visiononly_hook,
   .tx_lin = nooutput_tx_lin_hook,
-  .fwd = hyundai_community_fwd_hook,
+  .fwd = hyundai_community_fwd_visiononly_hook,
   .addr_check = hyundai_community_visiononly_rx_checks,
   .addr_check_len = sizeof(hyundai_community_visiononly_rx_checks) / sizeof(hyundai_community_visiononly_rx_checks[0]),
 };
