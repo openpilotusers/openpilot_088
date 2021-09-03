@@ -408,7 +408,6 @@ class Controls:
       self.mismatch_counter += 1
 
     self.distance_traveled += CS.vEgo * DT_CTRL
-    print('PANDA_CONTROL_ALLOWED = {}'.format(self.controlsAllowed))
 
     return CS
 
