@@ -16,7 +16,6 @@
 #include "safety/safety_volkswagen.h"
 #include "safety/safety_elm327.h"
 #include "safety/safety_hyundai_community.h"
-//#include "safety/safety_hyundai_community_visiononly.h"
 
 // from cereal.car.CarParams.SafetyModel
 #define SAFETY_SILENT 0U
@@ -211,7 +210,7 @@ void generic_rx_checks(bool stock_ecu_detected) {
   gas_pressed_prev = gas_pressed;
 
   // exit controls on rising edge of brake press
-  if (!unsafe_mode && brake_pressed && (!brake_pressed_prev || vehicle_moving)) {
+  if (brake_pressed && (!brake_pressed_prev || vehicle_moving)) {
     controls_allowed = 0;
   }
   brake_pressed_prev = brake_pressed;
