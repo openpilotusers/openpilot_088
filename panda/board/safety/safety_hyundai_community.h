@@ -77,8 +77,8 @@ static int hyundai_community_rx_hook(CAN_FIFOMailBox_TypeDef *to_push) {
     }
   }
   // check SCC not on Bus
-  if ((addr != 1056 && addr != 1057) && HKG_scc_bus != -2) {
-    HKG_scc_bus = -2;
+  if ((addr != 1056 && addr != 1057) && HKG_scc_bus != -1) {
+    HKG_scc_bus = -1;
   }
 
   if (valid) {
@@ -118,8 +118,8 @@ static int hyundai_community_rx_hook(CAN_FIFOMailBox_TypeDef *to_push) {
     }
 
     // cruise control for car disabled RADAR
-    if (addr == 1265 && HKG_scc_bus == -2) {
-      controls_allowed = 1;
+    if (addr == 1265 && HKG_scc_bus == -1) {
+      // controls_allowed = 1;
       // int cruise_engaged_non_radar = GET_BYTES_04(to_push) & 0x8;
       // //int cruise_engaged_non_radar = 0;
       // if (cruise_engaged_non_radar && !controls_allowed) {
