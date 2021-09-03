@@ -216,6 +216,7 @@ typedef struct UIScene {
   bool nOpkrBlindSpotDetect;
   bool auto_gitpull = false;
   bool is_speed_over_limit = false;
+  bool controlAllowed;
 
   cereal::DeviceState::Reader deviceState;
   cereal::RadarState::LeadData::Reader lead_data[2];

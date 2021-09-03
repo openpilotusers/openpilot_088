@@ -235,6 +235,7 @@ static void update_state(UIState *s) {
     auto pandaState = sm["pandaState"].getPandaState();
     scene.pandaType = pandaState.getPandaType();
     scene.ignition = pandaState.getIgnitionLine() || pandaState.getIgnitionCan();
+    scene.controlAllowed = pandaState.getControlsAllowed();
   } else if ((s->sm->frame - s->sm->rcv_frame("pandaState")) > 5*UI_FREQ) {
     scene.pandaType = cereal::PandaState::PandaType::UNKNOWN;
   }
