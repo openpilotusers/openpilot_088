@@ -6,6 +6,7 @@ int car_SCC_live = 0;
 int OP_EMS_live = 0;
 int HKG_mdps_bus = -1;
 int HKG_scc_bus = -1;
+int cruise_stat_toggle = 0;
 const CanMsg HYUNDAI_COMMUNITY_TX_MSGS[] = {
   {832, 0, 8}, {832, 1, 8}, // LKAS11 Bus 0, 1
   {1265, 0, 4}, {1265, 1, 4}, {1265, 2, 4}, // CLU11 Bus 0, 1, 2
@@ -111,6 +112,19 @@ static int hyundai_community_rx_hook(CAN_FIFOMailBox_TypeDef *to_push) {
         controls_allowed = 0;
       }
       cruise_engaged_prev = cruise_engaged;
+    }
+  
+    if (addr == 1265 && HKG_scc_bus == -1) {
+      // engage for radar disabled car
+      int cruise_engaged = (GET_BYTES_04(to_push) >> 3) & 0x1;
+      if (!controls_allowed && cruise_engaged == 1 && cruise_stat_toggle == 0) {
+        controls_allowed = 1;
+        cruise_stat_toggle = 1;
+      }
+      if (controls_allowed && cruise_engaged == 1 && cruise_stat_toggle == 1) {
+        controls_allowed = 0;
+        cruise_stat_toggle = 0;
+      }
     }
 
     // sample wheel speed, averaging opposite corners
