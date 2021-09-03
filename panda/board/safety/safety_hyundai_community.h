@@ -189,15 +189,15 @@ static int hyundai_community_rx_hook(CAN_FIFOMailBox_TypeDef *to_push) {
 
     // cruise control for car disabled RADAR
     if ((addr == 1265) && hyundai_community_vision_only_car) {
-      int cruise_engaged = (GET_BYTES_04(to_push) >> 3) & 0x1;
-      if (cruise_engaged && !controls_allowed) {
-        controls_allowed = 1;
-        puts("  non-RADAR w/ long control: controls allowed"); puts("\n");
-      }
-      if (cruise_engaged && controls_allowed) {
-        controls_allowed = 0;
-        puts("  non-RADAR w/ long control: controls not allowed"); puts("\n");
-      }
+      // int cruise_engaged = (GET_BYTES_04(to_push) >> 3) & 0x1;
+      // if (cruise_engaged && !controls_allowed) {
+      //   controls_allowed = 1;
+      //   puts("  non-RADAR w/ long control: controls allowed"); puts("\n");
+      // }
+      // if (cruise_engaged && controls_allowed) {
+      //   controls_allowed = 0;
+      //   puts("  non-RADAR w/ long control: controls not allowed"); puts("\n");
+      // }
     }
 
     // sample wheel speed, averaging opposite corners
