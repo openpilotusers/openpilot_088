@@ -118,6 +118,7 @@ static int hyundai_community_rx_hook(CAN_FIFOMailBox_TypeDef *to_push) {
     }
 
     // cruise control for car disabled RADAR
+    // need to fix, not working for now
     if (addr == 1265 && HKG_scc_bus == -1) {
       // controls_allowed = 1;
       // int cruise_engaged_non_radar = GET_BYTES_04(to_push) & 0x8;
