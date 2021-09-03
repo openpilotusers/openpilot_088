@@ -119,7 +119,8 @@ static int hyundai_community_rx_hook(CAN_FIFOMailBox_TypeDef *to_push) {
 
     // cruise control for car disabled RADAR
     if (addr == 1265 && HKG_scc_bus == -1) {
-      int cruise_engaged_non_radar = (GET_BYTES_04(to_push) >> 3) & 0x1;
+      //int cruise_engaged_non_radar = (GET_BYTES_04(to_push) >> 3) & 0x1;
+      int cruise_engaged_non_radar = 0;
       if (cruise_engaged_non_radar && !controls_allowed) {
         controls_allowed = 1;
         puts("  non-RADAR w/ long control: controls allowed"); puts("\n");
