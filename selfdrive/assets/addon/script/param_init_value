@@ -31,8 +31,8 @@ PathOffsetAdj:0
 SteerRatioAdj:1550
 SteerRatioMaxAdj:1750
 SteerActuatorDelayAdj:20
-SteerRateCostAdj:50
-SteerLimitTimerAdj:80
+SteerRateCostAdj:35
+SteerLimitTimerAdj:100
 TireStiffnessFactorAdj:100
 SteerMaxBaseAdj:408
 SteerMaxAdj:408
