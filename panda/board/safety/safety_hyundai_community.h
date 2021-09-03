@@ -117,6 +117,20 @@ static int hyundai_community_rx_hook(CAN_FIFOMailBox_TypeDef *to_push) {
       cruise_engaged_prev = cruise_engaged;
     }
 
+    // engage for non ACC car
+    if ((addr == 1265) && HKG_scc_bus == -1) {
+      // first byte
+      int cruise_engaged = (GET_BYTES_04(to_push) & 0x8);
+      // enable on res+ or set- buttons press
+      if (!controls_allowed && (cruise_engaged == 8)) {
+        controls_allowed = 1;
+      }
+      // disable on cancel press
+      if (cruise_engaged == 4) {
+        controls_allowed = 0;
+      }
+    }
+
     // // cruise control for car disabled RADAR
     // if (addr == 1265 && HKG_scc_bus == -1) {
     //   int cruise_engaged = (GET_BYTES_04(to_push) >> 3) & 0x1;
