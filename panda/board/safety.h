@@ -41,7 +41,6 @@
 #define SAFETY_SUBARU_LEGACY 22U
 #define SAFETY_HYUNDAI_LEGACY 23U
 #define SAFETY_HYUNDAI_COMMUNITY 24U
-#define SAFETY_HYUNDAI_COMMUNITY_VISIONONLY 25U
 
 uint16_t current_safety_mode = SAFETY_SILENT;
 int16_t current_safety_param = 0;
@@ -254,7 +253,6 @@ const safety_hook_config safety_hook_registry[] = {
   {SAFETY_NOOUTPUT, &nooutput_hooks},
   {SAFETY_HYUNDAI_LEGACY, &hyundai_legacy_hooks},
   {SAFETY_HYUNDAI_COMMUNITY, &hyundai_community_hooks},
-  {SAFETY_HYUNDAI_COMMUNITY_VISIONONLY, &hyundai_community_visiononly_hooks},
   {SAFETY_TESLA, &tesla_hooks},
 #ifdef ALLOW_DEBUG
   {SAFETY_MAZDA, &mazda_hooks},
