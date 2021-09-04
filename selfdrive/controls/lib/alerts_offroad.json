@@ -1,0 +1,52 @@
+{
+  "Offroad_ChargeDisabled": {
+    "text": "EON charging disabled after car being off for more than 30 hours. Turn ignition on to start charging again.",
+    "severity": 0
+  },
+  "Offroad_TemperatureTooHigh": {
+    "text": "장치 온도가 너무 높습니다. 시스템 시작이 보류되었습니다.",
+    "severity": 1
+  },
+  "Offroad_ConnectivityNeededPrompt": {
+    "text": "Immediately connect to the internet to check for updates. If you do not connect to the internet, openpilot won't engage in ",
+    "severity": 0,
+    "_comment": "Append the number of days at the end of the text"
+  },
+  "Offroad_ConnectivityNeeded": {
+    "text": "Connect to internet to check for updates. openpilot won't start until it connects to internet to check for updates.",
+    "severity": 1
+  },
+  "Offroad_UpdateFailed": {
+    "text": "Unable to download updates\n",
+    "severity": 1,
+    "_comment": "Append the command and error to the text."
+  },
+  "Offroad_PandaFirmwareMismatch": {
+    "text": "판다 펌웨어 버전이 일치하지 않습니다. 판다를 다시 플래시하려면 장치를 재부팅하십시오.",
+    "severity": 1
+  },
+  "Offroad_InvalidTime": {
+    "text": "날짜 및 시간 설정이 잘못되었습니다. 인터넷에 연결하여 시간을 설정하시기 바랍니다.",
+    "severity": 1
+  },
+  "Offroad_IsTakingSnapshot": {
+    "text": "Taking camera snapshots. System won't start until finished.",
+    "severity": 0
+  },
+  "Offroad_NeosUpdate": {
+    "text": "An update to your device's operating system is downloading in the background. You will be prompted to update when it's ready to install.",
+    "severity": 0
+  },
+  "Offroad_HardwareUnsupported": {
+    "text": "White and grey panda are unsupported. Upgrade to comma two or black panda.",
+    "severity": 0
+  },
+  "Offroad_UnofficialHardware": {
+    "text": "장치 등록에 실패하였습니다. https://api.retropilot.org 서버가 점검 중인지 확인하십시오. 추후 서버 정상화 시 아래 \"재등록 시도\" 버튼을 이용하여 재등록 하시기 바랍니다. 사용상에는 문제가 없으니 안심하고 사용하시기 바랍니다.",
+    "severity": 0
+  },
+  "Offroad_NvmeMissing": {
+    "text": "NVME drive not mounted.",
+    "severity": 1
+  }
+}
