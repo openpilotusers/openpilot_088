@@ -146,7 +146,7 @@ def manager_init():
     ("LCTimingFactor60", "20"),
     ("LCTimingFactor80", "70"),
     ("LCTimingFactor110", "100"),
-    ("OpkrUIBrightnessOff", "0"),
+    ("OpkrUIBrightnessOff", "1"),
     ("LCTimingFactorEnable", "1"),
     ("AutoEnableSpeed", "3"),
     ("SafetyCamDecelDistGain", "0"),
