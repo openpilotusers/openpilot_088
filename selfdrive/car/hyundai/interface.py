@@ -12,16 +12,11 @@ from decimal import Decimal
 EventName = car.CarEvent.EventName
 ButtonType = car.CarState.ButtonEvent.Type
 
-
 class CarInterface(CarInterfaceBase):
   def __init__(self, CP, CarController, CarState):
     super().__init__(CP, CarController, CarState)
+    self.buttonEvents = []
     self.cp2 = self.CS.get_can2_parser(CP)
-    self.lkas_button_alert = False
-
-    self.blinker_status = 0
-    self.blinker_timer = 0
-    self.mad_mode_enabled = Params().get_bool('MadModeEnabled')
 
   @staticmethod
   def compute_gb(accel, speed):
@@ -253,18 +248,15 @@ class CarInterface(CarInterfaceBase):
     ret.evgearAvailable = True if 882 in fingerprint[0] else False
     ret.emsAvailable = True if 608 and 809 in fingerprint[0] else False
 
-    if int(params.get("RadarDisabledForVOACC", encoding="utf8")):
-      ret.sccBus = -1
+    ret.sccBus = -1
     ret.radarOffCan = ret.sccBus == -1
-    ret.openpilotLongitudinalControl = ret.sccBus in [2, -1]
-    
+    ret.openpilotLongitudinalControl = True
+    ret.safetyModel = car.CarParams.SafetyModel.hyundaiCommunityVisionOnly
     # pcmCruise is true
     ret.pcmCruise = not ret.radarOffCan
-    
-    # set safety_hyundai_community only for non-SCC, MDPS harrness or SCC harrness cars or cars that have unknown issue
-    if ret.radarOffCan or ret.mdpsBus == 1 or ret.openpilotLongitudinalControl or ret.sccBus == 1 or params.get_bool("MadModeEnabled"):
-      ret.safetyModel = car.CarParams.SafetyModel.hyundaiCommunity
-      
+    if ret.fcaBus == 0:
+      ret.fcaBus = -1
+
     # set appropriate safety param for gas signal
     if candidate in HYBRID_CAR:
       ret.safetyParam = 2
@@ -276,22 +268,14 @@ class CarInterface(CarInterfaceBase):
     self.cp.update_strings(can_strings)
     self.cp2.update_strings(can_strings)
     self.cp_cam.update_strings(can_strings)
-
     ret = self.CS.update(self.cp, self.cp2, self.cp_cam)
     ret.canValid = self.cp.can_valid and self.cp2.can_valid and self.cp_cam.can_valid
     if not self.cp.can_valid or not self.cp2.can_valid or not self.cp_cam.can_valid:
       print('cp={}  cp2={}  cp_cam={}'.format(bool(self.cp.can_valid), bool(self.cp2.can_valid), bool(self.cp_cam.can_valid)))
+    events = self.create_common_events(ret)
+
+    # speeds
     ret.steeringRateLimited = self.CC.steer_rate_limited if self.CC is not None else False
-
-    if self.CP.pcmCruise and not self.CC.scc_live:
-      self.CP.pcmCruise = False
-    elif self.CC.scc_live and not self.CP.pcmCruise:
-      self.CP.pcmCruise = True
-
-    # most HKG cars has no long control, it is safer and easier to engage by main on
-    if self.mad_mode_enabled:
-      ret.cruiseState.enabled = ret.cruiseState.available
-
 
     # low speed steer alert hysteresis logic (only for cars with steer cut off above 10 m/s)
     if ret.vEgo < (self.CP.minSteerSpeed + 0.2) and self.CP.minSteerSpeed > 10.:
@@ -299,61 +283,19 @@ class CarInterface(CarInterfaceBase):
     if ret.vEgo > (self.CP.minSteerSpeed + 0.7):
       self.low_speed_alert = False
 
-    buttonEvents = []
-    if self.CS.cruise_buttons != self.CS.prev_cruise_buttons:
-      be = car.CarState.ButtonEvent.new_message()
-      be.pressed = self.CS.cruise_buttons != 0
-      but = self.CS.cruise_buttons if be.pressed else self.CS.prev_cruise_buttons
-      if but == Buttons.RES_ACCEL:
-        be.type = ButtonType.accelCruise
-      elif but == Buttons.SET_DECEL:
-        be.type = ButtonType.decelCruise
-      elif but == Buttons.GAP_DIST:
-        be.type = ButtonType.gapAdjustCruise
-      elif but == Buttons.CANCEL and not self.CP.pcmCruise:
-        be.type = ButtonType.cancel
-      else:
-        be.type = ButtonType.unknown
-      buttonEvents.append(be)
-    if self.CS.cruise_main_button != self.CS.prev_cruise_main_button:
-      be = car.CarState.ButtonEvent.new_message()
-      be.type = ButtonType.altButton3
-      be.pressed = bool(self.CS.cruise_main_button)
-      buttonEvents.append(be)
-    ret.buttonEvents = buttonEvents
+    if self.CP.sccBus == 2:
+      self.CP.enableCruise = self.CC.usestockscc
 
-    events = self.create_common_events(ret)
-
-    if self.CC.longcontrol and self.CS.cruise_unavail:
+    #if self.CS.brakeHold and not self.CC.usestockscc:
+    #  events.add(EventName.brakeHold)
+    if self.CS.parkBrake and not self.CC.usestockscc:
+      events.add(EventName.parkBrake)
+    if self.CS.brakeUnavailable and not self.CC.usestockscc:
       events.add(EventName.brakeUnavailable)
-    #if abs(ret.steeringAngle) > 90. and EventName.steerTempUnavailable not in events.events:
-    #  events.add(EventName.steerTempUnavailable)
-    if self.low_speed_alert and not self.CS.mdps_bus:
-      events.add(EventName.belowSteerSpeed)
-    if self.mad_mode_enabled and EventName.pedalPressed in events.events:
-      events.events.remove(EventName.pedalPressed)
     if self.CC.lanechange_manual_timer and ret.vEgo > 0.3:
       events.add(EventName.laneChangeManual)
     if self.CC.emergency_manual_timer:
       events.add(EventName.emgButtonManual)
-    #if self.CC.driver_steering_torque_above_timer:
-    #  events.add(EventName.driverSteering)
-    if self.CC.need_brake and not self.CC.longcontrol:
-      events.add(EventName.needBrake)
-    if self.CC.cruise_gap_adjusting:
-      events.add(EventName.gapAdjusting)
-    if (self.CS.on_speed_control and not self.CC.map_enabled) or (self.CC.on_speed_control and self.CC.map_enabled):
-      events.add(EventName.camSpeedDown)
-    if self.CS.cruiseState_standstill or self.CC.standstill_status == 1:
-      #events.add(EventName.standStill)
-      self.CP.standStill = True
-    else:
-      self.CP.standStill = False
-    if self.CC.v_cruise_kph_auto_res > 30:
-      self.CP.vCruisekph = self.CC.v_cruise_kph_auto_res
-    else:
-      self.CP.vCruisekph = 0
-
     if self.CC.mode_change_timer and self.CS.out.cruiseState.modeSel == 0:
       events.add(EventName.modeChangeOpenpilot)
     elif self.CC.mode_change_timer and self.CS.out.cruiseState.modeSel == 1:
@@ -366,32 +308,61 @@ class CarInterface(CarInterfaceBase):
       events.add(EventName.modeChangeOneway)
     elif self.CC.mode_change_timer and self.CS.out.cruiseState.modeSel == 5:
       events.add(EventName.modeChangeMaponly)
+    if self.CC.acc_standstill_timer >= 200:
+      #events.add(EventName.standStill)
+      self.CP.standStill = True
+    else:
+      self.CP.standStill = False
+    self.CP.vCruisekph = self.CC.setspeed
 
-  # handle button presses
-    for b in ret.buttonEvents:
-      # do disable on button down
-      # if b.type == ButtonType.cancel and b.pressed:
-      #   events.add(EventName.buttonCancel)
-      if self.CC.longcontrol and not self.CC.scc_live:
-        # do enable on both accel and decel buttons
-        # if b.type in [ButtonType.accelCruise, ButtonType.decelCruise] and not b.pressed:
-        #   events.add(EventName.buttonEnable)
+    buttonEvents = []
+    if self.CS.cruise_buttons != self.CS.prev_cruise_buttons:
+      be = car.CarState.ButtonEvent.new_message()
+      be.pressed = self.CS.cruise_buttons != 0 
+      but = self.CS.cruise_buttons
+      if but == Buttons.RES_ACCEL:
+        be.type = ButtonType.accelCruise
+      elif but == Buttons.SET_DECEL:
+        be.type = ButtonType.decelCruise
+      elif but == Buttons.GAP_DIST:
+        be.type = ButtonType.gapAdjustCruise
+      elif but == Buttons.CANCEL:
+        be.type = ButtonType.cancel
+      else:
+        be.type = ButtonType.unknown
+      buttonEvents.append(be)
+      self.buttonEvents = buttonEvents
+
+    if self.CS.cruise_main_button != self.CS.prev_cruise_main_button:
+      be = car.CarState.ButtonEvent.new_message()
+      be.type = ButtonType.altButton3
+      be.pressed = bool(self.CS.cruise_main_button)
+      buttonEvents.append(be)
+      self.buttonEvents = buttonEvents
+
+    ret.buttonEvents = self.buttonEvents
+
+    # handle button press
+    if not self.CP.enableCruise:
+      for b in self.buttonEvents:
+        if b.type == ButtonType.decelCruise and b.pressed \
+                and (not ret.brakePressed or ret.standstill):
+          events.add(EventName.buttonEnable)
+          events.add(EventName.pcmEnable)
+        if b.type == ButtonType.accelCruise and b.pressed \
+                and ((self.CC.setspeed > self.CC.clu11_speed - 2) or ret.standstill or self.CC.usestockscc):
+          events.add(EventName.buttonEnable)
+          events.add(EventName.pcmEnable)
+        if b.type == ButtonType.cancel and b.pressed:
+          events.add(EventName.buttonCancel)
+          events.add(EventName.pcmDisable)
         if b.type == ButtonType.altButton3 and b.pressed and not ret.cruiseState.available:
           events.add(EventName.buttonEnable)
         if b.type == ButtonType.altButton3 and b.pressed and ret.cruiseState.available:
           events.add(EventName.pcmDisable)
           events.add(EventName.buttonCancel)
-        if EventName.wrongCarMode in events.events:
-          events.events.remove(EventName.wrongCarMode)
-        # if EventName.pcmDisable in events.events:
-        #   events.events.remove(EventName.pcmDisable)
-      elif not self.CC.longcontrol and ret.cruiseState.enabled:
-        # do enable on decel button only
-        if b.type == ButtonType.decelCruise and not b.pressed:
-          events.add(EventName.buttonEnable)
 
     ret.events = events.to_msg()
-
     self.CS.out = ret.as_reader()
     return self.CS.out
 

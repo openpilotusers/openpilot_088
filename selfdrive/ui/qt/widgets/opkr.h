@@ -533,6 +533,18 @@ public:
   }
 };
 
+class MdpsHarnessToggle : public ToggleControl {
+  Q_OBJECT
+
+public:
+  MdpsHarnessToggle() : ToggleControl("MDPS 하네스 사용", "MDPS 하네스를 사용하는 차종은 선택하십시오.", "../assets/offroad/icon_shell.png", Params().getBool("MdpsHarness")) {
+    QObject::connect(this, &MdpsHarnessToggle::toggleFlipped, [=](int state) {
+      bool status = state ? true : false;
+      Params().putBool("MdpsHarness", status);
+    });
+  }
+};
+
 // 오픈파일럿 미리보기
 class OpenpilotView : public AbstractControl {
   Q_OBJECT
