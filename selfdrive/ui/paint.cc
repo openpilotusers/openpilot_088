@@ -873,17 +873,17 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
     if (lead_one.getProb() > .5) {
       //show RED if less than 5 meters
       //show orange if less than 15 meters
-      if((int)(lead_one.getX()[0]) < 15) {
+      if((int)(lead_one.getX()[0] - 2.5) < 15) {
         val_color = COLOR_ORANGE_ALPHA(200);
       }
-      if((int)(lead_one.getX()[0]) < 5) {
+      if((int)(lead_one.getX()[0] - 2.5) < 5) {
         val_color = COLOR_RED_ALPHA(200);
       }
       // lead car relative distance is always in meters
-      if((float)(lead_one.getX()[0]) < 10) {
-        snprintf(val_str, sizeof(val_str), "%.1f", (float)lead_one.getX()[0] - 2.0);
+      if((float)(lead_one.getX()[0] -2.5) < 10) {
+        snprintf(val_str, sizeof(val_str), "%.1f", (float)(lead_one.getX()[0] - 2.5));
       } else {
-        snprintf(val_str, sizeof(val_str), "%d", (int)lead_one.getX()[0] - 2);
+        snprintf(val_str, sizeof(val_str), "%d", (int)(lead_one.getX()[0] - 2.5));
       }
 
     } else {
@@ -912,9 +912,9 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
       }
       // lead car relative speed is always in meters
       if (scene.is_metric) {
-         snprintf(val_str, sizeof(val_str), "%.0f", round((lead_one.getV()[0] - scene.car_state.getVEgoOP()) * 3.6 + 0.5));
+         snprintf(val_str, sizeof(val_str), "%.0f", (int)((lead_one.getV()[0] - scene.car_state.getVEgoOP()) * 3.6));
       } else {
-         snprintf(val_str, sizeof(val_str), "%.0f", round((lead_one.getV()[0] - scene.car_state.getVEgoOP()) * 2.2374144 + 0.5));
+         snprintf(val_str, sizeof(val_str), "%.0f", (int)((lead_one.getV()[0] - scene.car_state.getVEgoOP()) * 2.2374144));
       }
     } else {
        snprintf(val_str, sizeof(val_str), "-");
