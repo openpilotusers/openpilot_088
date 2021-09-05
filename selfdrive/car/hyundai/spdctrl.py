@@ -255,24 +255,25 @@ class Spdctrl(SpdController):
         # 2. 커브 감속.
         #if self.cruise_set_speed_kph >= 100:
         if CS.out.cruiseState.modeSel in [1,3,4] and sm['lateralPlan'].laneChangeState == LaneChangeState.off and not (CS.out.leftBlinker or CS.out.rightBlinker)and not self.map_decel_only:
+            cam_speed = self.target_speed if self.target_speed > 0 else 255
             if curve_speed < 40 and CS.clu_Vanz > 40 and CS.lead_distance >= 15:
-                set_speed = min(max(self.target_speed, 45), self.cruise_set_speed_kph - int(CS.clu_Vanz * 0.25))
+                set_speed = min(cam_speed, 45, self.cruise_set_speed_kph, self.cruise_set_speed_kph - int(CS.clu_Vanz * 0.25))
                 self.seq_step_debug = "커브감속-5"
                 wait_time_cmd = 10
             elif curve_speed < 60 and CS.clu_Vanz > 40 and CS.lead_distance >= 15:
-                set_speed = min(max(self.target_speed, 55), self.cruise_set_speed_kph - int(CS.clu_Vanz * 0.2))
+                set_speed = min(cam_speed, 55, self.cruise_set_speed_kph, self.cruise_set_speed_kph - int(CS.clu_Vanz * 0.2))
                 self.seq_step_debug = "커브감속-4"
                 wait_time_cmd = 20
             elif curve_speed < 70 and CS.clu_Vanz > 40 and CS.lead_distance >= 15:
-                set_speed = min(max(self.target_speed, 65), self.cruise_set_speed_kph - int(CS.clu_Vanz * 0.15))
+                set_speed = min(cam_speed, 65, self.cruise_set_speed_kph, self.cruise_set_speed_kph - int(CS.clu_Vanz * 0.15))
                 self.seq_step_debug = "커브감속-3"
                 wait_time_cmd = 30
             elif curve_speed < 80 and CS.clu_Vanz > 40 and CS.lead_distance >= 15:
-                set_speed = min(max(self.target_speed, 75), self.cruise_set_speed_kph - int(CS.clu_Vanz * 0.1))
+                set_speed = min(cam_speed, 75, self.cruise_set_speed_kph, self.cruise_set_speed_kph - int(CS.clu_Vanz * 0.1))
                 self.seq_step_debug = "커브감속-2"
                 wait_time_cmd = 40
             elif curve_speed < 90 and CS.clu_Vanz > 40 and CS.lead_distance >= 15:
-                set_speed = min(max(self.target_speed, 85), self.cruise_set_speed_kph - int(CS.clu_Vanz * 0.05))
+                set_speed = min(cam_speed, 85, self.cruise_set_speed_kph, self.cruise_set_speed_kph - int(CS.clu_Vanz * 0.05))
                 self.seq_step_debug = "커브감속-1"
                 wait_time_cmd = 50
 
