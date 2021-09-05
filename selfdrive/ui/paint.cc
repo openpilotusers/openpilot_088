@@ -912,9 +912,9 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
       }
       // lead car relative speed is always in meters
       if (scene.is_metric) {
-         snprintf(val_str, sizeof(val_str), "%.0f", (int)((lead_one.getV()[0] - scene.car_state.getVEgoOP()) * 3.6));
+         snprintf(val_str, sizeof(val_str), "%d", (int)((lead_one.getV()[0] - scene.car_state.getVEgoOP()) * 3.6));
       } else {
-         snprintf(val_str, sizeof(val_str), "%.0f", (int)((lead_one.getV()[0] - scene.car_state.getVEgoOP()) * 2.2374144));
+         snprintf(val_str, sizeof(val_str), "%d", (int)((lead_one.getV()[0] - scene.car_state.getVEgoOP()) * 2.2374144));
       }
     } else {
        snprintf(val_str, sizeof(val_str), "-");
